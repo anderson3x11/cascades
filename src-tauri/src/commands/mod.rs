@@ -190,6 +190,13 @@ pub async fn trash_path(path: String) -> Result<(), String> {
     folder::trash(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
 }
 
+#[tauri::command]
+pub async fn file_size(path: String) -> Result<u64, String> {
+    std::fs::metadata(&path)
+        .map(|m| m.len())
+        .map_err(|e| format!("{path}: {e}"))
+}
+
 /// Raw bytes of a file, or of `length` bytes from `offset`. Sent as binary,
 /// not as a JSON array.
 #[tauri::command]

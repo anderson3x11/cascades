@@ -333,6 +333,8 @@ export interface ViewerSpec {
   kind: 'preview' | 'replace';
   /** Loaded the first time the viewer is needed, to keep startup fast. */
   load(): Promise<ViewerFactory>;
+  /** A "replace" viewer for files that are not text, when no viewer handles their extension. */
+  binary?: boolean;
 }
 
 export type PreviewMode = 'off' | 'side' | 'full';
@@ -343,6 +345,8 @@ export interface ViewersApi {
   previewFor(tab: TabInfo): ViewerSpec | null;
   /** Replace viewer for a file path (by extension), or null. */
   replaceFor(path: string): ViewerSpec | null;
+  /** Viewer for files that are not text (hex view), or null. */
+  binaryViewer(): ViewerSpec | null;
   previewMode(tabId: string): PreviewMode;
   setPreviewMode(tabId: string, mode: PreviewMode): void;
 }
@@ -474,6 +478,8 @@ export interface FsApi {
    * access to the file's folder only. Returns the path as is outside the app.
    */
   fileUrl(path: string): Promise<string>;
+  /** Size of a file in bytes, without reading it. */
+  fileSize(path: string): Promise<number>;
   /** Raw bytes of a file (PDF, binary files), or of `length` bytes from `offset`. */
   readBinary(path: string, range?: { offset: number; length: number }): Promise<Uint8Array>;
   /** Entries of a folder, unsorted. */

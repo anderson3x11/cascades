@@ -303,3 +303,44 @@
   color: var(--fg);
   font-family: var(--font-ui);
 }
+
+/* Hex view ------------------------------------------------------------------ */
+
+.cv-hex {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cv-hex-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--bg);
+}
+
+.cv-hex-rows {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 16px;
+  font-family: var(--font-editor);
+  font-size: 13px;
+  white-space: pre;
+}
+
+.cv-hex-row {
+  display: flex;
+  gap: 24px;
+  height: 20px;
+  line-height: 20px;
+}
+
+.cv-hex-offset {
+  color: var(--ui-fg);
+}
+
+.cv-hex-text {
+  color: var(--syn-string);
+}

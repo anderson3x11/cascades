@@ -83,6 +83,18 @@ export default defineExtension({
       load: async () => (await import('./pdf')).createPdfViewer((path) => ctx.fs.readBinary(path)),
     });
     ctx.viewers.register({
+      id: 'hex',
+      title: 'Hexadécimal',
+      extensions: [],
+      kind: 'replace',
+      binary: true,
+      load: async () =>
+        (await import('./hex')).createHexViewer({
+          size: (path) => ctx.fs.fileSize(path),
+          read: (path, range) => ctx.fs.readBinary(path, range),
+        }),
+    });
+    ctx.viewers.register({
       id: 'svg',
       title: 'SVG',
       extensions: ['svg'],

@@ -17,7 +17,11 @@ async function restoreTab(ctx: ExtensionContext, tab: SessionTab): Promise<OpenO
   const disk = tab.path ? await ctx.fs.readTextFile(tab.path).catch(() => null) : null;
   if (tab.content === undefined) {
     // Saved file: reload it from disk, skip it if it is gone.
-    if (!disk || disk.binary) return null;
+    if (!disk) return null;
+    if (disk.binary) {
+      const binary = ctx.viewers.binaryViewer();
+      return binary && tab.path ? { path: tab.path, text: '', viewer: binary.id } : null;
+    }
     return { path: tab.path, ...disk, ...view };
   }
   // Unsaved changes: the session text on top of the file as saved (if any).

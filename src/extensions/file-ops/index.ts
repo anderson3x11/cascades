@@ -11,7 +11,9 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
   if (viewer) return ctx.workspace.open({ path, text: '', viewer: viewer.id });
   const file = await ctx.fs.readTextFile(path);
   if (file.binary) {
-    await ctx.dialogs.alert(`${path}\n\nCe fichier est binaire et ne peut pas encore être ouvert.`);
+    const binary = ctx.viewers.binaryViewer();
+    if (binary) return ctx.workspace.open({ path, text: '', viewer: binary.id });
+    await ctx.dialogs.alert(`${path}\n\nCe fichier n'est pas du texte et ne peut pas être ouvert.`);
     return null;
   }
   return ctx.workspace.open({

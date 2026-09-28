@@ -53,6 +53,11 @@ export class ViewerService {
     return candidates[candidates.length - 1] ?? null;
   }
 
+  /** Last registered wins, like replaceFor. */
+  binaryViewer(): ViewerSpec | null {
+    return this.viewers.filter((v) => v.kind === 'replace' && v.binary).at(-1) ?? null;
+  }
+
   /** Loads a viewer once; later calls share the same promise. */
   load(spec: ViewerSpec): Promise<ViewerFactory> {
     let factory = this.factories.get(spec.id);

@@ -19,7 +19,9 @@ export interface ReadResult extends TextFileInfo {
 export async function readTextFile(path: string): Promise<ReadResult> {
   if (!isTauri()) {
     const text = fakeFs.read(path);
-    return { text, binary: false, encoding: 'utf-8', bom: false, lineEnding: 'lf' };
+    // Like the backend: a NUL byte means binary.
+    const binary = text.includes('\0');
+    return { text: binary ? '' : text, binary, encoding: 'utf-8', bom: false, lineEnding: 'lf' };
   }
   return await invoke<ReadResult>('read_text_file', { path });
 }
@@ -30,6 +32,12 @@ export async function writeTextFile(path: string, text: string, info: TextFileIn
   // Copy the fields: `info` may be a class instance whose fields are accessors.
   const { encoding, bom, lineEnding } = info;
   await invoke('write_text_file', { path, text, info: { encoding, bom, lineEnding } });
+}
+
+/** Size of a file in bytes, without reading it. */
+export async function fileSize(path: string): Promise<number> {
+  if (!isTauri()) return fakeFs.readBytes(path).length;
+  return await invoke<number>('file_size', { path });
 }
 
 /** Raw bytes of a file, or of `length` bytes from `offset`. */
