@@ -31,6 +31,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Supprimer la ligne                         | Ctrl+Shift+K              |
 | Commenter                                  | Ctrl+/                    |
 | Ajouter l'occurrence suivante              | Ctrl+D                    |
+| Cocher / décocher une tâche                | Ctrl+Entrée               |
 
 ## Configuration
 
@@ -52,22 +53,26 @@ Le dossier de config est :
 }
 ```
 
-| Clé                          | Défaut                      | Description                                    |
-| ---------------------------- | --------------------------- | ---------------------------------------------- |
-| `editor.tabSize`             | `4`                         | Largeur d'une tabulation                       |
-| `editor.insertSpaces`        | `false`                     | Indenter avec des espaces                      |
-| `editor.wordWrap`            | `false`                     | Retour à la ligne automatique                  |
-| `editor.lineNumbers`         | `true`                      | Numéros de ligne                               |
-| `editor.folding`             | `true`                      | Marge de repli                                 |
-| `editor.highlightActiveLine` | `true`                      | Surligner la ligne du curseur                  |
-| `editor.fontSize`            | `14`                        | Taille de police de l'éditeur (px)             |
-| `files.defaultExtension`     | `"txt"`                     | Extension proposée pour un nouveau fichier     |
-| `cascades.enabled`           | `true`                      | Dessiner les connecteurs de cascade            |
-| `cascades.languages`         | `["plaintext", "markdown"]` | Langages où les cascades sont actives          |
-| `cascades.style`             | `"arrow"`                   | `arrow`, `line`, `dotted` ou `rounded`         |
-| `cascades.colorByDepth`      | `true`                      | Une couleur par niveau de profondeur           |
-| `cascades.highlight`         | `true`                      | Mettre en valeur la branche de la ligne active |
-| `indentKeep.enabled`         | `true`                      | Entrée garde l'indentation exacte de la ligne  |
+| Clé                          | Défaut                      | Description                                              |
+| ---------------------------- | --------------------------- | -------------------------------------------------------- |
+| `editor.tabSize`             | `4`                         | Largeur d'une tabulation                                 |
+| `editor.insertSpaces`        | `false`                     | Indenter avec des espaces                                |
+| `editor.wordWrap`            | `false`                     | Retour à la ligne automatique                            |
+| `editor.lineNumbers`         | `true`                      | Numéros de ligne                                         |
+| `editor.folding`             | `true`                      | Marge de repli                                           |
+| `editor.highlightActiveLine` | `true`                      | Surligner la ligne du curseur                            |
+| `editor.fontSize`            | `14`                        | Taille de police de l'éditeur (px)                       |
+| `files.defaultExtension`     | `"txt"`                     | Extension proposée pour un nouveau fichier               |
+| `cascades.enabled`           | `true`                      | Dessiner les connecteurs de cascade                      |
+| `cascades.languages`         | `["plaintext", "markdown"]` | Langages où les cascades sont actives                    |
+| `cascades.style`             | `"arrow"`                   | `arrow`, `line`, `dotted` ou `rounded`                   |
+| `cascades.colorByDepth`      | `true`                      | Une couleur par niveau de profondeur                     |
+| `cascades.highlight`         | `true`                      | Mettre en valeur la branche de la ligne active           |
+| `smartLists.languages`       | `["plaintext", "markdown"]` | Langages où les listes intelligentes sont actives        |
+| `smartLists.continue`        | `true`                      | Entrée continue la liste, ou en sort sur une puce vide   |
+| `smartLists.tabIndents`      | `true`                      | Tab et Shift+Tab changent le niveau d'une ligne de liste |
+| `smartLists.renumber`        | `true`                      | Renuméroter les listes numérotées                        |
+| `indentKeep.enabled`         | `true`                      | Entrée garde l'indentation exacte de la ligne            |
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
 
