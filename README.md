@@ -48,6 +48,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
 | Mode zen (Échap pour sortir)                    | Leader Z                                  |
 | Afficher / masquer les cascades                 | Leader C                                  |
+| Mettre en quarantaine / panneau de quarantaine  | Leader Q / Leader Shift+Q                 |
 | Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
 | Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |
 
