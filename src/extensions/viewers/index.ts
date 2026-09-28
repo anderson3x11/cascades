@@ -57,6 +57,11 @@ export default defineExtension({
         (await import('./html')).createHtmlViewer({
           fileUrl: ctx.fs.fileUrl,
           scriptsAllowed: () => ctx.settings.get<boolean>('preview.htmlScripts'),
+          openExternal: ctx.app.openExternal,
+          openFile: async (path) => {
+            await ctx.commands.execute('file.openPath', path);
+          },
+          watch: ctx.fs.watch,
         }),
     });
 

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/extensions/viewers/viewers.css"
+        ],
+        "createdAt": "2026-09-28T17:29:09.241Z",
+        "reason": "Claude: L77 is the left rule of a Markdown blockquote, the standard rendering convention (GitHub, most Markdown viewers), not a card accent"
+      }
+    ]
+  }
+}
