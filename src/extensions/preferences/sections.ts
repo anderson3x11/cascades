@@ -7,6 +7,7 @@ const SECTION_TITLES: Record<string, string> = {
   smartLists: 'Listes intelligentes',
   indentKeep: 'Indentation',
   autoPairs: 'Paires automatiques',
+  links: 'Liens',
   files: 'Fichiers',
   session: 'Session',
   workbench: 'Interface',

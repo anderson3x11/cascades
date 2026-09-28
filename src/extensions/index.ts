@@ -11,6 +11,7 @@ import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
 import jsonComments from './json-comments';
 import layout from './layout';
+import links from './links';
 import smartLists from './smart-lists';
 import palette from './palette';
 import preferences from './preferences';
@@ -32,6 +33,7 @@ export const builtinExtensions: CascadesExtension[] = [
   editorSettings,
   indentKeep,
   autoPairs,
+  links,
   jsonComments,
   smartLists,
   cascades,
