@@ -148,7 +148,7 @@ export default defineExtension({
       group: '2_appearance',
       order: 1,
     });
-    ctx.keybindings.register({ key: 'Ctrl+K Ctrl+T', command: 'view.selectTheme' });
+    ctx.keybindings.register({ key: 'Leader T', command: 'view.selectTheme' });
 
     await scan();
   },

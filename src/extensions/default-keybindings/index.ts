@@ -37,6 +37,36 @@ export const DEFAULT_KEYBINDINGS: KeybindingSpec[] = [
 export default defineExtension({
   id: 'cascades.default-keybindings',
   activate(ctx) {
+    ctx.settings.register('keyboard', {
+      leader: {
+        type: 'string',
+        default: 'Ctrl+Space',
+        description:
+          'Touche leader : les raccourcis "Leader X" se font avec cette touche puis X (comme dans Vim).',
+      },
+    });
+
+    let warning: { dispose(): void } | null = null;
+    const applyLeader = () => {
+      warning?.dispose();
+      warning = null;
+      const key = ctx.settings.get<string>('keyboard.leader');
+      try {
+        ctx.keybindings.setLeader(key);
+      } catch (err) {
+        ctx.keybindings.setLeader('Ctrl+Space');
+        warning = ctx.banners.show({
+          kind: 'warning',
+          message: `Touche leader « ${key} » invalide, Ctrl+Space est utilisé. (${err instanceof Error ? err.message : String(err)})`,
+          actions: [{ label: 'OK', run: () => {} }],
+        });
+      }
+    };
+    applyLeader();
+    ctx.settings.onDidChange(({ keys }) => {
+      if (keys.includes('keyboard.leader')) applyLeader();
+    });
+
     ctx.keybindings.register(DEFAULT_KEYBINDINGS);
   },
 });

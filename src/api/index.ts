@@ -19,6 +19,8 @@ export type CommandHandler = (...args: unknown[]) => unknown;
 export interface CommandMeta {
   title?: string;
   category?: string;
+  /** Not listed in the command palette (e.g. commands that need arguments). */
+  hidden?: boolean;
 }
 
 export interface CommandsApi {
@@ -39,7 +41,12 @@ export interface KeybindingSpec {
 }
 
 export interface KeybindingsApi {
+  /** "Leader" in a key ("Leader Z") stands for the leader key, see setLeader. */
   register(bindings: KeybindingSpec | KeybindingSpec[]): Disposable;
+  /** Sets the leader key ("Ctrl+Space"). Throws on an invalid key. */
+  setLeader(key: string): void;
+  /** Shortcut of a command as shown to the user ("Ctrl+Espace T"), or null. */
+  label(command: string): string | null;
 }
 
 // Menus ---------------------------------------------------------------------

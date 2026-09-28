@@ -3,9 +3,9 @@ import { defineExtension, type LayoutPart } from '../../api';
 
 /** Each part can be toggled from the keyboard too, so a hidden menu bar can come back. */
 const PARTS: [LayoutPart, setting: string, title: string, key: string][] = [
-  ['menuBar', 'showMenuBar', 'la barre de menus', 'Ctrl+K M'],
-  ['tabs', 'showTabs', 'les onglets', 'Ctrl+K T'],
-  ['statusBar', 'showStatusBar', 'la barre d’état', 'Ctrl+K B'],
+  ['menuBar', 'showMenuBar', 'la barre de menus', 'Leader M'],
+  ['tabs', 'showTabs', 'les onglets', 'Leader Tab'],
+  ['statusBar', 'showStatusBar', 'la barre d’état', 'Leader B'],
 ];
 
 /** Visible parts of the window, interface font, and zen mode. */
@@ -62,9 +62,10 @@ export default defineExtension({
     ctx.commands.register('view.exitZen', () => setZen(false), {
       title: 'Quitter le mode zen',
       category: 'Affichage',
+      hidden: true,
     });
     ctx.keybindings.register([
-      { key: 'Ctrl+K Z', command: 'view.toggleZen' },
+      { key: 'Leader Z', command: 'view.toggleZen' },
       { key: 'Escape', command: 'view.exitZen', when: 'zenMode' },
     ]);
     ctx.menus.registerItem('view', { command: 'view.toggleZen', group: '4_layout', order: 0 });

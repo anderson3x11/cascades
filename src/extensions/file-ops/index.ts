@@ -117,6 +117,7 @@ export default defineExtension({
     ctx.commands.register('file.openPath', (path) => openPath(ctx, String(path)), {
       title: 'Ouvrir un chemin',
       category: 'Fichier',
+      hidden: true,
     });
 
     /** Resolves to true when the tab ended up saved. */

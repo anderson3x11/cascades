@@ -1,9 +1,9 @@
 import { toDisposable, type Disposable } from '../disposable';
 import { parseWhen, type ContextLookup, type WhenExpr } from '../context/when';
-import { parseKeySequence } from './keys';
+import { LEADER, normalizeChord, parseKeySequence } from './keys';
 
 export interface KeybindingSpec {
-  /** Key sequence, e.g. "Ctrl+Shift+P" or "Ctrl+K Z". */
+  /** Key sequence, e.g. "Ctrl+Shift+P", "Ctrl+K Z", or with the leader key: "Leader Z". */
   key: string;
   command: string;
   args?: unknown[];
@@ -12,6 +12,7 @@ export interface KeybindingSpec {
 }
 
 export interface Keybinding {
+  /** Normalized chords, the leader already replaced by its actual chord. */
   chords: string[];
   command: string;
   args: unknown[];
@@ -19,33 +20,47 @@ export interface Keybinding {
 }
 
 interface Entry {
-  binding: Keybinding;
-  when: WhenExpr | null;
+  /** Chords as written, possibly containing LEADER. */
+  chords: string[];
+  command: string;
+  args: unknown[];
+  when: string | undefined;
+  test: WhenExpr | null;
   order: number;
 }
 
 export type ResolveResult =
   { kind: 'match'; binding: Keybinding } | { kind: 'pending'; chords: string[] } | { kind: 'none' };
 
+/** A key that can follow the chords typed so far. */
+export interface Continuation {
+  chord: string;
+  command: string;
+  /** More keys are needed after this one. */
+  prefix: boolean;
+}
+
+export const DEFAULT_LEADER = 'ctrl+space';
+
 /**
  * Holds keybindings and resolves key presses, including multi-chord sequences.
  * When several bindings match, the one registered last wins, so user bindings
- * registered after the defaults override them.
+ * registered after the defaults override them. "Leader" in a sequence stands
+ * for a configurable chord, like the leader key of Vim.
  */
 export class KeybindingRegistry {
   private entries: Entry[] = [];
   private counter = 0;
   private pending: string[] = [];
+  private leader = DEFAULT_LEADER;
 
   register(spec: KeybindingSpec): Disposable {
     const entry: Entry = {
-      binding: {
-        chords: parseKeySequence(spec.key),
-        command: spec.command,
-        args: spec.args ?? [],
-        when: spec.when,
-      },
-      when: spec.when ? parseWhen(spec.when) : null,
+      chords: parseKeySequence(spec.key),
+      command: spec.command,
+      args: spec.args ?? [],
+      when: spec.when,
+      test: spec.when ? parseWhen(spec.when) : null,
       order: this.counter++,
     };
     this.entries.push(entry);
@@ -54,8 +69,20 @@ export class KeybindingRegistry {
     });
   }
 
+  /** Changes the chord that "Leader" stands for, e.g. "Ctrl+Space". */
+  setLeader(key: string): void {
+    const chord = normalizeChord(key);
+    if (chord === LEADER) throw new Error('The leader cannot be "Leader"');
+    this.leader = chord;
+    this.pending = [];
+  }
+
+  get leaderChord(): string {
+    return this.leader;
+  }
+
   list(): Keybinding[] {
-    return this.entries.map((e) => e.binding);
+    return this.entries.map((e) => this.toBinding(e));
   }
 
   /** Chords typed so far in an unfinished sequence. */
@@ -74,10 +101,10 @@ export class KeybindingRegistry {
     let hasLonger = false;
 
     for (const entry of this.entries) {
-      const chords = entry.binding.chords;
+      const chords = this.actual(entry);
       if (chords.length < sequence.length) continue;
       if (!sequence.every((c, i) => chords[i] === c)) continue;
-      if (entry.when && !entry.when(context)) continue;
+      if (entry.test && !entry.test(context)) continue;
       if (chords.length === sequence.length) {
         if (!exact || entry.order > exact.order) exact = entry;
       } else {
@@ -91,15 +118,51 @@ export class KeybindingRegistry {
       return { kind: 'pending', chords: sequence };
     }
     this.pending = [];
-    if (exact) return { kind: 'match', binding: exact.binding };
+    if (exact) return { kind: 'match', binding: this.toBinding(exact) };
     return { kind: 'none' };
+  }
+
+  /** Keys that can follow the pending chords in this context (for a hint bar). */
+  continuations(context: ContextLookup): Continuation[] {
+    const pending = this.pending;
+    const byChord = new Map<string, Continuation>();
+    // Entries are in registration order, so later bindings overwrite the command.
+    for (const entry of this.entries) {
+      const chords = this.actual(entry);
+      if (chords.length <= pending.length) continue;
+      if (!pending.every((c, i) => chords[i] === c)) continue;
+      if (entry.test && !entry.test(context)) continue;
+      const chord = chords[pending.length] as string;
+      const prefix = chords.length > pending.length + 1;
+      const current = byChord.get(chord);
+      // As in resolve(), a longer sequence wins: the key then only leads further.
+      byChord.set(chord, {
+        chord,
+        command: current?.prefix && !prefix ? current.command : entry.command,
+        prefix: prefix || (current?.prefix ?? false),
+      });
+    }
+    return [...byChord.values()].sort((a, b) => a.chord.localeCompare(b.chord));
   }
 
   /** Bindings for a command, most recent first (to display the active shortcut). */
   forCommand(command: string): Keybinding[] {
     return this.entries
-      .filter((e) => e.binding.command === command)
+      .filter((e) => e.command === command)
       .sort((a, b) => b.order - a.order)
-      .map((e) => e.binding);
+      .map((e) => this.toBinding(e));
+  }
+
+  private actual(entry: Entry): string[] {
+    return entry.chords.map((c) => (c === LEADER ? this.leader : c));
+  }
+
+  private toBinding(entry: Entry): Keybinding {
+    return {
+      chords: this.actual(entry),
+      command: entry.command,
+      args: entry.args,
+      when: entry.when,
+    };
   }
 }

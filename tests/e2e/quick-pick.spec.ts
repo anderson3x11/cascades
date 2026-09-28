@@ -13,8 +13,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('the theme picker filters, previews and saves the choice', async ({ page }) => {
-  await page.keyboard.press('Control+K');
-  await page.keyboard.press('Control+T');
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('T');
   const picker = page.getByRole('dialog');
   await expect(picker.getByRole('option').first()).toHaveText(/Automatique/);
 
@@ -41,8 +41,8 @@ test('Escape cancels and restores the previous theme', async ({ page }) => {
 });
 
 test('clicking an option picks it', async ({ page }) => {
-  await page.keyboard.press('Control+K');
-  await page.keyboard.press('Control+T');
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('T');
   await page.getByRole('option', { name: /Gruvbox/ }).click();
   expect(await cssVar(page, '--bg')).toBe('#282828');
 });

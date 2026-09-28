@@ -7,7 +7,7 @@ import { ContextKeys } from '../core/context/context-keys';
 import { DisposableStore, type Disposable } from '../core/disposable';
 import { EventBus } from '../core/events/emitter';
 import { ExtensionHost } from '../core/extensions/host';
-import { chordFromEvent } from '../core/keybindings/keys';
+import { chordFromEvent, formatKeySequence } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
 import { withSetting } from '../core/settings/edit';
@@ -19,6 +19,7 @@ import { watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
+import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
@@ -41,6 +42,7 @@ export class Workbench {
   readonly themes = new ThemeService();
   readonly quickPick = new QuickPickModel();
   readonly layout = new LayoutModel();
+  readonly keyHint = new KeyHintModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -106,6 +108,7 @@ export class Workbench {
     // Swallow matches, sequence prefixes and the chord that broke a sequence.
     event.preventDefault();
     event.stopPropagation();
+    this.updateKeyHint();
     if (result.kind === 'match') {
       const { command, args } = result.binding;
       this.commands.execute(command, ...args).catch((err: unknown) => console.error(err));
@@ -144,6 +147,24 @@ export class Workbench {
     const next = withSetting(raw, key, value, language);
     this.settings.setUserSettings(next);
     await fs.writeConfigFile(SETTINGS_FILE, `${JSON.stringify(next, null, 2)}\n`);
+  }
+
+  /** Shows what can follow an unfinished key sequence, like which-key in Neovim. */
+  private updateKeyHint(): void {
+    const pending = this.keybindings.pendingChords;
+    if (pending.length === 0) {
+      this.keyHint.clear();
+      return;
+    }
+    const titles = new Map(this.commands.list().map((c) => [c.id, c.title ?? c.id]));
+    this.keyHint.show(
+      formatKeySequence(pending),
+      this.keybindings.continuations(this.contextKeys.get).map((c) => ({
+        key: formatKeySequence([c.chord]),
+        title: c.prefix ? '…' : (titles.get(c.command) ?? c.command),
+        prefix: c.prefix,
+      })),
+    );
   }
 
   private async setZen(on: boolean): Promise<void> {
@@ -219,6 +240,14 @@ export class Workbench {
             store.add(this.keybindings.register(b));
           }
           return track(store);
+        },
+        setLeader: (key) => {
+          this.keybindings.setLeader(key);
+          this.keyHint.clear();
+        },
+        label: (command) => {
+          const binding = this.keybindings.forCommand(command)[0];
+          return binding ? formatKeySequence(binding.chords) : null;
         },
       },
       menus: {

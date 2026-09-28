@@ -6,6 +6,8 @@ export interface CommandMeta {
   /** Human readable name shown in the palette. */
   title?: string;
   category?: string;
+  /** Not listed in the command palette. */
+  hidden?: boolean;
 }
 
 export interface CommandInfo extends CommandMeta {

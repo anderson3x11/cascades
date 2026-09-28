@@ -37,8 +37,12 @@ function normalizeKey(key: string): string {
   return KEY_ALIASES[lower] ?? lower;
 }
 
+/** Placeholder chord for the configurable leader key ("Leader Z"). */
+export const LEADER = 'leader';
+
 /** Normalizes one chord, e.g. "Shift+Ctrl+p" -> "ctrl+shift+p". */
 export function normalizeChord(chord: string): string {
+  if (chord.trim().toLowerCase() === LEADER) return LEADER;
   // Split on '+' but keep a literal trailing '+' key ("Ctrl++").
   const parts = chord.trim().split(/\+(?!$)/);
   const key = parts.pop();

@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('zen mode hides every bar and Escape brings them back', async ({ page }) => {
-  await page.keyboard.press('Control+K');
+  await page.keyboard.press('Control+Space');
   await page.keyboard.press('Z');
   await expect(page.getByRole('menubar')).toBeHidden();
   await expect(page.getByRole('tablist')).toBeHidden();
@@ -30,7 +30,7 @@ test('a hidden menu bar comes back with its shortcut, and the choice is saved', 
   expect(JSON.parse(saved ?? '{}')).toEqual({ 'workbench.showMenuBar': false });
 
   await page.locator('.cm-content').click();
-  await page.keyboard.press('Control+K');
+  await page.keyboard.press('Control+Space');
   await page.keyboard.press('M');
   await expect(page.getByRole('menubar')).toBeVisible();
 });
