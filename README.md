@@ -44,6 +44,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Ajouter l'occurrence suivante                   | Ctrl+D                                    |
 | Cocher / décocher une tâche                     | Ctrl+Entrée                               |
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
+| Préférences                                     | Ctrl+,                                    |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |
 | Choisir le thème                                | Leader T                                  |
 | Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
@@ -70,6 +71,10 @@ Le dossier de config est :
 - Linux : `~/.config/dev.cascades.app/`
 
 **Mode portable** : placez un fichier vide nommé `portable` à côté de l'exécutable. La config est alors lue dans un dossier `config` au même endroit.
+
+### Préférences
+
+Fichier > Préférences… (Ctrl+,) ouvre une fenêtre qui liste tous les réglages, avec une recherche. Chaque réglage se change avec un interrupteur, une liste ou un champ, pour tous les fichiers ou pour un langage seulement, et ↺ le remet par défaut. Les changements sont écrits dans `settings.json`, commentaires conservés.
 
 ### settings.json
 

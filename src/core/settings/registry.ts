@@ -15,6 +15,12 @@ export interface SettingsChange {
   keys: string[];
 }
 
+export interface SettingInspection {
+  defaultValue: unknown;
+  globalValue: unknown;
+  languageValue: unknown;
+}
+
 type Values = Record<string, unknown>;
 
 /** `settings.json` shape: flat keys plus `"[language]": { ... }` override blocks. */
@@ -81,6 +87,25 @@ export class SettingsRegistry {
       }
     }
     return schema.default as T;
+  }
+
+  /**
+   * Where a setting's value comes from: its default, and what settings.json
+   * sets globally and for `language` (undefined when not set).
+   */
+  inspect(key: string, language?: string): SettingInspection {
+    const schema = this.schemas.get(key);
+    if (!schema) throw new Error(`Unknown setting: ${key}`);
+    return {
+      defaultValue: schema.default,
+      globalValue: this.user[key],
+      languageValue: language ? this.languages.get(language)?.[key] : undefined,
+    };
+  }
+
+  /** Languages that have a "[language]" block in settings.json. */
+  overriddenLanguages(): string[] {
+    return [...this.languages.keys()];
   }
 
   /** Copy of the user layer as last set, in settings.json shape. */

@@ -92,6 +92,16 @@ export interface SettingsApi {
   /** Every declared setting with its schema. */
   schemas(): (SettingSchema & { key: string })[];
   /**
+   * Where a value comes from: the default, and what settings.json sets
+   * globally and for `language` (undefined when not set there).
+   */
+  inspect(
+    key: string,
+    language?: string,
+  ): { defaultValue: unknown; globalValue: unknown; languageValue: unknown };
+  /** Languages with a "[language]" block in settings.json. */
+  overriddenLanguages(): string[];
+  /**
    * Writes a user setting to settings.json (or to its "[language]" block).
    * `undefined` removes it, going back to the default.
    */
@@ -332,6 +342,23 @@ export interface PanelsApi {
   isVisible(id: string): boolean;
 }
 
+// Modals ----------------------------------------------------------------------
+
+export interface ModalSpec {
+  title: string;
+  /** Builds the content in `host`; disposed when the modal closes. */
+  render(host: HTMLElement): Disposable;
+}
+
+export interface ModalsApi {
+  /**
+   * Shows a window over the app (one at a time), closed by its × button,
+   * Escape or a click outside. Shortcuts are paused while it is open.
+   * Dispose to close it.
+   */
+  show(modal: ModalSpec): Disposable;
+}
+
 // Quick pick ------------------------------------------------------------------
 
 export interface QuickPickItem<T> {
@@ -508,6 +535,7 @@ export interface ExtensionContext {
   readonly layout: LayoutApi;
   readonly viewers: ViewersApi;
   readonly panels: PanelsApi;
+  readonly modals: ModalsApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

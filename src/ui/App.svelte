@@ -4,6 +4,7 @@
   import EditorArea from './EditorArea.svelte';
   import KeyHint from './KeyHint.svelte';
   import MenuBar from './MenuBar.svelte';
+  import Modal from './Modal.svelte';
   import QuickPick from './QuickPick.svelte';
   import StatusBar from './StatusBar.svelte';
 
@@ -19,6 +20,11 @@
   {#if layout.shows('statusBar')}<StatusBar {workbench} />{/if}
 </div>
 <QuickPick {workbench} />
+{#if workbench.modals.current}
+  {#key workbench.modals.current}
+    <Modal {workbench} modal={workbench.modals.current} />
+  {/key}
+{/if}
 
 <style>
   .shell {

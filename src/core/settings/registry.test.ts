@@ -68,6 +68,18 @@ describe('SettingsRegistry', () => {
     expect(reg.get('editor.wordWrap', 'markdown')).toBe(true);
   });
 
+  it('tells where a value comes from', () => {
+    const reg = makeRegistry();
+    reg.setUserSettings({ 'editor.tabSize': 2, '[markdown]': { 'editor.tabSize': 3 } });
+    expect(reg.inspect('editor.tabSize', 'markdown')).toEqual({
+      defaultValue: 4,
+      globalValue: 2,
+      languageValue: 3,
+    });
+    expect(reg.inspect('editor.wordWrap').globalValue).toBeUndefined();
+    expect(reg.overriddenLanguages()).toEqual(['markdown']);
+  });
+
   it('removes a schema on dispose', () => {
     const reg = new SettingsRegistry();
     const d = reg.registerSchema('x', { a: { type: 'number', default: 1 } });

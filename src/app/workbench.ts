@@ -25,6 +25,7 @@ import { StatusBarModel } from './status-bar.svelte';
 import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
+import { ModalModel } from './modals.svelte';
 import { PanelModel } from './panels.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
@@ -53,6 +54,7 @@ export class Workbench {
   readonly keyHint = new KeyHintModel();
   readonly viewers = new ViewerService();
   readonly panels = new PanelModel();
+  readonly modals = new ModalModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -113,6 +115,8 @@ export class Workbench {
 
   private onKeyDown = (event: KeyboardEvent): void => {
     if (event.isComposing) return;
+    // A modal handles its own keys.
+    if (this.modals.current) return;
     const chord = chordFromEvent(event);
     if (!chord) return;
     const hadPending = this.keybindings.pendingChords.length > 0;
@@ -324,6 +328,8 @@ export class Workbench {
         onDidChange: (listener) => track(this.settings.onDidChange.on(listener)),
         update: (key, value, language) => this.updateSetting(key, value, language),
         schemas: () => this.settings.allSchemas().map(([key, schema]) => ({ key, ...schema })),
+        inspect: (key, language) => this.settings.inspect(key, language),
+        overriddenLanguages: () => this.settings.overriddenLanguages(),
       },
       context: {
         get: (key) => this.contextKeys.get(key),
@@ -417,6 +423,7 @@ export class Workbench {
         previewMode: (tabId) => this.viewers.previewMode(tabId),
         setPreviewMode: (tabId, mode) => this.viewers.setPreviewMode(tabId, mode),
       },
+      modals: { show: (modal) => track(this.modals.show(modal)) },
       panels: {
         register: (panel) => track(this.panels.register(panel)),
         show: (id) => this.panels.show(id),

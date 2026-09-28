@@ -1,6 +1,8 @@
-import { defineExtension, type ExtensionContext } from '../../api';
+import { mount, unmount } from 'svelte';
+import { defineExtension, type Disposable, type ExtensionContext } from '../../api';
 import type { ConfigFileName } from './assist';
 import { configFileAssist } from './editor-assist';
+import PreferencesView, { type PreferencesPage } from './PreferencesView.svelte';
 
 /** Path form for comparisons: Windows paths ignore case and separator style. */
 const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
@@ -42,6 +44,37 @@ async function openConfigFile(ctx: ExtensionContext, name: string, template: str
 export default defineExtension({
   id: 'cascades.preferences',
   activate(ctx) {
+    let modal: Disposable | null = null;
+    const open = (page: PreferencesPage) => {
+      modal = ctx.modals.show({
+        title: 'Préférences',
+        render(host) {
+          const view = mount(PreferencesView, {
+            target: host,
+            props: {
+              ctx,
+              page,
+              runAndClose: (command: string) => {
+                modal?.dispose();
+                void ctx.commands.execute(command);
+              },
+            },
+          });
+          return { dispose: () => void unmount(view) };
+        },
+      });
+    };
+    ctx.commands.register('preferences.open', () => open('settings'), {
+      title: 'Préférences…',
+      category: 'Préférences',
+    });
+    ctx.keybindings.register({ key: 'Ctrl+,', command: 'preferences.open' });
+    ctx.menus.registerItem('file', {
+      command: 'preferences.open',
+      group: '8_preferences',
+      order: 0,
+    });
+
     ctx.commands.register(
       'preferences.openSettingsFile',
       () => openConfigFile(ctx, 'settings.json', SETTINGS_TEMPLATE),
