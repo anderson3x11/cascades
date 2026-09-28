@@ -7,6 +7,7 @@ import editorSettings from './editor-settings';
 import fileOps from './file-ops';
 import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
+import layout from './layout';
 import smartLists from './smart-lists';
 import session from './session';
 import statusBar from './status-bar';
@@ -16,6 +17,7 @@ import themes from './themes';
 /** Built-in extensions, in activation order. */
 export const builtinExtensions: CascadesExtension[] = [
   themes,
+  layout,
   editorSettings,
   indentKeep,
   smartLists,

@@ -8,14 +8,15 @@
   import TabBar from './TabBar.svelte';
 
   let { workbench }: { workbench: Workbench } = $props();
+  const layout = $derived(workbench.layout);
 </script>
 
 <div class="shell">
-  <MenuBar {workbench} />
-  <TabBar {workbench} />
+  {#if layout.shows('menuBar')}<MenuBar {workbench} />{/if}
+  {#if layout.shows('tabs')}<TabBar {workbench} />{/if}
   <Banners {workbench} />
-  <EditorHost {workbench} />
-  <StatusBar {workbench} />
+  <EditorHost {workbench} zen={layout.zen} />
+  {#if layout.shows('statusBar')}<StatusBar {workbench} />{/if}
 </div>
 <QuickPick {workbench} />
 

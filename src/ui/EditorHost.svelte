@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench }: { workbench: Workbench } = $props();
+  let { workbench, zen = false }: { workbench: Workbench; zen?: boolean } = $props();
   let host: HTMLElement;
 
   onMount(() => {
@@ -11,7 +11,7 @@
   });
 </script>
 
-<main bind:this={host}></main>
+<main bind:this={host} class:zen></main>
 
 <style>
   main {
@@ -23,5 +23,17 @@
   }
   main :global(.cm-editor.cm-focused) {
     outline: none;
+  }
+
+  /* Zen: text in a centered column, no gutters. */
+  main.zen :global(.cm-gutters) {
+    display: none;
+  }
+  main.zen :global(.cm-content) {
+    box-sizing: border-box;
+    max-width: var(--zen-width, 80ch);
+    margin: 0 auto;
+    padding-top: 10vh;
+    padding-bottom: 30vh;
   }
 </style>

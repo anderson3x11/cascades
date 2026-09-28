@@ -21,6 +21,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Onglets : l'onglet glissé se détache et les autres se décalent en douceur.
 - Glisser-déposer de fichiers dans la fenêtre pour les ouvrir.
 - API : `ctx.banners`, `ctx.configFiles`, `ctx.app.onWillQuit`, `ctx.fs.watch`.
+- Moteur de thèmes : 7 thèmes fournis (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox), thèmes utilisateur en JSON rechargés à chaud, sélecteur avec aperçu en direct (Ctrl+K Ctrl+T).
+- Sélecteur rapide avec recherche floue (base de la future palette de commandes).
+- Réglages de police de l'éditeur et de l'interface, zoom (Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette) mémorisé.
+- Barre de menus, onglets et barre d'état masquables ; mode zen plein écran (Ctrl+K Z).
+- Retrait suspendu : une ligne indentée qui passe à la ligne reste alignée sous son texte.
+- `settings.json` rechargé à chaud, et réglages modifiables depuis l'interface.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.
 - Entrée conserve l'indentation exacte de la ligne (tabulations comprises).
 - Lecture et écriture avec détection d'encodage (UTF-8, UTF-8 BOM, UTF-16, Latin-1 et autres), de fins de ligne et de fichiers binaires.
@@ -30,5 +36,6 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ### Corrigé
 
+- Les raccourcis avec un chiffre (Ctrl+0...) ne marchaient pas sur un clavier AZERTY.
 - La réorganisation des onglets par glisser ne fonctionnait pas dans l'application (le glisser-déposer natif est réservé aux fichiers sous Windows).
 - Le pointeur de la souris restait invisible dans les dialogues ouverts après avoir tapé du texte (option Windows « Masquer le pointeur pendant la frappe »).

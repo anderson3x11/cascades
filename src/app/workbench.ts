@@ -19,6 +19,7 @@ import { watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
+import { LayoutModel } from './layout.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
 import { Workspace } from './workspace.svelte';
@@ -39,6 +40,7 @@ export class Workbench {
   readonly banners = new BannerModel();
   readonly themes = new ThemeService();
   readonly quickPick = new QuickPickModel();
+  readonly layout = new LayoutModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -142,6 +144,14 @@ export class Workbench {
     const next = withSetting(raw, key, value, language);
     this.settings.setUserSettings(next);
     await fs.writeConfigFile(SETTINGS_FILE, `${JSON.stringify(next, null, 2)}\n`);
+  }
+
+  private async setZen(on: boolean): Promise<void> {
+    if (this.layout.zen === on) return;
+    this.layout.zen = on;
+    this.contextKeys.set('zenMode', on);
+    if (isTauri()) await getCurrentWindow().setFullscreen(on);
+    this.workspace.editorView()?.focus();
   }
 
   /** Watches a file of the config folder (desktop app only). */
@@ -251,6 +261,18 @@ export class Workbench {
       statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
       banners: { show: (options) => track(this.banners.show(options)) },
       quickPick: { show: (items, options) => this.quickPick.show(items, options) },
+      layout: {
+        setVisible: (part, visible) => {
+          this.layout[part] = visible;
+        },
+        isVisible: (part) => this.layout[part],
+        setZen: (on) => this.setZen(on),
+        isZen: () => this.layout.zen,
+        setStyle: (name, value) => {
+          if (value === null) document.documentElement.style.removeProperty(`--${name}`);
+          else document.documentElement.style.setProperty(`--${name}`, value);
+        },
+      },
       themes: {
         register: (theme) => track(this.themes.register(theme)),
         list: () => this.themes.list(),

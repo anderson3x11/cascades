@@ -12,7 +12,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: var(--font-ui-size, 13px);
 }
 
 #app {

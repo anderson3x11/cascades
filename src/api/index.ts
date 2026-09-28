@@ -203,6 +203,20 @@ export interface StatusBarApi {
   addItem(options: StatusItemOptions): StatusItem;
 }
 
+// Layout --------------------------------------------------------------------
+
+export type LayoutPart = 'menuBar' | 'tabs' | 'statusBar';
+
+export interface LayoutApi {
+  setVisible(part: LayoutPart, visible: boolean): void;
+  isVisible(part: LayoutPart): boolean;
+  /** Zen mode: full screen, every bar hidden, text centered. */
+  setZen(on: boolean): Promise<void>;
+  isZen(): boolean;
+  /** Sets a CSS variable of the window ("font-ui" for --font-ui); null resets it. */
+  setStyle(name: string, value: string | null): void;
+}
+
 // Quick pick ------------------------------------------------------------------
 
 export interface QuickPickItem<T> {
@@ -355,6 +369,7 @@ export interface ExtensionContext {
   readonly statusBar: StatusBarApi;
   readonly banners: BannersApi;
   readonly quickPick: QuickPickApi;
+  readonly layout: LayoutApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

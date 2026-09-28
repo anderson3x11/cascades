@@ -2,7 +2,7 @@
 
 Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'ouvrir n'importe quel fichier texte ou code. La simplicité de Notepad++, la personnalisation de Vim.
 
-> Projet en cours de développement (jalon 0.1a). Voir [BRIEF.md](BRIEF.md) pour la vision complète.
+> Projet en cours de développement (jalon 0.2). Voir [BRIEF.md](BRIEF.md) pour la vision complète.
 
 ## Fonctionnalités actuelles
 
@@ -18,24 +18,32 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Entrée conserve l'indentation exacte de la ligne (les tabulations restent des tabulations).
 - **Listes intelligentes** (`-`, `*`, `+`, `1.`, `a)`, `- [ ]`) : Entrée continue la liste, Tab et Shift+Tab changent le niveau, les numéros se mettent à jour tout seuls, Ctrl+Entrée coche une tâche.
 - Barre d'état : position, mots, caractères, langage, encodage, fin de ligne.
+- **Thèmes** : Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox, et les vôtres. Par défaut, l'application suit le mode clair ou sombre de Windows.
+- Polices réglables (éditeur et interface), zoom au clavier ou avec Ctrl+molette.
+- Barre de menus, onglets et barre d'état masquables, **mode zen** plein écran.
+- Fusion des modifications externes, avec résolution des conflits dans le texte.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json` et script `init.js`.
 
 ## Raccourcis par défaut
 
-| Action                                     | Raccourci                 |
-| ------------------------------------------ | ------------------------- |
-| Nouveau / Ouvrir / Enregistrer             | Ctrl+N / Ctrl+O / Ctrl+S  |
-| Enregistrer sous                           | Ctrl+Shift+S              |
-| Fermer l'onglet / Rouvrir le dernier fermé | Ctrl+W / Ctrl+Shift+T     |
-| Onglet suivant / précédent                 | Ctrl+Tab / Ctrl+Shift+Tab |
-| Rechercher / Remplacer                     | Ctrl+F / Ctrl+H           |
-| Dupliquer la ligne                         | Shift+Alt+Bas             |
-| Déplacer la ligne                          | Alt+Haut / Alt+Bas        |
-| Supprimer la ligne                         | Ctrl+Shift+K              |
-| Commenter                                  | Ctrl+/                    |
-| Ajouter l'occurrence suivante              | Ctrl+D                    |
-| Cocher / décocher une tâche                | Ctrl+Entrée               |
+| Action                                          | Raccourci                              |
+| ----------------------------------------------- | -------------------------------------- |
+| Nouveau / Ouvrir / Enregistrer                  | Ctrl+N / Ctrl+O / Ctrl+S               |
+| Enregistrer sous                                | Ctrl+Shift+S                           |
+| Fermer l'onglet / Rouvrir le dernier fermé      | Ctrl+W / Ctrl+Shift+T                  |
+| Onglet suivant / précédent                      | Ctrl+Tab / Ctrl+Shift+Tab              |
+| Rechercher / Remplacer                          | Ctrl+F / Ctrl+H                        |
+| Dupliquer la ligne                              | Shift+Alt+Bas                          |
+| Déplacer la ligne                               | Alt+Haut / Alt+Bas                     |
+| Supprimer la ligne                              | Ctrl+Shift+K                           |
+| Commenter                                       | Ctrl+/                                 |
+| Ajouter l'occurrence suivante                   | Ctrl+D                                 |
+| Cocher / décocher une tâche                     | Ctrl+Entrée                            |
+| Choisir le thème                                | Ctrl+K Ctrl+T                          |
+| Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette |
+| Mode zen (Échap pour sortir)                    | Ctrl+K Z                               |
+| Afficher / masquer menus, onglets, barre d'état | Ctrl+K M / Ctrl+K T / Ctrl+K B         |
 
 ## Configuration
 
@@ -57,31 +65,55 @@ Le dossier de config est :
 }
 ```
 
-| Clé                          | Défaut                      | Description                                                   |
-| ---------------------------- | --------------------------- | ------------------------------------------------------------- |
-| `editor.tabSize`             | `4`                         | Largeur d'une tabulation                                      |
-| `editor.insertSpaces`        | `false`                     | Indenter avec des espaces                                     |
-| `editor.wordWrap`            | `false`                     | Retour à la ligne automatique                                 |
-| `editor.lineNumbers`         | `true`                      | Numéros de ligne                                              |
-| `editor.folding`             | `true`                      | Marge de repli                                                |
-| `editor.highlightActiveLine` | `true`                      | Surligner la ligne du curseur                                 |
-| `editor.fontSize`            | `14`                        | Taille de police de l'éditeur (px)                            |
-| `files.defaultExtension`     | `"txt"`                     | Extension proposée pour un nouveau fichier                    |
-| `files.autoSave`             | `"off"`                     | `afterDelay` enregistre les fichiers modifiés automatiquement |
-| `files.autoSaveDelay`        | `1000`                      | Délai avant l'enregistrement automatique (ms)                 |
-| `session.restore`            | `true`                      | Rouvrir les onglets, y compris non enregistrés, au démarrage  |
-| `cascades.enabled`           | `true`                      | Dessiner les connecteurs de cascade                           |
-| `cascades.languages`         | `["plaintext", "markdown"]` | Langages où les cascades sont actives                         |
-| `cascades.style`             | `"arrow"`                   | `arrow`, `line`, `dotted` ou `rounded`                        |
-| `cascades.colorByDepth`      | `true`                      | Une couleur par niveau de profondeur                          |
-| `cascades.highlight`         | `true`                      | Mettre en valeur la branche de la ligne active                |
-| `smartLists.languages`       | `["plaintext", "markdown"]` | Langages où les listes intelligentes sont actives             |
-| `smartLists.continue`        | `true`                      | Entrée continue la liste, ou en sort sur une puce vide        |
-| `smartLists.tabIndents`      | `true`                      | Tab et Shift+Tab changent le niveau d'une ligne de liste      |
-| `smartLists.renumber`        | `true`                      | Renuméroter les listes numérotées                             |
-| `indentKeep.enabled`         | `true`                      | Entrée garde l'indentation exacte de la ligne                 |
+| Clé                                                    | Défaut                                   | Description                                                   |
+| ------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------- |
+| `editor.tabSize`                                       | `4`                                      | Largeur d'une tabulation                                      |
+| `editor.insertSpaces`                                  | `false`                                  | Indenter avec des espaces                                     |
+| `editor.wordWrap`                                      | `false`                                  | Retour à la ligne automatique                                 |
+| `editor.lineNumbers`                                   | `true`                                   | Numéros de ligne                                              |
+| `editor.folding`                                       | `true`                                   | Marge de repli                                                |
+| `editor.highlightActiveLine`                           | `true`                                   | Surligner la ligne du curseur                                 |
+| `editor.fontSize`                                      | `14`                                     | Taille de police de l'éditeur (px)                            |
+| `editor.fontFamily`                                    | `"'Cascadia Code', Consolas, monospace"` | Police de l'éditeur                                           |
+| `editor.lineHeight`                                    | `1.6`                                    | Hauteur de ligne                                              |
+| `editor.fontLigatures`                                 | `false`                                  | Ligatures de la police                                        |
+| `workbench.theme`                                      | `"auto"`                                 | Thème, ou `auto` pour suivre le système                       |
+| `workbench.themeLight` / `workbench.themeDark`         | `"light"` / `"dark"`                     | Thèmes utilisés en mode `auto`                                |
+| `workbench.fontFamily` / `workbench.fontSize`          | police système / `13`                    | Police de l'interface                                         |
+| `workbench.showMenuBar` / `showTabs` / `showStatusBar` | `true`                                   | Afficher chaque barre                                         |
+| `zen.width`                                            | `80`                                     | Largeur du texte en mode zen (caractères)                     |
+| `files.defaultExtension`                               | `"txt"`                                  | Extension proposée pour un nouveau fichier                    |
+| `files.autoSave`                                       | `"off"`                                  | `afterDelay` enregistre les fichiers modifiés automatiquement |
+| `files.autoSaveDelay`                                  | `1000`                                   | Délai avant l'enregistrement automatique (ms)                 |
+| `session.restore`                                      | `true`                                   | Rouvrir les onglets, y compris non enregistrés, au démarrage  |
+| `cascades.enabled`                                     | `true`                                   | Dessiner les connecteurs de cascade                           |
+| `cascades.languages`                                   | `["plaintext", "markdown"]`              | Langages où les cascades sont actives                         |
+| `cascades.style`                                       | `"arrow"`                                | `arrow`, `line`, `dotted` ou `rounded`                        |
+| `cascades.colorByDepth`                                | `true`                                   | Une couleur par niveau de profondeur                          |
+| `cascades.highlight`                                   | `true`                                   | Mettre en valeur la branche de la ligne active                |
+| `smartLists.languages`                                 | `["plaintext", "markdown"]`              | Langages où les listes intelligentes sont actives             |
+| `smartLists.continue`                                  | `true`                                   | Entrée continue la liste, ou en sort sur une puce vide        |
+| `smartLists.tabIndents`                                | `true`                                   | Tab et Shift+Tab changent le niveau d'une ligne de liste      |
+| `smartLists.renumber`                                  | `true`                                   | Renuméroter les listes numérotées                             |
+| `indentKeep.enabled`                                   | `true`                                   | Entrée garde l'indentation exacte de la ligne                 |
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
+
+`settings.json` est rechargé dès qu'on l'enregistre.
+
+### Thèmes
+
+Un thème est un fichier JSON placé dans le sous-dossier `themes` du dossier de config. Il redéfinit les couleurs qu'il veut, les autres viennent de la palette de base de son type :
+
+```json
+{
+  "name": "Sépia",
+  "type": "light",
+  "colors": { "bg": "#f4ecd8", "fg": "#433422", "accent": "#a0522d", "syn-keyword": "#8b4513" }
+}
+```
+
+Le fichier `themes/sepia.json` donne le thème `user.sepia`, à choisir avec Ctrl+K Ctrl+T. Il est rechargé à chaque enregistrement. La liste des couleurs disponibles est dans [src/themes/default.css](src/themes/default.css).
 
 ### init.js
 
