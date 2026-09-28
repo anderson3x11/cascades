@@ -15,6 +15,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Listes intelligentes : continuation et sortie de liste avec Entrée, changement de niveau avec Tab et Shift+Tab, renumérotation automatique (annulable en un seul Ctrl+Z), Ctrl+Entrée pour cocher une tâche. Chaque comportement est désactivable.
 - Restauration de session : onglets, curseur, scroll et texte non enregistré sont restaurés au démarrage. Fermer la fenêtre ne demande plus de confirmation.
 - Sauvegarde automatique optionnelle (`files.autoSave`).
+- Détection des modifications externes : rechargement automatique d'un onglet sans modification en cours, bandeau « Recharger / Garder ma version » sinon, et avertissement si le fichier est supprimé.
+- Glisser-déposer de fichiers dans la fenêtre pour les ouvrir.
+- API : `ctx.banners`, `ctx.configFiles`, `ctx.app.onWillQuit`, `ctx.fs.watch`.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.
 - Entrée conserve l'indentation exacte de la ligne (tabulations comprises).
 - Lecture et écriture avec détection d'encodage (UTF-8, UTF-8 BOM, UTF-16, Latin-1 et autres), de fins de ligne et de fichiers binaires.
@@ -24,4 +27,5 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ### Corrigé
 
+- La réorganisation des onglets par glisser ne fonctionnait pas dans l'application (le glisser-déposer natif est réservé aux fichiers sous Windows).
 - Le pointeur de la souris restait invisible dans les dialogues ouverts après avoir tapé du texte (option Windows « Masquer le pointeur pendant la frappe »).

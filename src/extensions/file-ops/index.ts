@@ -90,6 +90,10 @@ export default defineExtension({
         }, delay),
       );
     });
+    ctx.events.on('app.didDropFiles', async (paths) => {
+      for (const path of paths) await openPath(ctx, path).catch(report);
+    });
+
     ctx.events.on('workspace.didClose', (tab) => {
       clearTimeout(autoSaveTimers.get(tab.id));
       autoSaveTimers.delete(tab.id);

@@ -1,4 +1,5 @@
 import { isTauri } from '@tauri-apps/api/core';
+import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import type { AppEvents, CascadesExtension, ExtensionContext } from '../api';
 import { CommandRegistry } from '../core/commands/registry';
@@ -58,7 +59,13 @@ export class Workbench {
     }
 
     this.runWillQuitOnClose();
-    if (isTauri()) await this.loadUserScript();
+    if (isTauri()) {
+      void getCurrentWebview().onDragDropEvent((event) => {
+        if (event.payload.type === 'drop')
+          this.events.emit('app.didDropFiles', event.payload.paths);
+      });
+      await this.loadUserScript();
+    }
   }
 
   /** Mounts the editor view and tracks its focus for `when` clauses. */

@@ -10,6 +10,8 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Ouvrir, enregistrer, enregistrer sous, rouvrir le dernier onglet fermé.
 - **Session restaurée** au redémarrage, comme Notepad++ : onglets, curseur, scroll, et le texte des onglets non enregistrés. Rien n'est perdu en fermant la fenêtre.
 - Sauvegarde automatique optionnelle.
+- Fichier modifié par un autre programme : rechargé tout seul s'il n'a pas de modifications en cours, sinon un bandeau propose de recharger ou de garder sa version.
+- Glisser-déposer des fichiers dans la fenêtre pour les ouvrir.
 - Détection d'encodage (UTF-8, UTF-8 BOM, UTF-16, Latin-1...) et de fins de ligne (LF, CRLF), conservés à l'enregistrement.
 - Coloration syntaxique selon l'extension du fichier.
 - **Cascades** : des connecteurs relient chaque ligne indentée à sa ligne parente, sans rien ajouter au fichier. Chaque ligne parente est repliable.

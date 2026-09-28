@@ -277,6 +277,8 @@ export interface AppEvents {
   /** Path, encoding, line ending, language or dirty flag changed. */
   'workspace.didChangeTab': TabInfo;
   'editor.didUpdate': { tab: TabInfo; docChanged: boolean; selectionChanged: boolean };
+  /** Files dropped onto the window, as absolute paths. */
+  'app.didDropFiles': string[];
 }
 
 export interface EventsApi {
