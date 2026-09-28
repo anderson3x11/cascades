@@ -2,7 +2,18 @@
 
 use crate::config;
 use crate::fs::{self, Decoded, TextInfo};
-use tauri::AppHandle;
+use crate::watcher::FileWatcher;
+use tauri::{AppHandle, State};
+
+#[tauri::command]
+pub fn watch_file(watcher: State<'_, FileWatcher>, path: String) -> Result<(), String> {
+    watcher.watch(&path)
+}
+
+#[tauri::command]
+pub fn unwatch_file(watcher: State<'_, FileWatcher>, path: String) {
+    watcher.unwatch(&path);
+}
 
 #[tauri::command]
 pub async fn read_text_file(path: String) -> Result<Decoded, String> {

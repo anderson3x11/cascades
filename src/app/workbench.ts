@@ -12,6 +12,8 @@ import { MenuRegistry } from '../core/menus/registry';
 import { SettingsRegistry } from '../core/settings/registry';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
+import { watchFile } from '../platform/watch';
+import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
 import { Workspace } from './workspace.svelte';
@@ -28,6 +30,7 @@ export class Workbench {
   readonly events = new EventBus<AppEvents>();
   readonly workspace = new Workspace(this.events);
   readonly statusBar = new StatusBarModel();
+  readonly banners = new BannerModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -179,6 +182,9 @@ export class Workbench {
         update: (id, patch) => ws.update(id, patch),
         markSaved: (id) => ws.markSaved(id),
         viewState: (id) => ws.viewState(id),
+        savedText: (id) => ws.savedText(id),
+        setSavedText: (id, text) => ws.setSavedText(id, text),
+        reload: (id, text) => ws.reload(id, text),
       },
       editor: {
         addExtension: (provider) => track(ws.addExtension(provider)),
@@ -189,8 +195,13 @@ export class Workbench {
         },
       },
       statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
+      banners: { show: (options) => track(this.banners.show(options)) },
       events: { on: (name, listener) => track(this.events.on(name, listener)) },
-      fs: { readTextFile: fs.readTextFile, writeTextFile: fs.writeTextFile },
+      fs: {
+        readTextFile: fs.readTextFile,
+        writeTextFile: fs.writeTextFile,
+        watch: (path, listener) => track(watchFile(path, listener)),
+      },
       dialogs: {
         pickFilesToOpen: dialogs.pickFilesToOpen,
         pickSavePath: dialogs.pickSavePath,

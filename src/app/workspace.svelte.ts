@@ -174,6 +174,38 @@ export class Workspace {
     this.events.emit('workspace.didSave', tab);
   }
 
+  savedText(id: string): string {
+    return this.get(id).savedDoc.toString();
+  }
+
+  setSavedText(id: string, text: string): void {
+    const tab = this.get(id);
+    tab.savedDoc = Text.of(text.split('\n'));
+    tab.dirty = !this.stateOf(tab).doc.eq(tab.savedDoc);
+    this.events.emit('workspace.didChangeTab', tab);
+  }
+
+  reload(id: string, text: string): void {
+    const tab = this.get(id);
+    const old = this.stateOf(tab).doc.toString();
+    // Replace only the part that differs, so the cursor stays put when possible.
+    let start = 0;
+    while (start < old.length && start < text.length && old[start] === text[start]) start++;
+    let endOld = old.length;
+    let endNew = text.length;
+    while (endOld > start && endNew > start && old[endOld - 1] === text[endNew - 1]) {
+      endOld--;
+      endNew--;
+    }
+    const spec = {
+      changes: { from: start, to: endOld, insert: text.slice(start, endNew) },
+      userEvent: 'reload',
+    };
+    if (tab.id === this.activeId && this.view) this.view.dispatch(spec);
+    else tab.state = tab.state.update(spec).state;
+    this.setSavedText(id, text);
+  }
+
   viewState(id: string): ViewState {
     const tab = this.get(id);
     const view = tab.id === this.activeId ? this.view : null;

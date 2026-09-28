@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Workbench } from '../app/workbench';
+  import Banners from './Banners.svelte';
   import EditorHost from './EditorHost.svelte';
   import MenuBar from './MenuBar.svelte';
   import StatusBar from './StatusBar.svelte';
@@ -11,6 +12,7 @@
 <div class="shell">
   <MenuBar {workbench} />
   <TabBar {workbench} />
+  <Banners {workbench} />
   <EditorHost {workbench} />
   <StatusBar {workbench} />
 </div>

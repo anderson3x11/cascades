@@ -19,6 +19,8 @@
   --menu-shadow: 0 8px 24px rgb(140 149 159 / 0.3);
   --menu-active-bg: #0969da;
   --menu-active-fg: #ffffff;
+  --banner-bg: #ddf4ff;
+  --banner-warning-bg: #fff8c5;
 
   /* Editor */
   --active-line: rgb(0 0 0 / 0.035);
@@ -77,6 +79,8 @@
     --menu-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
     --menu-active-bg: #2f5fb3;
     --menu-active-fg: #ffffff;
+    --banner-bg: #1c2b3d;
+    --banner-warning-bg: #3a3220;
 
     --active-line: rgb(255 255 255 / 0.04);
     --selection: rgb(96 165 250 / 0.3);

@@ -4,6 +4,7 @@ import defaultKeybindings from './default-keybindings';
 import editorCommands from './editor-commands';
 import editorSettings from './editor-settings';
 import fileOps from './file-ops';
+import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
 import smartLists from './smart-lists';
 import session from './session';
@@ -18,6 +19,7 @@ export const builtinExtensions: CascadesExtension[] = [
   cascades,
   editorCommands,
   fileOps,
+  fileWatcher,
   // Before tabs, which opens an untitled tab only when nothing was restored.
   session,
   tabs,

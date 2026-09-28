@@ -152,6 +152,12 @@ export interface WorkspaceApi {
   markSaved(id: string): void;
   /** Cursor and scroll position of a tab, to restore it later with `open`. */
   viewState(id: string): ViewState;
+  /** Text as last saved (or loaded), which `dirty` compares against. */
+  savedText(id: string): string;
+  /** Changes the saved reference without touching the document (updates `dirty`). */
+  setSavedText(id: string, text: string): void;
+  /** Replaces the document with `text` (undoable) and marks it saved, e.g. after an external change. */
+  reload(id: string, text: string): void;
 }
 
 // Editor --------------------------------------------------------------------
@@ -192,6 +198,22 @@ export interface StatusBarApi {
   addItem(options: StatusItemOptions): StatusItem;
 }
 
+// Banners -------------------------------------------------------------------
+
+export interface BannerOptions {
+  message: string;
+  kind?: 'info' | 'warning';
+  /** Show the banner only while this tab is active. */
+  tabId?: string;
+  /** Buttons; clicking one runs it and closes the banner. */
+  actions?: { label: string; run: () => void }[];
+}
+
+export interface BannersApi {
+  /** Shows a non-blocking message above the editor. Dispose to remove it. */
+  show(options: BannerOptions): Disposable;
+}
+
 // Files and dialogs ----------------------------------------------------------
 
 export interface TextFile {
@@ -209,6 +231,11 @@ export interface FsApi {
     text: string,
     info: { encoding: string; bom: boolean; lineEnding: LineEnding },
   ): Promise<void>;
+  /**
+   * Calls `listener` when the file is created, modified or removed by any
+   * program, this one included: read the file to find out what changed.
+   */
+  watch(path: string, listener: () => void): Disposable;
 }
 
 export interface DialogsApi {
@@ -270,6 +297,7 @@ export interface ExtensionContext {
   readonly workspace: WorkspaceApi;
   readonly editor: EditorApi;
   readonly statusBar: StatusBarApi;
+  readonly banners: BannersApi;
   readonly events: EventsApi;
   readonly fs: FsApi;
   readonly dialogs: DialogsApi;

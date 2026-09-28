@@ -2,6 +2,9 @@ mod commands;
 mod config;
 mod cursor;
 mod fs;
+mod watcher;
+
+use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -15,6 +18,8 @@ pub fn run() {
             commands::write_config_file,
             commands::cursor_unhide,
             commands::cursor_restore,
+            commands::watch_file,
+            commands::unwatch_file,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {
@@ -24,6 +29,7 @@ pub fn run() {
                         .build(),
                 )?;
             }
+            app.manage(watcher::FileWatcher::new(app.handle().clone())?);
             Ok(())
         })
         .run(tauri::generate_context!())
