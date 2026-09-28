@@ -11,7 +11,7 @@ async function openProject(page: Page) {
     w.__cascadesFs.addFile(`${root}/notes 2.txt`, 'deux');
     w.__cascadesFs.addFile(`${root}/archives/2025.md`, '# Archives');
     w.__cascadesFs.addDir(`${root}/.git`);
-    return w.__cascades.commands.execute('explorer.openFolder', root);
+    return w.__cascades.commands.execute('explorer.addFolder', root);
   }, ROOT);
 }
 
@@ -27,7 +27,12 @@ test.beforeEach(async ({ page }) => {
 
 test('the folder shows on the left, folders first, hidden names left out', async ({ page }) => {
   await expect(page.getByRole('complementary', { name: 'Fichiers' })).toBeVisible();
-  await expect(tree(page).locator('.name')).toHaveText(['archives', 'notes 2.txt', 'notes 10.txt']);
+  await expect(tree(page).locator('.name')).toHaveText([
+    'projet',
+    'archives',
+    'notes 2.txt',
+    'notes 10.txt',
+  ]);
 
   await item(page, 'archives').click();
   await expect(item(page, '2025.md')).toBeVisible();
@@ -98,9 +103,47 @@ test('files added by another program appear, and the menu offers actions', async
   expect(await exists(page, `${ROOT}/archives/2026`)).toBe(true);
 });
 
-test('the folder is remembered for the next session', async ({ page }) => {
+test('the folders are remembered for the next session', async ({ page }) => {
   await item(page, 'archives').click();
   await expect
     .poll(() => page.evaluate(() => localStorage.getItem('cascades-config:explorer.json')))
-    .toBe(JSON.stringify({ root: ROOT, expanded: [`${ROOT}/archives`] }));
+    .toBe(JSON.stringify({ roots: [ROOT], expanded: [ROOT, `${ROOT}/archives`] }));
+});
+
+test('several folders side by side, one taken off the list', async ({ page }) => {
+  await page.evaluate(() => {
+    const w = window as unknown as DevWindow;
+    w.__cascadesFs.addFile('D:/jeux/elden.txt', '');
+    return w.__cascades.commands.execute('explorer.addFolder', 'D:/jeux');
+  });
+  await expect(tree(page).locator('[aria-level="1"] .name')).toHaveText(['projet', 'jeux']);
+  await expect(item(page, 'elden.txt')).toBeVisible();
+
+  await item(page, 'projet').click({ button: 'right' });
+  await expect(page.getByRole('menuitem', { name: 'Renommer' })).toHaveCount(0);
+  await page.getByRole('menuitem', { name: 'Retirer de la liste' }).click();
+  await expect(item(page, 'projet')).toBeHidden();
+  // Nothing was deleted.
+  expect(await exists(page, `${ROOT}/notes 2.txt`)).toBe(true);
+});
+
+test('fold all leaves only the folders', async ({ page }) => {
+  await item(page, 'archives').click();
+  await page.getByRole('button', { name: 'Tout replier' }).click();
+  await expect(tree(page).locator('.name')).toHaveText(['projet']);
+});
+
+test('the whole panel takes clicks: keyboard and right-click below the files', async ({ page }) => {
+  const panel = page.getByRole('complementary', { name: 'Fichiers' });
+  const box = await panel.boundingBox();
+  if (!box) throw new Error('not laid out');
+  const below = { x: box.x + box.width / 2, y: box.y + box.height - 40 };
+
+  await page.mouse.click(below.x, below.y);
+  await expect(tree(page)).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(item(page, 'archives')).toHaveAttribute('aria-selected', 'true');
+
+  await page.mouse.click(below.x, below.y, { button: 'right' });
+  await expect(page.getByRole('menuitem', { name: 'Ajouter un dossier…' })).toBeVisible();
 });

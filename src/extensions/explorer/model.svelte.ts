@@ -30,9 +30,10 @@ export type Editing =
 
 const RELOAD_DELAY_MS = 100;
 
-/** The opened folder and what is shown of it. */
+/** The opened folders and what is shown of them. */
 export class ExplorerModel {
-  root = $state<string | null>(null);
+  /** Folders shown as the top rows of the tree, in the order they were added. */
+  roots = $state<string[]>([]);
   /** Listings of the folders loaded, sorted, without excluded names. */
   readonly children = new SvelteMap<string, Node[]>();
   readonly expanded = new SvelteSet<string>();
@@ -48,11 +49,15 @@ export class ExplorerModel {
 
   constructor(
     private ctx: ExtensionContext,
-    /** Called when the folder or the expanded folders change, to remember them. */
+    /** Called when the folders or the expanded folders change, to remember them. */
     private onStateChange: () => void,
   ) {}
 
-  /** Visible rows, depth first. */
+  isRoot(path: string): boolean {
+    return this.roots.some((root) => samePath(root) === samePath(path));
+  }
+
+  /** Visible rows, depth first; each folder added is a row of depth 0. */
   rows(): Row[] {
     const out: Row[] = [];
     const walk = (dir: string, depth: number) => {
@@ -62,34 +67,43 @@ export class ExplorerModel {
         if (expanded) walk(node.path, depth + 1);
       }
     };
-    if (this.root) walk(this.root, 0);
+    for (const root of this.roots) {
+      const expanded = this.expanded.has(root);
+      out.push({ path: root, name: baseName(root), isDir: true, depth: 0, expanded });
+      if (expanded) walk(root, 1);
+    }
     return out;
   }
 
-  async open(root: string, expanded: string[] = []): Promise<void> {
-    this.close();
-    this.root = root;
-    await this.load(root);
-    this.watch(root);
-    // Parents before children, so that each folder is loaded once.
-    for (const dir of [...expanded].sort((a, b) => a.length - b.length)) {
-      if (isWithin(dir, root) && dir !== root) await this.expand(dir, false);
+  /** Adds a folder (unfolded), or selects it if it is already there. */
+  async add(root: string, expanded: string[] = [root]): Promise<void> {
+    if (!this.isRoot(root)) {
+      this.roots = [...this.roots, root];
+      // Parents before children, so that each folder is loaded once.
+      for (const dir of [...expanded].sort((a, b) => a.length - b.length)) {
+        if (isWithin(dir, root)) await this.expand(dir, false);
+      }
+      this.onStateChange();
     }
+    this.selected = root;
+  }
+
+  /** Takes a folder off the list (nothing is deleted). */
+  remove(root: string): void {
+    this.roots = this.roots.filter((r) => samePath(r) !== samePath(root));
+    for (const dir of [...this.children.keys()]) {
+      if (!isWithin(dir, root)) continue;
+      this.children.delete(dir);
+      this.stopWatching(dir);
+    }
+    for (const dir of [...this.expanded]) if (isWithin(dir, root)) this.expanded.delete(dir);
+    if (this.selected && isWithin(this.selected, root)) this.selected = null;
+    this.error = null;
     this.onStateChange();
   }
 
-  close(): void {
-    for (const watch of this.watches.values()) watch.dispose();
-    for (const timer of this.timers.values()) clearTimeout(timer);
-    this.watches.clear();
-    this.timers.clear();
-    this.children.clear();
-    this.expanded.clear();
-    this.root = null;
-    this.selected = null;
-    this.editing = null;
-    this.error = null;
-    this.onStateChange();
+  removeAll(): void {
+    for (const root of [...this.roots]) this.remove(root);
   }
 
   async toggle(dir: string): Promise<void> {
@@ -106,18 +120,13 @@ export class ExplorerModel {
 
   collapse(dir: string): void {
     this.expanded.delete(dir);
-    this.watches.get(dir)?.dispose();
-    this.watches.delete(dir);
+    this.stopWatching(dir);
     this.onStateChange();
   }
 
+  /** Folds every folder, the added ones included: only their names stay. */
   collapseAll(): void {
-    for (const dir of [...this.expanded]) {
-      this.watches.get(dir)?.dispose();
-      this.watches.delete(dir);
-    }
-    this.expanded.clear();
-    this.onStateChange();
+    for (const dir of [...this.expanded]) this.collapse(dir);
   }
 
   /** Lists every loaded folder again (after the exclusions changed). */
@@ -137,10 +146,9 @@ export class ExplorerModel {
           isDir: e.isDir,
         })),
       );
-      if (dir === this.root) this.error = null;
     } catch (err) {
       this.children.set(dir, []);
-      if (dir === this.root) this.error = `Impossible de lire le dossier : ${message(err)}`;
+      if (this.isRoot(dir)) this.error = `Impossible de lire ${dir} : ${message(err)}`;
     }
   }
 
@@ -159,9 +167,17 @@ export class ExplorerModel {
     this.watches.set(dir, this.ctx.fs.watchDir(dir, reload));
   }
 
+  private stopWatching(dir: string): void {
+    this.watches.get(dir)?.dispose();
+    this.watches.delete(dir);
+    clearTimeout(this.timers.get(dir));
+    this.timers.delete(dir);
+  }
+
   /** The folder a new entry goes in when `path` is selected: itself if a folder, else its parent. */
   folderFor(path: string | null): string | null {
-    if (!path || !this.root) return this.root;
+    if (!path) return this.roots[0] ?? null;
+    if (this.isRoot(path)) return path;
     const node = this.find(path);
     return node?.isDir ? node.path : parentOf(path);
   }
@@ -176,11 +192,12 @@ export class ExplorerModel {
   }
 
   async startNew(kind: 'file' | 'folder', dir: string): Promise<void> {
-    if (dir !== this.root && !this.expanded.has(dir)) await this.expand(dir);
+    if (!this.expanded.has(dir)) await this.expand(dir);
     this.editing = { kind, dir };
   }
 
   startRename(path: string): void {
+    if (this.isRoot(path)) return;
     const node = this.find(path);
     if (node) this.editing = { kind: 'rename', path, isDir: node.isDir };
   }
@@ -241,6 +258,7 @@ export class ExplorerModel {
 
   /** Sends to the recycle bin after asking. */
   async trash(path: string): Promise<void> {
+    if (this.isRoot(path)) return;
     const node = this.find(path);
     if (!node) return;
     const what = node.isDir ? 'le dossier' : 'le fichier';

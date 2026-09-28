@@ -7,11 +7,13 @@ const STATE_FILE = 'explorer.json';
 const PANEL = 'explorer';
 
 interface SavedState {
-  root: string | null;
+  roots: string[];
   expanded: string[];
+  /** Before several folders could be added. */
+  root?: string | null;
 }
 
-/** The opened folder, as a tree on the left: open, create, rename, send to the recycle bin. */
+/** Folders as a tree on the left: open files, create, rename, send to the recycle bin. */
 export default defineExtension({
   id: 'cascades.explorer',
   async activate(ctx) {
@@ -27,7 +29,7 @@ export default defineExtension({
     const model = new ExplorerModel(ctx, () => {
       clearTimeout(saveTimer);
       saveTimer = setTimeout(() => {
-        const state: SavedState = { root: model.root, expanded: [...model.expanded] };
+        const state: SavedState = { roots: model.roots, expanded: [...model.expanded] };
         void ctx.configFiles.write(STATE_FILE, JSON.stringify(state));
       }, 300);
     });
@@ -42,34 +44,35 @@ export default defineExtension({
       },
     });
 
-    const openFolder = async (path?: unknown) => {
+    const addFolder = async (path?: unknown) => {
       const folder = typeof path === 'string' ? path : await ctx.dialogs.pickFolder();
       if (!folder) return;
-      await model.open(folder);
+      await model.add(folder);
       ctx.panels.show(PANEL);
     };
 
-    ctx.commands.register('explorer.openFolder', openFolder, {
-      title: 'Ouvrir un dossier…',
+    ctx.commands.register('explorer.addFolder', addFolder, {
+      title: 'Ajouter un dossier…',
       category: 'Fichier',
     });
-    ctx.commands.register(
-      'explorer.closeFolder',
-      () => {
-        model.close();
-      },
-      { title: 'Fermer le dossier', category: 'Fichier' },
-    );
+    ctx.commands.register('explorer.removeAllFolders', () => model.removeAll(), {
+      title: 'Fermer tous les dossiers',
+      category: 'Fichier',
+    });
     ctx.commands.register('view.toggleSidebar', () => ctx.panels.toggleSide('left'), {
       title: 'Afficher ou masquer le panneau de gauche',
       category: 'Affichage',
     });
     ctx.keybindings.register([
-      { key: 'Ctrl+Shift+O', command: 'explorer.openFolder' },
+      { key: 'Ctrl+Shift+O', command: 'explorer.addFolder' },
       { key: 'Ctrl+B', command: 'view.toggleSidebar' },
     ]);
-    ctx.menus.registerItem('file', { command: 'explorer.openFolder', group: '1_new', order: 2.5 });
-    ctx.menus.registerItem('file', { command: 'explorer.closeFolder', group: '3_close', order: 3 });
+    ctx.menus.registerItem('file', { command: 'explorer.addFolder', group: '1_new', order: 2.5 });
+    ctx.menus.registerItem('file', {
+      command: 'explorer.removeAllFolders',
+      group: '3_close',
+      order: 3,
+    });
     ctx.menus.registerItem('view', { command: 'view.toggleSidebar', group: '4_layout', order: -1 });
 
     ctx.events.on('workspace.didChangeActive', (tab) => (model.activePath = tab?.path ?? null));
@@ -77,17 +80,18 @@ export default defineExtension({
       if (keys.includes('explorer.exclude')) void model.reloadAll();
     });
 
-    // The folder of the last session comes back, with its open subfolders.
+    // The folders of the last session come back, with their open subfolders.
     try {
       const saved = JSON.parse(
         (await ctx.configFiles.read(STATE_FILE)) ?? 'null',
       ) as SavedState | null;
-      if (saved?.root) {
-        await model.open(saved.root, saved.expanded);
-        ctx.panels.show(PANEL);
-      }
+      const roots = saved?.roots ?? (saved?.root ? [saved.root] : []);
+      // The old format always showed its folder unfolded.
+      const expanded = saved?.roots ? saved.expanded : [...roots, ...(saved?.expanded ?? [])];
+      for (const root of roots) await model.add(root, expanded);
+      if (roots.length > 0) ctx.panels.show(PANEL);
     } catch {
-      // A broken file only forgets the folder.
+      // A broken file only forgets the folders.
     }
     model.activePath = ctx.workspace.active()?.path ?? null;
   },

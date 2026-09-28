@@ -70,6 +70,12 @@ export class Workbench {
 
   async start(builtins: CascadesExtension[]): Promise<void> {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
+    // The webview's own menu (Back, Reload, Inspect…) makes no sense in the app.
+    // Text fields and the editor keep it, for cut, copy and paste.
+    window.addEventListener('contextmenu', (event) => {
+      const target = event.target as Element | null;
+      if (!target?.closest('input, textarea, [contenteditable="true"]')) event.preventDefault();
+    });
     this.events.on('workspace.didChangeActive', (tab) =>
       this.contextKeys.set('editorLangId', tab?.language),
     );

@@ -22,7 +22,6 @@
       depth,
       isDir: newEntry?.kind === 'folder',
     });
-    if (newEntry && newEntry.dir === model.root) out.push(field(0));
     for (const row of rows) {
       out.push({ kind: 'row', row });
       if (newEntry && row.isDir && row.path === newEntry.dir) out.push(field(row.depth + 1));
@@ -77,7 +76,7 @@
         break;
       case 'ArrowLeft':
         if (row?.isDir && row.expanded) model.collapse(row.path);
-        else if (row && parentOf(row.path) !== model.root) select(parentOf(row.path));
+        else if (row && !model.isRoot(row.path)) select(parentOf(row.path));
         break;
       case 'Enter':
         if (row) void activate(row);
@@ -96,28 +95,58 @@
 
   function showMenu(event: MouseEvent, row: Row | null) {
     event.preventDefault();
-    if (row) model.selected = row.path;
-    const dir = model.folderFor(row?.path ?? null) ?? model.root;
-    if (!dir) return;
-    const entryItems = row
-      ? [
-          'separator' as const,
+    event.stopPropagation();
+    tree?.focus();
+    const at = { x: event.clientX, y: event.clientY };
+    if (!row) {
+      ctx.contextMenu.show(at, [
+        {
+          label: 'Ajouter un dossier…',
+          run: () => void ctx.commands.execute('explorer.addFolder'),
+        },
+        { label: 'Tout replier', run: () => model.collapseAll(), disabled: !model.roots.length },
+      ]);
+      return;
+    }
+    model.selected = row.path;
+    const dir = model.folderFor(row.path) as string;
+    const copy = {
+      label: 'Copier le chemin',
+      run: () => void navigator.clipboard.writeText(row.path),
+    };
+    const entryItems = model.isRoot(row.path)
+      ? [{ label: 'Retirer de la liste', run: () => model.remove(row.path) }]
+      : [
           { label: 'Renommer', shortcut: 'F2', run: () => model.startRename(row.path) },
           {
             label: 'Mettre à la corbeille',
             shortcut: 'Suppr',
             run: () => void model.trash(row.path),
           },
-          'separator' as const,
-          { label: 'Copier le chemin', run: () => void navigator.clipboard.writeText(row.path) },
-        ]
-      : [];
-    ctx.contextMenu.show({ x: event.clientX, y: event.clientY }, [
+        ];
+    ctx.contextMenu.show(at, [
       { label: 'Nouveau fichier', run: () => void model.startNew('file', dir) },
       { label: 'Nouveau dossier', run: () => void model.startNew('folder', dir) },
+      'separator',
       ...entryItems,
+      'separator',
+      copy,
     ]);
   }
+
+  /** A click anywhere in the panel but on a control puts the keyboard in the tree. */
+  function focusTree(event: PointerEvent) {
+    const target = event.target as Element;
+    if (!target.closest('button, input, [role="treeitem"]')) {
+      event.preventDefault();
+      tree?.focus();
+    }
+  }
+
+  const newIn = (kind: 'file' | 'folder') => {
+    const dir = model.folderFor(model.selected);
+    if (dir) void model.startNew(kind, dir);
+  };
 
   /** Focuses the name field when it appears, with the name but not the extension selected. */
   function field(input: HTMLInputElement) {
@@ -158,134 +187,139 @@
   const indent = (depth: number) => `${8 + depth * 14}px`;
 </script>
 
-{#if !model.root}
-  <div class="empty">
-    <p>Aucun dossier ouvert.</p>
-    <button class="primary" onclick={() => ctx.commands.execute('explorer.openFolder')}>
-      Ouvrir un dossier…
-    </button>
-  </div>
-{:else}
-  <div class="toolbar">
-    <span class="folder" title={model.root}>{baseName(model.root)}</span>
-    <button
-      class="icon"
-      title="Nouveau fichier"
-      aria-label="Nouveau fichier"
-      onclick={() =>
-        model.startNew('file', model.folderFor(model.selected) ?? (model.root as string))}
-    >
-      <svg viewBox="0 0 16 16" aria-hidden="true"
-        ><path d="M9 1.5H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5L9 1.5Z" /><path
-          d="M9 1.5v4h4M8 8v4M6 10h4"
-        /></svg
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="explorer" onpointerdown={focusTree} oncontextmenu={(e) => showMenu(e, null)}>
+  {#if model.roots.length === 0}
+    <div class="empty">
+      <p>Aucun dossier ouvert.</p>
+      <button class="primary" onclick={() => ctx.commands.execute('explorer.addFolder')}>
+        Ajouter un dossier…
+      </button>
+    </div>
+  {:else}
+    <div class="toolbar">
+      <button
+        class="icon"
+        title="Nouveau fichier"
+        aria-label="Nouveau fichier"
+        onclick={() => newIn('file')}
       >
-    </button>
-    <button
-      class="icon"
-      title="Nouveau dossier"
-      aria-label="Nouveau dossier"
-      onclick={() =>
-        model.startNew('folder', model.folderFor(model.selected) ?? (model.root as string))}
-    >
-      <svg viewBox="0 0 16 16" aria-hidden="true"
-        ><path
-          d="M1.5 4a1 1 0 0 1 1-1h3.5l1.5 1.5h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4Z"
-        /><path d="M8 7v4M6 9h4" /></svg
-      >
-    </button>
-    <button
-      class="icon"
-      title="Tout replier"
-      aria-label="Tout replier"
-      onclick={() => model.collapseAll()}
-    >
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4" /></svg>
-    </button>
-  </div>
-
-  {#if model.error}<p class="error" role="alert">{model.error}</p>{/if}
-
-  <div
-    class="tree"
-    role="tree"
-    tabindex="0"
-    aria-label="Fichiers de {baseName(model.root)}"
-    aria-activedescendant={model.selected ? idOf(model.selected) : undefined}
-    bind:this={tree}
-    onkeydown={onKeydown}
-    onfocusin={() => ctx.context.set('explorerFocus', true)}
-    onfocusout={() => ctx.context.set('explorerFocus', false)}
-    oncontextmenu={(e) => {
-      if (e.target === e.currentTarget) showMenu(e, null);
-    }}
-  >
-    {#each items as item (item.kind === 'row' ? item.row.path : 'new-entry')}
-      {#if item.kind === 'input'}
-        <div class="row editing" style:padding-left={indent(item.depth)}>
-          <span class="chevron" aria-hidden="true">{item.isDir ? '▸' : ''}</span>
-          <input
-            aria-label={item.isDir ? 'Nom du nouveau dossier' : 'Nom du nouveau fichier'}
-            spellcheck="false"
-            use:field
-            onkeydown={onFieldKeydown}
-            onblur={(e) => void commit(e.currentTarget)}
-          />
-        </div>
-        {#if inputError}<p class="field-error" style:padding-left={indent(item.depth + 1)}>
-            {inputError}
-          </p>{/if}
-      {:else}
-        {@const row = item.row}
-        <!-- The keys are handled by the tree, which points to the selected row. -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <div
-          id={idOf(row.path)}
-          class="row"
-          class:selected={model.selected === row.path}
-          class:active={model.activePath !== null &&
-            samePath(model.activePath) === samePath(row.path)}
-          role="treeitem"
-          tabindex="-1"
-          aria-level={row.depth + 1}
-          aria-expanded={row.isDir ? row.expanded : undefined}
-          aria-selected={model.selected === row.path}
-          title={row.path}
-          style:padding-left={indent(row.depth)}
-          onclick={() => void activate(row)}
-          oncontextmenu={(e) => showMenu(e, row)}
+        <svg viewBox="0 0 16 16" aria-hidden="true"
+          ><path d="M9 1.5H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5L9 1.5Z" /><path
+            d="M9 1.5v4h4M8 8v4M6 10h4"
+          /></svg
         >
-          <span class="chevron" class:open={row.expanded} aria-hidden="true"
-            >{row.isDir ? '▸' : ''}</span
-          >
-          {#if renaming(row)}
+      </button>
+      <button
+        class="icon"
+        title="Nouveau dossier"
+        aria-label="Nouveau dossier"
+        onclick={() => newIn('folder')}
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"
+          ><path
+            d="M1.5 4a1 1 0 0 1 1-1h3.5l1.5 1.5h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4Z"
+          /><path d="M8 7v4M6 9h4" /></svg
+        >
+      </button>
+      <button
+        class="icon"
+        title="Tout replier"
+        aria-label="Tout replier"
+        onclick={() => model.collapseAll()}
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4" /></svg>
+      </button>
+    </div>
+
+    {#if model.error}<p class="error" role="alert">{model.error}</p>{/if}
+
+    <div
+      class="tree"
+      role="tree"
+      tabindex="0"
+      aria-label="Dossiers ouverts"
+      aria-activedescendant={model.selected ? idOf(model.selected) : undefined}
+      bind:this={tree}
+      onkeydown={onKeydown}
+      onfocusin={() => ctx.context.set('explorerFocus', true)}
+      onfocusout={() => ctx.context.set('explorerFocus', false)}
+    >
+      {#each items as item (item.kind === 'row' ? item.row.path : 'new-entry')}
+        {#if item.kind === 'input'}
+          <div class="row editing" style:padding-left={indent(item.depth)}>
+            <span class="chevron" aria-hidden="true">{item.isDir ? '▸' : ''}</span>
             <input
-              aria-label="Nouveau nom de {row.name}"
+              aria-label={item.isDir ? 'Nom du nouveau dossier' : 'Nom du nouveau fichier'}
               spellcheck="false"
-              value={row.name}
               use:field
-              onclick={(e) => e.stopPropagation()}
               onkeydown={onFieldKeydown}
               onblur={(e) => void commit(e.currentTarget)}
             />
-          {:else}
-            <span class="name" class:dir={row.isDir}>{row.name}</span>
-          {/if}
-        </div>
-        {#if renaming(row) && inputError}<p
-            class="field-error"
-            style:padding-left={indent(row.depth + 1)}
+          </div>
+          {#if inputError}<p class="field-error" style:padding-left={indent(item.depth + 1)}>
+              {inputError}
+            </p>{/if}
+        {:else}
+          {@const row = item.row}
+          <!-- The keys are handled by the tree, which points to the selected row. -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <div
+            id={idOf(row.path)}
+            class="row"
+            class:selected={model.selected === row.path}
+            class:active={model.activePath !== null &&
+              samePath(model.activePath) === samePath(row.path)}
+            role="treeitem"
+            tabindex="-1"
+            aria-level={row.depth + 1}
+            aria-expanded={row.isDir ? row.expanded : undefined}
+            aria-selected={model.selected === row.path}
+            title={row.path}
+            style:padding-left={indent(row.depth)}
+            onclick={() => void activate(row)}
+            oncontextmenu={(e) => showMenu(e, row)}
           >
-            {inputError}
-          </p>{/if}
-      {/if}
-    {:else}
-      <p class="hint">Ce dossier est vide.</p>
-    {/each}
-  </div>
-{/if}
+            <span class="chevron" class:open={row.expanded} aria-hidden="true"
+              >{row.isDir ? '▸' : ''}</span
+            >
+            {#if renaming(row)}
+              <input
+                aria-label="Nouveau nom de {row.name}"
+                spellcheck="false"
+                value={row.name}
+                use:field
+                onclick={(e) => e.stopPropagation()}
+                onkeydown={onFieldKeydown}
+                onblur={(e) => void commit(e.currentTarget)}
+              />
+            {:else}
+              <span class="name" class:root={row.depth === 0}>{row.name}</span>
+            {/if}
+          </div>
+          {#if renaming(row) && inputError}<p
+              class="field-error"
+              style:padding-left={indent(row.depth + 1)}
+            >
+              {inputError}
+            </p>{/if}
+        {/if}
+      {/each}
+    </div>
+    <button class="add-folder" onclick={() => ctx.commands.execute('explorer.addFolder')}>
+      + Ajouter un dossier
+    </button>
+  {/if}
+</div>
 
 <style>
+  /* The whole panel height, so that clicks below the files still reach it. */
+  .explorer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
   .empty {
     display: flex;
     flex-direction: column;
@@ -313,17 +347,8 @@
   .toolbar {
     display: flex;
     gap: 2px;
-    align-items: center;
-    padding: 6px 6px 4px 12px;
-  }
-
-  .folder {
-    flex: 1;
-    overflow: hidden;
-    font-size: 12px;
-    font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    justify-content: flex-end;
+    padding: 4px 6px 2px;
   }
 
   .icon {
@@ -363,9 +388,30 @@
   }
 
   .tree {
-    padding-bottom: 12px;
     outline: none;
     font-size: 13px;
+  }
+
+  .name.root {
+    font-weight: 600;
+  }
+
+  .add-folder {
+    align-self: flex-start;
+    margin: 6px 8px 12px;
+    padding: 3px 6px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--ui-fg);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .add-folder:hover {
+    background: var(--ui-hover);
+    color: var(--fg);
   }
 
   .row {
@@ -429,11 +475,6 @@
     margin: 2px 8px 4px;
     color: var(--syn-invalid);
     font-size: 12px;
-  }
-
-  .hint {
-    margin: 4px 12px;
-    color: var(--ui-fg);
   }
 
   @media (prefers-reduced-motion: reduce) {
