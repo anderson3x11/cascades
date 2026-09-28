@@ -322,11 +322,15 @@ export function cascades(config: CascadeConfig): Extension {
           pos = line.to + 1;
           let glyphs = state.analysis.rows.get(line.number);
           if (!glyphs) continue;
-          // A folded parent has no visible children to point at.
+          // Lines hidden inside a fold get nothing, and a folded parent has no
+          // visible children to point at.
+          let hidden = false;
           let isFolded = false;
-          folded.between(line.to, line.to, (a) => {
+          folded.between(line.from, line.to, (a, b) => {
+            if (a < line.from && b >= line.from) hidden = true;
             if (a === line.to) isFolded = true;
           });
+          if (hidden) continue;
           if (isFolded) glyphs = glyphs.filter((g) => g.kind !== 'start');
           if (glyphs.length === 0) continue;
 

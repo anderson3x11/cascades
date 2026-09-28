@@ -38,12 +38,14 @@ test('highlights the parent of the cursor line', async ({ page }) => {
 
 test('folds a parent line with its cascade', async ({ page }) => {
   await open(page, 'C:/n/notes.txt', NOTES);
-  await page.locator('.cm-foldGutter span[title="Fold line"]').first().click();
+  await page.locator('.cm-foldGutter [title="Replier"]').first().click();
   expect(await page.locator('.cm-line').allTextContents()).toEqual([
-    'Elden Ring…',
+    'Elden Ring⋯ 3 lignes',
     'Hollow Knight',
     '\tAmbiance',
   ]);
+  // Only "Hollow Knight" and its child keep connectors; nothing is drawn for hidden lines.
+  await expect(rows(page)).toHaveCount(2);
 });
 
 test('ignores Markdown list items', async ({ page }) => {
