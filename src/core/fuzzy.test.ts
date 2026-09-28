@@ -17,6 +17,11 @@ describe('fuzzyMatch', () => {
     expect(fuzzyMatch('sd', 'Solarized dark')?.indices).toEqual([0, 10]);
   });
 
+  it('does not jump to a word start that leaves no room for the rest', () => {
+    // The "t" of ".txt" starts a word, but "e" must still come after "t".
+    expect(fuzzyMatch('note 24', 'note 24.txt')?.indices).toEqual([0, 1, 2, 3, 5, 6]);
+  });
+
   it('ignores spaces in the query', () => {
     expect(fuzzyMatch('sol dark', 'Solarized dark')).not.toBeNull();
   });

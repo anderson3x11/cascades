@@ -26,6 +26,17 @@ function isWordStart(chars: readonly string[], i: number): boolean {
   return SEPARATOR.test(prev) || (prev === prev.toLowerCase() && cur !== cur.toLowerCase());
 }
 
+/** Whether q[from..] appears in order in t[start..]. */
+function fits(t: readonly string[], q: readonly string[], from: number, start: number): boolean {
+  let at = start;
+  for (let i = from; i < q.length; i++) {
+    at = t.indexOf(q[i] as string, at);
+    if (at === -1) return false;
+    at++;
+  }
+  return true;
+}
+
 export function fuzzyMatch(query: string, text: string): FuzzyMatch | null {
   const q = fold(query.trim()).filter((c) => c !== ' ');
   if (q.length === 0) return { score: 0, indices: [] };
@@ -35,13 +46,14 @@ export function fuzzyMatch(query: string, text: string): FuzzyMatch | null {
   let score = 0;
   let from = 0;
 
-  for (const qc of q) {
+  for (const [qi, qc] of q.entries()) {
     const first = t.indexOf(qc, from);
     if (first === -1) return null;
-    // Prefer an occurrence that starts a word, if one comes soon after.
+    // Prefer an occurrence that starts a word, if one comes soon after and
+    // the rest of the query still fits after it.
     let found = first;
     for (let i = first; i < t.length && i <= first + WORD_START_REACH; i++) {
-      if (t[i] === qc && isWordStart(chars, i)) {
+      if (t[i] === qc && isWordStart(chars, i) && fits(t, q, qi + 1, i + 1)) {
         found = i;
         break;
       }
