@@ -14,7 +14,7 @@ test('a menu shows items with their shortcut and runs the command', async ({ pag
   await page.getByRole('menuitem', { name: 'Fichier' }).click();
   const menu = page.getByRole('menu', { name: 'Fichier' });
   await expect(menu.getByRole('menuitem', { name: /Nouveau fichier/ })).toContainText('Ctrl+N');
-  await expect(menu.getByRole('separator')).toHaveCount(2);
+  await expect(menu.getByRole('separator')).toHaveCount(3);
 
   await menu.getByRole('menuitem', { name: /Nouveau fichier/ }).click();
   await expect(menu).toBeHidden();

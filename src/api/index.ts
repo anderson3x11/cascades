@@ -421,7 +421,9 @@ export interface ConfigFilesApi {
   write(name: string, content: string): Promise<void>;
   /** File names in a subfolder of the config folder ("themes"). Empty if it does not exist. */
   list(folder: string): Promise<string[]>;
-  /** Calls `listener` when the file changes on disk. Does nothing outside the desktop app. */
+  /** Absolute path of a file of the config folder, to open it in a tab. */
+  path(name: string): Promise<string>;
+  /** Calls `listener` when the file changes on disk (in the browser: when written). */
   watch(name: string, listener: () => void): Disposable;
 }
 

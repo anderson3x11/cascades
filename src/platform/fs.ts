@@ -33,6 +33,17 @@ export function configDir(): Promise<string> {
 // Outside Tauri (plain browser for development and e2e tests), config files
 // live in localStorage so that features like session restore still work.
 const STORAGE_PREFIX = 'cascades-config:';
+/** Fired on window with the file name as detail when a config file is written in the browser. */
+const CONFIG_WRITE_EVENT = 'cascades:config-write';
+
+/** Browser stand-in for watching a config file: calls `listener` when it is written. */
+export function onBrowserConfigWrite(name: string, listener: () => void): { dispose(): void } {
+  const handler = (event: Event) => {
+    if ((event as CustomEvent<string>).detail === name) listener();
+  };
+  window.addEventListener(CONFIG_WRITE_EVENT, handler);
+  return { dispose: () => window.removeEventListener(CONFIG_WRITE_EVENT, handler) };
+}
 
 /** Returns null when the file does not exist. */
 export async function readConfigFile(name: string): Promise<string | null> {
@@ -62,6 +73,7 @@ export async function configFilePath(name: string): Promise<string> {
 export async function writeConfigFile(name: string, content: string): Promise<void> {
   if (!isTauri()) {
     localStorage.setItem(STORAGE_PREFIX + name, content);
+    window.dispatchEvent(new CustomEvent(CONFIG_WRITE_EVENT, { detail: name }));
     return;
   }
   await invoke('write_config_file', { name, content });

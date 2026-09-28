@@ -3,6 +3,20 @@ import type { RawSettings } from './registry';
 
 const FORMAT = { formattingOptions: { insertSpaces: true, tabSize: 2, eol: '\n' } };
 
+/** French messages for the usual mistakes, by jsonc-parser error name. */
+const ERROR_MESSAGES: Record<string, string> = {
+  InvalidSymbol: 'caractère inattendu',
+  ValueExpected: 'valeur attendue',
+  PropertyNameExpected: 'nom entre guillemets attendu',
+  ColonExpected: '« : » attendu',
+  CommaExpected: 'virgule manquante',
+  CloseBraceExpected: '« } » manquant',
+  CloseBracketExpected: '« ] » manquant',
+  EndOfFileExpected: 'texte en trop après la fin',
+  UnexpectedEndOfString: 'guillemet fermant manquant',
+  UnexpectedEndOfComment: 'commentaire /* non fermé',
+};
+
 /** Parses a JSON-with-comments file (settings.json, keybindings.json). Throws on errors. */
 export function parseJsonc(text: string): unknown {
   const errors: ParseError[] = [];
@@ -10,7 +24,9 @@ export function parseJsonc(text: string): unknown {
   const first = errors[0];
   if (first) {
     const line = text.slice(0, first.offset).split('\n').length;
-    throw new Error(`${printParseErrorCode(first.error)} (ligne ${line})`);
+    const name = printParseErrorCode(first.error);
+    const message = ERROR_MESSAGES[name] ?? name;
+    throw new Error(`${message} (ligne ${line})`);
   }
   return value;
 }

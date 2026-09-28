@@ -95,4 +95,27 @@ describe('KeybindingRegistry', () => {
     reg.register({ key: 'Ctrl+K S', command: 'file.save' });
     expect(reg.forCommand('file.save').map((b) => b.chords)).toEqual([['ctrl+k', 's'], ['ctrl+s']]);
   });
+
+  it('removal rules remove earlier bindings of a command', () => {
+    const reg = new KeybindingRegistry();
+    reg.register({ key: 'Ctrl+D', command: 'editor.addNextOccurrence', when: 'editorFocus' });
+    reg.register({ key: 'Leader D', command: 'editor.addNextOccurrence' });
+    const focused = (k: string) => k === 'editorFocus';
+
+    const byKey = reg.register({ key: 'Ctrl+D', command: '-editor.addNextOccurrence' });
+    expect(reg.resolve('ctrl+d', focused).kind).toBe('none');
+    expect(reg.forCommand('editor.addNextOccurrence')).toHaveLength(1);
+    byKey.dispose();
+    expect(reg.resolve('ctrl+d', focused).kind).toBe('match');
+
+    // A different when clause does not match; no key removes them all.
+    reg.register({ key: 'Ctrl+D', command: '-editor.addNextOccurrence', when: 'other' });
+    expect(reg.resolve('ctrl+d', focused).kind).toBe('match');
+    reg.register({ key: '', command: '-editor.addNextOccurrence' });
+    expect(reg.forCommand('editor.addNextOccurrence')).toEqual([]);
+
+    // Bindings registered after the rule are kept.
+    reg.register({ key: 'Ctrl+E', command: 'editor.addNextOccurrence' });
+    expect(reg.resolve('ctrl+e', none).kind).toBe('match');
+  });
 });

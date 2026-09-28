@@ -26,7 +26,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Quarantaine** : mettre de côté un passage (Leader Q) pour essayer le texte sans lui. Chaque passage devient une carte dans un panneau propre au fichier, gardée entre les sessions, et se replace n'importe où (bouton ou glisser dans le texte). Ctrl+Z et Ctrl+Y suivent.
 - **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
-- Configuration par `settings.json` et script `init.js`.
+- Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 
 ## Raccourcis par défaut
 
@@ -120,7 +120,22 @@ Le dossier de config est :
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
 
-`settings.json` est rechargé dès qu'on l'enregistre.
+`settings.json` accepte les commentaires (`//` et `/* */`) et les virgules finales. Il est rechargé dès qu'on l'enregistre, et une erreur s'affiche dans un bandeau (les réglages précédents restent actifs). Menu Fichier > Ouvrir settings.json.
+
+### keybindings.json
+
+Même format que VS Code : une liste de raccourcis qui s'ajoutent à ceux par défaut ou les remplacent. Un `-` devant la commande retire un raccourci.
+
+```jsonc
+[
+  { "key": "Ctrl+Alt+N", "command": "file.new" },
+  // Ctrl+D ne sélectionne plus l'occurrence suivante
+  { "key": "Ctrl+D", "command": "-editor.addNextOccurrence" },
+  { "key": "Leader D", "command": "editor.duplicateLine", "when": "editorFocus" },
+]
+```
+
+Sans `key` (ou avec `""`), une règle de retrait enlève tous les raccourcis de la commande. `args` passe un argument à la commande. Le fichier est rechargé à chaud ; une entrée invalide est ignorée et signalée, les autres s'appliquent. Menu Fichier > Ouvrir keybindings.json.
 
 ### Thèmes
 

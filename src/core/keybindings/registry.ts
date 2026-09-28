@@ -3,8 +3,12 @@ import { parseWhen, type ContextLookup, type WhenExpr } from '../context/when';
 import { LEADER, normalizeChord, parseKeySequence } from './keys';
 
 export interface KeybindingSpec {
-  /** Key sequence, e.g. "Ctrl+Shift+P", "Ctrl+K Z", or with the leader key: "Leader Z". */
+  /**
+   * Key sequence, e.g. "Ctrl+Shift+P", "Ctrl+K Z", or with the leader key: "Leader Z".
+   * Empty only in a removal rule, to remove every shortcut of the command.
+   */
   key: string;
+  /** A leading "-" makes a removal rule: "-file.save" removes earlier shortcuts of file.save. */
   command: string;
   args?: unknown[];
   /** Context condition, e.g. "editorFocus && vim.mode == 'normal'". */
@@ -29,6 +33,15 @@ interface Entry {
   order: number;
 }
 
+/** Removes the bindings registered before it that it matches. */
+interface Removal {
+  command: string;
+  /** Null matches any key. */
+  chords: string[] | null;
+  when: string | undefined;
+  order: number;
+}
+
 export type ResolveResult =
   { kind: 'match'; binding: Keybinding } | { kind: 'pending'; chords: string[] } | { kind: 'none' };
 
@@ -50,11 +63,13 @@ export const DEFAULT_LEADER = 'ctrl+space';
  */
 export class KeybindingRegistry {
   private entries: Entry[] = [];
+  private removals: Removal[] = [];
   private counter = 0;
   private pending: string[] = [];
   private leader = DEFAULT_LEADER;
 
   register(spec: KeybindingSpec): Disposable {
+    if (spec.command.startsWith('-')) return this.registerRemoval(spec);
     const entry: Entry = {
       chords: parseKeySequence(spec.key),
       command: spec.command,
@@ -67,6 +82,34 @@ export class KeybindingRegistry {
     return toDisposable(() => {
       this.entries = this.entries.filter((e) => e !== entry);
     });
+  }
+
+  private registerRemoval(spec: KeybindingSpec): Disposable {
+    const removal: Removal = {
+      command: spec.command.slice(1),
+      chords: spec.key.trim() === '' ? null : parseKeySequence(spec.key),
+      when: spec.when,
+      order: this.counter++,
+    };
+    this.removals.push(removal);
+    return toDisposable(() => {
+      this.removals = this.removals.filter((r) => r !== removal);
+    });
+  }
+
+  /** Bindings in effect: those not removed by a later removal rule. */
+  private live(): Entry[] {
+    if (this.removals.length === 0) return this.entries;
+    return this.entries.filter(
+      (entry) =>
+        !this.removals.some(
+          (r) =>
+            r.order > entry.order &&
+            r.command === entry.command &&
+            (r.when === undefined || r.when === entry.when) &&
+            (r.chords === null || sameChords(this.actualOf(r.chords), this.actual(entry))),
+        ),
+    );
   }
 
   /** Changes the chord that "Leader" stands for, e.g. "Ctrl+Space". */
@@ -82,7 +125,7 @@ export class KeybindingRegistry {
   }
 
   list(): Keybinding[] {
-    return this.entries.map((e) => this.toBinding(e));
+    return this.live().map((e) => this.toBinding(e));
   }
 
   /** Chords typed so far in an unfinished sequence. */
@@ -100,7 +143,7 @@ export class KeybindingRegistry {
     let exact: Entry | null = null;
     let hasLonger = false;
 
-    for (const entry of this.entries) {
+    for (const entry of this.live()) {
       const chords = this.actual(entry);
       if (chords.length < sequence.length) continue;
       if (!sequence.every((c, i) => chords[i] === c)) continue;
@@ -127,7 +170,7 @@ export class KeybindingRegistry {
     const pending = this.pending;
     const byChord = new Map<string, Continuation>();
     // Entries are in registration order, so later bindings overwrite the command.
-    for (const entry of this.entries) {
+    for (const entry of this.live()) {
       const chords = this.actual(entry);
       if (chords.length <= pending.length) continue;
       if (!pending.every((c, i) => chords[i] === c)) continue;
@@ -147,14 +190,18 @@ export class KeybindingRegistry {
 
   /** Bindings for a command, most recent first (to display the active shortcut). */
   forCommand(command: string): Keybinding[] {
-    return this.entries
+    return this.live()
       .filter((e) => e.command === command)
       .sort((a, b) => b.order - a.order)
       .map((e) => this.toBinding(e));
   }
 
   private actual(entry: Entry): string[] {
-    return entry.chords.map((c) => (c === LEADER ? this.leader : c));
+    return this.actualOf(entry.chords);
+  }
+
+  private actualOf(chords: string[]): string[] {
+    return chords.map((c) => (c === LEADER ? this.leader : c));
   }
 
   private toBinding(entry: Entry): Keybinding {
@@ -165,4 +212,8 @@ export class KeybindingRegistry {
       when: entry.when,
     };
   }
+}
+
+function sameChords(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((c, i) => c === b[i]);
 }

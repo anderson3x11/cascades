@@ -7,6 +7,7 @@ import { ContextKeys } from '../core/context/context-keys';
 import { DisposableStore, type Disposable } from '../core/disposable';
 import { EventBus } from '../core/events/emitter';
 import { ExtensionHost } from '../core/extensions/host';
+import { parseKeybindings } from '../core/keybindings/file';
 import { chordFromEvent, formatKeySequence } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
@@ -32,6 +33,7 @@ import { Workspace } from './workspace.svelte';
 /** How long closing the window waits for onWillQuit handlers. */
 const WILL_QUIT_TIMEOUT_MS = 3000;
 const SETTINGS_FILE = 'settings.json';
+const KEYBINDINGS_FILE = 'keybindings.json';
 
 export class Workbench {
   readonly commands = new CommandRegistry();
@@ -76,6 +78,9 @@ export class Workbench {
         console.error(err);
       }
     }
+    // After the defaults, so that user shortcuts take precedence.
+    await this.loadUserKeybindings();
+    this.watchConfigFile(KEYBINDINGS_FILE, () => void this.loadUserKeybindings());
 
     this.runWillQuitOnClose();
     if (isTauri()) {
@@ -132,11 +137,52 @@ export class Workbench {
       this.settings.setUserSettings(parseSettings(await fs.readConfigFile(SETTINGS_FILE)));
     } catch (err) {
       // The previous values stay in effect until the file is fixed.
-      this.settingsError = this.banners.show({
-        kind: 'warning',
-        message: `${SETTINGS_FILE} ignoré : ${err instanceof Error ? err.message : String(err)}`,
-      });
+      this.settingsError = this.showFileError(
+        SETTINGS_FILE,
+        'preferences.openSettingsFile',
+        `ignoré : ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
+  }
+
+  /** User shortcuts from keybindings.json, replaced on each load. */
+  private userKeybindings = new DisposableStore();
+  private keybindingsError: Disposable | null = null;
+
+  private async loadUserKeybindings(): Promise<void> {
+    this.keybindingsError?.dispose();
+    this.keybindingsError = null;
+    let problem: string | null = null;
+    try {
+      const { bindings, errors } = parseKeybindings(await fs.readConfigFile(KEYBINDINGS_FILE));
+      this.userKeybindings.dispose();
+      this.userKeybindings = new DisposableStore();
+      for (const binding of bindings) this.userKeybindings.add(this.keybindings.register(binding));
+      if (errors.length > 0) {
+        const more = errors.length > 1 ? ` (et ${errors.length - 1} autre(s))` : '';
+        problem = `${errors[0]}${more}, ignorée.`;
+      }
+    } catch (err) {
+      // The previous shortcuts stay in effect until the file is fixed.
+      problem = `ignoré : ${err instanceof Error ? err.message : String(err)}`;
+    }
+    this.keyHint.clear();
+    if (problem) {
+      this.keybindingsError = this.showFileError(
+        KEYBINDINGS_FILE,
+        'preferences.openKeybindingsFile',
+        problem,
+      );
+    }
+  }
+
+  private showFileError(file: string, openCommand: string, problem: string): Disposable {
+    const open = () => this.commands.execute(openCommand).catch(console.error);
+    return this.banners.show({
+      kind: 'warning',
+      message: `${file} ${problem}`,
+      actions: [{ label: 'Ouvrir le fichier', run: () => void open() }],
+    });
   }
 
   /**
@@ -191,6 +237,8 @@ export class Workbench {
       void fs.configFilePath(name).then((path) => {
         if (!disposed) watch = watchFile(path, listener);
       });
+    } else {
+      watch = fs.onBrowserConfigWrite(name, listener);
     }
     return {
       dispose: () => {
@@ -342,6 +390,7 @@ export class Workbench {
         read: fs.readConfigFile,
         write: fs.writeConfigFile,
         list: fs.listConfigFolder,
+        path: fs.configFilePath,
         watch: (name, listener) => track(this.watchConfigFile(name, listener)),
       },
       app: {

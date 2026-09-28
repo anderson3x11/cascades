@@ -10,6 +10,7 @@ import indentKeep from './indent-keep';
 import layout from './layout';
 import smartLists from './smart-lists';
 import palette from './palette';
+import preferences from './preferences';
 import preview from './preview';
 import viewers from './viewers';
 import quarantine from './quarantine';
@@ -43,5 +44,6 @@ export const builtinExtensions: CascadesExtension[] = [
   quickOpen,
   quarantine,
   statusBar,
+  preferences,
   defaultKeybindings,
 ];
