@@ -25,7 +25,11 @@ const theme = EditorView.theme({
     color: 'var(--ui-fg)',
     border: 'none',
   },
-  '&.cm-focused .cm-cursor': { borderLeftColor: 'var(--fg)' },
+  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--active-line)' },
+  '.cm-activeLineGutter': { color: 'var(--fg)' },
+  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--fg)' },
+  '& > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground':
+    { backgroundColor: 'var(--selection)' },
 });
 
 /**
