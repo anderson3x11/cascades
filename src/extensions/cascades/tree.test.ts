@@ -5,6 +5,9 @@ import {
   cascadeGlyphs,
   cascadeWindow,
   indentColumns,
+  isListLine,
+  rootLine,
+  rootOf,
   type SourceLine,
 } from './tree';
 
@@ -113,6 +116,55 @@ describe('cascadeGlyphs', () => {
     const nodes = buildCascades(src(ELDEN), 4);
     const rows = cascadeGlyphs(nodes, 3, 4);
     expect([...rows.keys()].sort()).toEqual([3, 4]);
+  });
+});
+
+describe('hidden nodes', () => {
+  const NOTES = ['Jeux', '\tElden Ring', '\tHollow Knight', 'Courses', '\t- lait', '\t- pain'];
+  const glyphs = (hidden: (text: string) => boolean) => {
+    const lines = NOTES.map((text) => ({ text }));
+    const nodes = buildCascades(lines, 4);
+    const rows = cascadeGlyphs(nodes, 1, lines.length, (n) => hidden(n.text));
+    return NOTES.map((_, i) => (rows.get(i + 1) ?? []).map((g) => g.kind).join(' '));
+  };
+
+  it('draws nothing toward list items when lists are ignored', () => {
+    expect(glyphs((t) => isListLine(t))).toEqual(['start', 'tee', 'elbow', '', '', '']);
+  });
+
+  it('stops the vertical line at the last child still shown', () => {
+    const lines = ['a', '\tb', '\t- x', '\t- y'].map((text) => ({ text }));
+    const rows = cascadeGlyphs(buildCascades(lines, 4), 1, 4, (n) => isListLine(n.text));
+    expect([1, 2, 3, 4].map((l) => (rows.get(l) ?? []).map((g) => g.kind).join(' '))).toEqual([
+      'start',
+      'elbow',
+      '',
+      '',
+    ]);
+  });
+
+  it('hides a whole block through its root', () => {
+    const nodes = buildCascades(
+      NOTES.map((text) => ({ text })),
+      4,
+    );
+    const rows = cascadeGlyphs(nodes, 1, NOTES.length, (n) => rootOf(n).text === 'Jeux');
+    expect([...rows.keys()].sort()).toEqual([4, 5, 6]);
+  });
+});
+
+describe('isListLine and rootLine', () => {
+  it('recognizes list items', () => {
+    expect(['- a', '\t* b', '12. c', 'a) d', '+ e'].every(isListLine)).toBe(true);
+    expect(['Elden Ring', '-sans espace', '1.5 kg'].some(isListLine)).toBe(false);
+  });
+
+  it('finds the root line of a block', () => {
+    const lines = src(ELDEN);
+    const at = (n: number) => lines[n - 1] as SourceLine;
+    expect(rootLine(at, 4, 4)).toBe(1);
+    expect(rootLine(at, 6, 4)).toBe(6);
+    expect(rootLine((n) => ({ text: ['\tx', '\ty'][n - 1] ?? '' }), 2, 4)).toBeNull();
   });
 });
 

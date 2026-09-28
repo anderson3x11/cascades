@@ -1,14 +1,9 @@
-import {
-  RangeSetBuilder,
-  StateEffect,
-  StateField,
-  type EditorState,
-  type Extension,
-} from '@codemirror/state';
+import { StateEffect, StateField, type EditorState, type Extension } from '@codemirror/state';
 import {
   Decoration,
   EditorView,
   ViewPlugin,
+  WidgetType,
   layer,
   type DecorationSet,
   type LayerMarker,
@@ -20,6 +15,8 @@ import {
   cascadeEnd,
   cascadeGlyphs,
   cascadeWindow,
+  isListLine,
+  rootOf,
   type CascadeNode,
   type Glyph,
   type SourceLine,
@@ -46,7 +43,16 @@ export interface CascadeConfig {
   highlight: boolean;
   /** Ignore Markdown lists and code blocks. */
   markdown: boolean;
+  /** Draw no connector toward list items. */
+  ignoreLists: boolean;
+  /** Blocks whose cascade is hidden, by `blockKey` of their root line. */
+  hiddenBlocks: ReadonlySet<string>;
+  /** Shows a button on root lines to hide or show their block. */
+  onToggleBlock?: (key: string) => void;
 }
+
+/** Key of a block: the text of its root line, so it survives edits elsewhere. */
+export const blockKey = (rootText: string) => rootText.trim();
 
 /** How far above and below the viewport lines are read to complete cascades. */
 const MAX_SCAN = 2000;
@@ -87,6 +93,9 @@ function ignoredLines(state: EditorState, fromLine: number, toLine: number): Set
 interface Analysis {
   nodes: Map<number, CascadeNode>;
   rows: Map<number, Glyph[]>;
+  hidden: (node: CascadeNode) => boolean;
+  /** Visible root lines that have a cascade, for the hide/show buttons. */
+  roots: CascadeNode[];
 }
 
 function analyze(view: EditorView, config: CascadeConfig): Analysis {
@@ -103,7 +112,44 @@ function analyze(view: EditorView, config: CascadeConfig): Analysis {
   const lines: SourceLine[] = [];
   for (let n = window.from; n <= window.to; n++) lines.push(lineAt(n));
   const nodes = buildCascades(lines, tabSize, window.from);
-  return { nodes, rows: cascadeGlyphs(nodes, first, last) };
+  const hidden = (node: CascadeNode) =>
+    config.hiddenBlocks.has(blockKey(rootOf(node).text)) ||
+    (config.ignoreLists && isListLine(node.text));
+  const roots = [...nodes.values()].filter(
+    (n) => n.depth === 0 && n.children.length > 0 && n.line >= first && n.line <= last,
+  );
+  return { nodes, rows: cascadeGlyphs(nodes, first, last, hidden), hidden, roots };
+}
+
+/** Button at the end of a root line to hide or show its block's cascade. */
+class BlockToggle extends WidgetType {
+  constructor(
+    readonly key: string,
+    readonly hidden: boolean,
+    readonly toggle: (key: string) => void,
+  ) {
+    super();
+  }
+
+  override eq(other: BlockToggle): boolean {
+    return other.key === this.key && other.hidden === this.hidden;
+  }
+
+  toDOM(): HTMLElement {
+    const button = document.createElement('button');
+    button.className = this.hidden ? 'cm-cascade-toggle hidden' : 'cm-cascade-toggle';
+    button.title = this.hidden ? 'Afficher la cascade de ce bloc' : 'Masquer la cascade de ce bloc';
+    button.setAttribute('aria-label', button.title);
+    button.innerHTML =
+      '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2v6.5a2 2 0 0 0 2 2h6M9.5 8l2.5 2.5L9.5 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    button.onmousedown = (e) => e.preventDefault();
+    button.onclick = () => this.toggle(this.key);
+    return button;
+  }
+
+  override ignoreEvent(): boolean {
+    return true;
+  }
 }
 
 class CascadeState {
@@ -118,7 +164,7 @@ class CascadeState {
     private readonly config: CascadeConfig,
   ) {
     this.analysis = analyze(view, config);
-    this.updateActive(view.state);
+    this.updateDecorations(view.state);
   }
 
   update(update: ViewUpdate): void {
@@ -130,23 +176,32 @@ class CascadeState {
     ) {
       this.analysis = analyze(update.view, this.config);
     }
-    this.updateActive(update.state);
+    this.updateDecorations(update.state);
   }
 
-  private updateActive(state: EditorState): void {
-    if (!this.config.highlight) return;
-    const hover = state.field(hoverField);
-    this.active = hover ?? state.doc.lineAt(state.selection.main.head).number;
-    this.activeParent = this.analysis.nodes.get(this.active)?.parent?.line ?? null;
-    const builder = new RangeSetBuilder<Decoration>();
-    if (this.activeParent !== null) {
-      builder.add(
-        state.doc.line(this.activeParent).from,
-        state.doc.line(this.activeParent).from,
-        Decoration.line({ class: 'cm-cascade-parent' }),
-      );
+  /** Highlight of the active line's parent, and the hide/show buttons of root lines. */
+  private updateDecorations(state: EditorState): void {
+    const { doc } = state;
+    const ranges = [];
+    if (this.config.highlight) {
+      const hover = state.field(hoverField);
+      this.active = hover ?? doc.lineAt(state.selection.main.head).number;
+      const node = this.analysis.nodes.get(this.active);
+      this.activeParent = node && !this.analysis.hidden(node) ? (node.parent?.line ?? null) : null;
+      if (this.activeParent !== null) {
+        const from = doc.line(this.activeParent).from;
+        ranges.push(Decoration.line({ class: 'cm-cascade-parent' }).range(from));
+      }
     }
-    this.decorations = builder.finish();
+    const toggle = this.config.onToggleBlock;
+    if (toggle) {
+      for (const root of this.analysis.roots) {
+        const key = blockKey(root.text);
+        const widget = new BlockToggle(key, this.config.hiddenBlocks.has(key), toggle);
+        ranges.push(Decoration.widget({ widget, side: 1 }).range(doc.line(root.line).to));
+      }
+    }
+    this.decorations = Decoration.set(ranges, true);
   }
 }
 
@@ -316,6 +371,25 @@ const theme = EditorView.theme({
     strokeWidth: 'calc(var(--cascade-width, 1.2) + 0.6)',
   },
   '.cm-cascade-parent': { backgroundColor: 'var(--cascade-parent-bg)' },
+  // Hide/show button of a block: shown on hover of its root line, always when hidden.
+  '.cm-cascade-toggle': {
+    display: 'inline-flex',
+    alignItems: 'center',
+    verticalAlign: 'middle',
+    marginLeft: '10px',
+    padding: '1px 3px',
+    border: 'none',
+    borderRadius: '4px',
+    background: 'none',
+    color: 'var(--ui-fg)',
+    opacity: '0',
+    cursor: 'pointer',
+    transition: 'opacity 120ms',
+  },
+  '.cm-line:hover .cm-cascade-toggle': { opacity: '0.7' },
+  '.cm-cascade-toggle:hover': { opacity: '1', backgroundColor: 'var(--ui-hover)' },
+  '.cm-cascade-toggle.hidden': { opacity: '0.45' },
+  '.cm-cascade-toggle.hidden svg': { strokeDasharray: '2 2' },
 });
 
 export function cascades(config: CascadeConfig): Extension {

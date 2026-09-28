@@ -1,5 +1,8 @@
-import { defineExtension } from '../../api';
-import { CASCADE_STYLES, cascades, type CascadeStyle } from './render';
+import { defineExtension, type TabInfo } from '../../api';
+import { CASCADE_STYLES, blockKey, cascades, type CascadeStyle } from './render';
+import { rootLine } from './tree';
+
+const HIDDEN_FILE = 'cascades-hidden.json';
 
 const STYLE_NAMES: Record<CascadeStyle, string> = {
   arrow: 'Flèches',
@@ -15,7 +18,7 @@ const STYLE_NAMES: Record<CascadeStyle, string> = {
 /** Visual connectors between indented lines and their parent line. */
 export default defineExtension({
   id: 'cascades.cascades',
-  activate(ctx) {
+  async activate(ctx) {
     ctx.settings.register('cascades', {
       enabled: {
         type: 'boolean',
@@ -33,6 +36,11 @@ export default defineExtension({
         default: 'arrow',
         enum: CASCADE_STYLES,
         description: `Style des connecteurs : ${CASCADE_STYLES.join(', ')}.`,
+      },
+      ignoreLists: {
+        type: 'boolean',
+        default: false,
+        description: 'Ne pas dessiner de cascade vers les éléments de liste (- item, 1. item…).',
       },
       lineWidth: {
         type: 'number',
@@ -54,6 +62,57 @@ export default defineExtension({
     /** Style shown while the style picker previews one. */
     let preview: CascadeStyle | null = null;
 
+    // Blocks hidden by hand, per file (never written in the file itself).
+    const hidden = new Map<string, Set<string>>();
+    try {
+      const saved: unknown = JSON.parse((await ctx.configFiles.read(HIDDEN_FILE)) ?? '{}');
+      if (typeof saved === 'object' && saved !== null) {
+        for (const [file, keys] of Object.entries(saved)) {
+          if (Array.isArray(keys))
+            hidden.set(file, new Set(keys.filter((k) => typeof k === 'string')));
+        }
+      }
+    } catch {
+      // A broken file only forgets which blocks were hidden.
+    }
+    const fileKey = (tab: TabInfo) => tab.path ?? `untitled:${tab.id}`;
+    let saveTimer: ReturnType<typeof setTimeout> | undefined;
+    const saveHidden = () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        const data: Record<string, string[]> = {};
+        for (const [file, keys] of hidden) {
+          if (keys.size > 0 && !file.startsWith('untitled:')) data[file] = [...keys];
+        }
+        void ctx.configFiles.write(HIDDEN_FILE, JSON.stringify(data));
+      }, 300);
+    };
+    ctx.subscriptions.add({ dispose: () => clearTimeout(saveTimer) });
+
+    const toggleBlock = (tab: TabInfo, key: string) => {
+      const file = fileKey(tab);
+      const keys = hidden.get(file) ?? new Set<string>();
+      if (keys.has(key)) keys.delete(key);
+      else keys.add(key);
+      hidden.set(file, keys);
+      handle.refresh();
+      saveHidden();
+    };
+
+    // Follow renames (untitled buffer saved, "save as").
+    const tabFiles = new Map<string, string>();
+    ctx.events.on('workspace.didOpen', (tab) => tabFiles.set(tab.id, fileKey(tab)));
+    ctx.events.on('workspace.didChangeTab', (tab) => {
+      const before = tabFiles.get(tab.id);
+      const after = fileKey(tab);
+      tabFiles.set(tab.id, after);
+      const keys = before && before !== after ? hidden.get(before) : undefined;
+      if (!keys) return;
+      hidden.delete(before as string);
+      hidden.set(after, keys);
+      saveHidden();
+    });
+
     const handle = ctx.editor.addExtension((tab) => {
       const get = <T>(key: string) => ctx.settings.get<T>(`cascades.${key}`, tab.language);
       if (!get<boolean>('enabled') || !get<string[]>('languages').includes(tab.language)) {
@@ -65,7 +124,30 @@ export default defineExtension({
         colorByDepth: get<boolean>('colorByDepth'),
         highlight: get<boolean>('highlight'),
         markdown: tab.language === 'markdown',
+        ignoreLists: get<boolean>('ignoreLists'),
+        hiddenBlocks: hidden.get(fileKey(tab)) ?? new Set(),
+        onToggleBlock: (key) => toggleBlock(tab, key),
       });
+    });
+
+    ctx.commands.register(
+      'cascades.toggleBlock',
+      () => {
+        const tab = ctx.workspace.active();
+        const view = ctx.editor.view();
+        if (!tab || !view || tab.viewer) return;
+        const { doc, tabSize } = view.state;
+        const line = doc.lineAt(view.state.selection.main.head).number;
+        const root = rootLine((n) => ({ text: doc.line(n).text }), line, tabSize);
+        if (root !== null) toggleBlock(tab, blockKey(doc.line(root).text));
+      },
+      { title: 'Afficher ou masquer la cascade de ce bloc', category: 'Affichage' },
+    );
+    ctx.keybindings.register({ key: 'Leader Shift+C', command: 'cascades.toggleBlock' });
+    ctx.menus.registerItem('view', {
+      command: 'cascades.toggleBlock',
+      group: '2_appearance',
+      order: 4,
     });
 
     ctx.settings.onDidChange(({ keys }) => {

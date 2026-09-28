@@ -10,6 +10,8 @@ const config = (style: CascadeStyle): CascadeConfig => ({
   colorByDepth: true,
   highlight: true,
   markdown: false,
+  ignoreLists: false,
+  hiddenBlocks: new Set(),
 });
 const draw = (style: CascadeStyle) => drawRow([elbow], 2, geometry, config(style), null, null);
 

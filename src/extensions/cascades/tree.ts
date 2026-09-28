@@ -14,6 +14,7 @@ export interface SourceLine {
 
 export interface CascadeNode {
   line: number;
+  text: string;
   /** Indentation width in columns (tabs expanded). */
   indent: number;
   parent: CascadeNode | null;
@@ -54,6 +55,7 @@ export function buildCascades(
     const parent = stack[stack.length - 1] ?? null;
     const node: CascadeNode = {
       line: firstLine + i,
+      text: source.text,
       indent,
       parent,
       depth: parent ? parent.depth + 1 : 0,
@@ -88,11 +90,43 @@ export interface Glyph {
   parentLine: number;
 }
 
-/** Connector pieces to draw on each line between `from` and `to` (inclusive). */
+const LIST_ITEM = /^[ \t]*(?:[-*+]|\d{1,9}[.)]|[a-zA-Z][.)])[ \t]/;
+
+/** True for a list item line ("- a", "1. b", "a) c"). */
+export function isListLine(text: string): boolean {
+  return LIST_ITEM.test(text);
+}
+
+/** Unindented ancestor of a node (the node itself for a root). */
+export function rootOf(node: CascadeNode): CascadeNode {
+  let root = node;
+  while (root.parent) root = root.parent;
+  return root;
+}
+
+/** Nearest unindented line at or above `line`, or null when there is none. */
+export function rootLine(
+  lineAt: (line: number) => SourceLine,
+  line: number,
+  tabSize: number,
+): number | null {
+  for (let n = line; n >= 1; n--) {
+    const source = lineAt(n);
+    if (!source.ignored && indentColumns(source.text, tabSize) === 0) return n;
+  }
+  return null;
+}
+
+/**
+ * Connector pieces to draw on each line between `from` and `to` (inclusive).
+ * A node for which `hidden` returns true gets no branch, and its parent's
+ * vertical line stops at the last child still shown.
+ */
 export function cascadeGlyphs(
   nodes: Map<number, CascadeNode>,
   from: number,
   to: number,
+  hidden: (node: CascadeNode) => boolean = () => false,
 ): Map<number, Glyph[]> {
   const rows = new Map<number, Glyph[]>();
   const add = (line: number, glyph: Glyph) => {
@@ -103,7 +137,8 @@ export function cascadeGlyphs(
   };
 
   for (const parent of nodes.values()) {
-    const last = parent.children[parent.children.length - 1];
+    const shown = parent.children.filter((c) => !hidden(c));
+    const last = shown[shown.length - 1];
     if (!last || last.line < from || parent.line > to) continue;
     const base = {
       col: parent.indent,
@@ -112,7 +147,7 @@ export function cascadeGlyphs(
       parentLine: parent.line,
     };
     add(parent.line, { ...base, kind: 'start' });
-    const children = new Map(parent.children.map((c) => [c.line, c]));
+    const children = new Map(shown.map((c) => [c.line, c]));
     for (let line = Math.max(parent.line + 1, from); line <= Math.min(last.line, to); line++) {
       const child = children.get(line);
       if (!child) add(line, { ...base, kind: 'pass' });

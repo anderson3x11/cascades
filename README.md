@@ -49,6 +49,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Mode zen (Échap pour sortir)                    | Leader Z                                  |
 | Afficher / masquer les cascades                 | Leader C                                  |
 | Mettre en quarantaine / panneau de quarantaine  | Leader Q / Leader Shift+Q                 |
+| Masquer / afficher la cascade du bloc courant   | Leader Shift+C                            |
 | Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
 | Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |
 
@@ -102,6 +103,7 @@ Le dossier de config est :
 | `cascades.languages`                                   | `["plaintext", "markdown"]`              | Langages où les cascades sont actives                                          |
 | `cascades.style`                                       | `"arrow"`                                | `arrow`, `rounded`, `curved`, `bullet`, `line`, `dashed`, `dotted` ou `guides` |
 | `cascades.lineWidth`                                   | `1.2`                                    | Épaisseur des traits (px)                                                      |
+| `cascades.ignoreLists`                                 | `false`                                  | Pas de cascade vers les éléments de liste                                      |
 | `cascades.colorByDepth`                                | `true`                                   | Une couleur par niveau de profondeur                                           |
 | `cascades.highlight`                                   | `true`                                   | Mettre en valeur la branche de la ligne active                                 |
 | `smartLists.languages`                                 | `["plaintext", "markdown"]`              | Langages où les listes intelligentes sont actives                              |
