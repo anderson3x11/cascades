@@ -55,6 +55,12 @@
       ></button>
     </div>
   {/each}
+  <button
+    class="new"
+    aria-label="Nouveau fichier"
+    title="Nouveau fichier"
+    onclick={() => run('file.new')}>+</button
+  >
 </div>
 
 <style>
@@ -111,6 +117,27 @@
     content: '●';
     opacity: 0.7;
     font-size: 10px;
+  }
+
+  .new {
+    flex: none;
+    align-self: center;
+    width: 26px;
+    height: 26px;
+    margin: 0 4px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ui-fg);
+    font: inherit;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .new:hover {
+    background: var(--ui-border);
+    color: var(--fg);
   }
 
   .close:hover {

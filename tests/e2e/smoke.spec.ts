@@ -54,6 +54,12 @@ test('keybindings drive tab commands', async ({ page }) => {
   await expect(page.getByRole('tab')).toHaveCount(1);
 });
 
+test('the + button opens a new tab', async ({ page }) => {
+  await page.getByRole('button', { name: 'Nouveau fichier' }).click();
+  await expect(page.getByRole('tab')).toHaveCount(2);
+  await expect(page.getByRole('tab', { selected: true })).toHaveText('Sans titre 2');
+});
+
 test('editor commands run through the command registry', async ({ page }) => {
   await page.locator('.cm-content').click();
   await page.keyboard.type('ligne');
