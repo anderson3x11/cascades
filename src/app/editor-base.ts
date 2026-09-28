@@ -1,6 +1,5 @@
 import { EditorState, type Extension } from '@codemirror/state';
 import {
-  EditorView,
   crosshairCursor,
   drawSelection,
   dropCursor,
@@ -8,29 +7,9 @@ import {
   rectangularSelection,
 } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap, indentLess, insertTab } from '@codemirror/commands';
-import {
-  bracketMatching,
-  defaultHighlightStyle,
-  foldKeymap,
-  indentOnInput,
-  syntaxHighlighting,
-} from '@codemirror/language';
+import { bracketMatching, foldKeymap, indentOnInput } from '@codemirror/language';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
-
-const theme = EditorView.theme({
-  '&': { height: '100%', backgroundColor: 'var(--bg)', color: 'var(--fg)' },
-  '.cm-scroller': { fontFamily: 'var(--font-editor)', lineHeight: '1.6' },
-  '.cm-gutters': {
-    backgroundColor: 'var(--bg)',
-    color: 'var(--ui-fg)',
-    border: 'none',
-  },
-  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--active-line)' },
-  '.cm-activeLineGutter': { color: 'var(--fg)' },
-  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--fg)' },
-  '& > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground':
-    { backgroundColor: 'var(--selection)' },
-});
+import { editorTheme } from './editor-theme';
 
 /**
  * Editing behavior that every tab gets. Anything a user may want to toggle
@@ -43,7 +22,6 @@ export function baseExtensions(): Extension {
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),
     indentOnInput(),
-    syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
     bracketMatching(),
     rectangularSelection(),
     crosshairCursor(),
@@ -55,6 +33,6 @@ export function baseExtensions(): Extension {
       ...searchKeymap,
       ...foldKeymap,
     ]),
-    theme,
+    editorTheme(),
   ];
 }

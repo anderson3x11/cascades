@@ -1,0 +1,90 @@
+/*
+ * Default palettes. The light one applies unless the OS asks for dark.
+ * These variables are the theme contract: every color in the UI and the
+ * editor comes from them, so a theme only has to redefine them.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces and text */
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --ui-bg: #f6f8fa;
+  --ui-fg: #59636e;
+  --ui-border: #d1d9e0;
+  --ui-hover: #e6eaef;
+  --accent: #0969da;
+  --menu-bg: #ffffff;
+  --menu-shadow: 0 8px 24px rgb(140 149 159 / 0.3);
+
+  /* Editor */
+  --active-line: rgb(0 0 0 / 0.035);
+  --selection: rgb(9 105 218 / 0.2);
+  --match: rgb(255 223 93 / 0.5);
+  --match-selected: rgb(255 170 50 / 0.6);
+  --bracket-match: rgb(9 105 218 / 0.15);
+
+  /* Syntax */
+  --syn-keyword: #cf222e;
+  --syn-operator: #cf222e;
+  --syn-string: #0a3069;
+  --syn-regexp: #116329;
+  --syn-number: #0550ae;
+  --syn-constant: #0550ae;
+  --syn-comment: #6e7781;
+  --syn-function: #8250df;
+  --syn-type: #953800;
+  --syn-property: #0550ae;
+  --syn-variable: #1f2328;
+  --syn-tag: #116329;
+  --syn-attribute: #0550ae;
+  --syn-heading: #0550ae;
+  --syn-link: #0969da;
+  --syn-meta: #6e7781;
+  --syn-invalid: #82071e;
+
+  /* Fonts */
+  --font-ui: system-ui, 'Segoe UI', sans-serif;
+  --font-editor: 'Cascadia Code', Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --bg: #1e1f22;
+    --fg: #d4d4d4;
+    --ui-bg: #2b2d30;
+    --ui-fg: #a1a1aa;
+    --ui-border: #3f3f46;
+    --ui-hover: #3a3d42;
+    --accent: #60a5fa;
+    --menu-bg: #2b2d30;
+    --menu-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+
+    --active-line: rgb(255 255 255 / 0.04);
+    --selection: rgb(96 165 250 / 0.3);
+    --match: rgb(187 128 9 / 0.4);
+    --match-selected: rgb(255 170 50 / 0.45);
+    --bracket-match: rgb(96 165 250 / 0.25);
+
+    --syn-keyword: #ff7b72;
+    --syn-operator: #ff7b72;
+    --syn-string: #a5d6ff;
+    --syn-regexp: #7ee787;
+    --syn-number: #79c0ff;
+    --syn-constant: #79c0ff;
+    --syn-comment: #8b949e;
+    --syn-function: #d2a8ff;
+    --syn-type: #ffa657;
+    --syn-property: #79c0ff;
+    --syn-variable: #d4d4d4;
+    --syn-tag: #7ee787;
+    --syn-attribute: #79c0ff;
+    --syn-heading: #79c0ff;
+    --syn-link: #58a6ff;
+    --syn-meta: #8b949e;
+    --syn-invalid: #ffa198;
+  }
+}
