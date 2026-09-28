@@ -138,8 +138,13 @@ describe('cascadeWindow', () => {
 describe('cascadeEnd', () => {
   it('returns the deepest last descendant', () => {
     const nodes = buildCascades(src(ELDEN), 4);
-    expect(cascadeEnd(nodes.get(1)!)).toBe(5);
-    expect(cascadeEnd(nodes.get(2)!)).toBe(4);
-    expect(cascadeEnd(nodes.get(3)!)).toBeNull();
+    const endOf = (line: number) => {
+      const node = nodes.get(line);
+      if (!node) throw new Error(`no node on line ${line}`);
+      return cascadeEnd(node);
+    };
+    expect(endOf(1)).toBe(5);
+    expect(endOf(2)).toBe(4);
+    expect(endOf(3)).toBeNull();
   });
 });
