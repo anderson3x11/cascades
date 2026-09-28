@@ -32,6 +32,23 @@ export async function writeTextFile(path: string, text: string, info: TextFileIn
   await invoke('write_text_file', { path, text, info: { encoding, bom, lineEnding } });
 }
 
+/** Raw bytes of a file, or of `length` bytes from `offset`. */
+export async function readBinary(
+  path: string,
+  range?: { offset: number; length: number },
+): Promise<Uint8Array> {
+  if (!isTauri()) {
+    const bytes = fakeFs.readBytes(path);
+    return range ? bytes.slice(range.offset, range.offset + range.length) : bytes;
+  }
+  const buffer = await invoke<ArrayBuffer>('read_binary', {
+    path,
+    offset: range?.offset ?? null,
+    length: range?.length ?? null,
+  });
+  return new Uint8Array(buffer);
+}
+
 export interface DirEntry {
   name: string;
   isDir: boolean;

@@ -70,6 +70,12 @@ export const fakeFs = {
     return files.get(path) ?? fail(`${path}: fichier introuvable`);
   },
 
+  /** The text as bytes, one per character (tests put binary content as latin-1 text). */
+  readBytes(path: string): Uint8Array {
+    const text = this.read(path);
+    return Uint8Array.from(text, (ch) => ch.charCodeAt(0) & 0xff);
+  },
+
   write(path: string, text: string): void {
     files.set(path, text);
   },

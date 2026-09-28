@@ -15,6 +15,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::read_text_file,
+            commands::read_binary,
             commands::write_text_file,
             commands::config_dir,
             commands::read_config_file,

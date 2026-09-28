@@ -1,0 +1,90 @@
+.cv-pdf {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cv-pdf-stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+  background: var(--ui-bg);
+}
+
+.cv-pdf-page {
+  position: relative;
+  flex: none;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+}
+
+.cv-pdf-page canvas {
+  display: block;
+}
+
+.cv-pdf-error {
+  margin: auto;
+  color: var(--ui-fg);
+}
+
+/*
+ * Text layer: transparent text laid over the page so that it can be selected
+ * and copied. The rules pdf.js needs, taken from its viewer stylesheet.
+ */
+.cv-pdf .textLayer {
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  line-height: 1;
+  text-align: initial;
+  transform-origin: 0 0;
+}
+
+.cv-pdf .textLayer :is(span, br) {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.cv-pdf .textLayer > :not(.markedContent),
+.cv-pdf .textLayer .markedContent span:not(.markedContent) {
+  --font-height: 0;
+  --scale-x: 1;
+  --rotate: 0deg;
+
+  z-index: 1;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+
+.cv-pdf .textLayer .markedContent {
+  display: contents;
+}
+
+.cv-pdf .textLayer ::selection {
+  background: rgb(0 90 255 / 0.3);
+}
+
+.cv-pdf .textLayer br::selection {
+  background: transparent;
+}
+
+.cv-pdf .textLayer .endOfContent {
+  position: absolute;
+  inset: 100% 0 0;
+  z-index: 0;
+  display: block;
+  cursor: default;
+  user-select: none;
+}

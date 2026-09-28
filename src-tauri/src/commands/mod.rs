@@ -190,6 +190,29 @@ pub async fn trash_path(path: String) -> Result<(), String> {
     folder::trash(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
 }
 
+/// Raw bytes of a file, or of `length` bytes from `offset`. Sent as binary,
+/// not as a JSON array.
+#[tauri::command]
+pub async fn read_binary(
+    path: String,
+    offset: Option<u64>,
+    length: Option<u64>,
+) -> Result<tauri::ipc::Response, String> {
+    use std::io::{Read, Seek, SeekFrom};
+    let error = |e: std::io::Error| format!("{path}: {e}");
+    let mut file = std::fs::File::open(&path).map_err(error)?;
+    if let Some(offset) = offset {
+        file.seek(SeekFrom::Start(offset)).map_err(error)?;
+    }
+    let mut bytes = Vec::new();
+    match length {
+        Some(length) => file.take(length).read_to_end(&mut bytes),
+        None => file.read_to_end(&mut bytes),
+    }
+    .map_err(error)?;
+    Ok(tauri::ipc::Response::new(bytes))
+}
+
 #[tauri::command]
 pub async fn read_text_file(path: String) -> Result<Decoded, String> {
     let bytes = std::fs::read(&path).map_err(|e| format!("{path}: {e}"))?;

@@ -474,6 +474,8 @@ export interface FsApi {
    * access to the file's folder only. Returns the path as is outside the app.
    */
   fileUrl(path: string): Promise<string>;
+  /** Raw bytes of a file (PDF, binary files), or of `length` bytes from `offset`. */
+  readBinary(path: string, range?: { offset: number; length: number }): Promise<Uint8Array>;
   /** Entries of a folder, unsorted. */
   listDir(path: string): Promise<{ name: string; isDir: boolean }[]>;
   /**

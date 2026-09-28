@@ -452,6 +452,7 @@ export class Workbench {
         writeTextFile: fs.writeTextFile,
         watch: (path, listener) => track(watchFile(path, listener)),
         fileUrl,
+        readBinary: fs.readBinary,
         listDir: fs.listDir,
         listFiles: fs.listFiles,
         searchFiles: search.searchFiles,

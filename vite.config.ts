@@ -18,7 +18,13 @@ export default defineConfig({
   // Dependencies of lazily loaded viewers: bundled at startup, otherwise the dev
   // server discovers them on first use and reloads the page.
   optimizeDeps: {
-    include: ['markdown-it', 'markdown-it-footnote', 'markdown-it-task-lists', 'dompurify'],
+    include: [
+      'markdown-it',
+      'markdown-it-footnote',
+      'markdown-it-task-lists',
+      'dompurify',
+      'pdfjs-dist',
+    ],
   },
   build: {
     target: 'es2022',

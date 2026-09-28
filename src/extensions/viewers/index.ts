@@ -76,6 +76,13 @@ export default defineExtension({
         ),
     });
     ctx.viewers.register({
+      id: 'pdf',
+      title: 'PDF',
+      extensions: ['pdf'],
+      kind: 'replace',
+      load: async () => (await import('./pdf')).createPdfViewer((path) => ctx.fs.readBinary(path)),
+    });
+    ctx.viewers.register({
       id: 'svg',
       title: 'SVG',
       extensions: ['svg'],
