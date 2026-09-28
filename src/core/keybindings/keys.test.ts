@@ -62,6 +62,15 @@ describe('chordFromEvent', () => {
     expect(chordFromEvent({ ...event('à'), code: 'Digit0' })).toBe('à');
   });
 
+  it('uses the physical letter when Ctrl+Alt (AltGr) gives a character', () => {
+    const ctrlAlt = { ctrl: true, alt: true };
+    expect(chordFromEvent({ ...event('ñ', ctrlAlt), code: 'KeyN' })).toBe('ctrl+alt+n');
+    expect(chordFromEvent({ ...event('€', ctrlAlt), code: 'KeyE' })).toBe('ctrl+alt+e');
+    // A plain letter follows the layout: the A key of AZERTY sits at KeyQ.
+    expect(chordFromEvent({ ...event('a', { ctrl: true }), code: 'KeyQ' })).toBe('ctrl+a');
+    expect(chordFromEvent({ ...event('ñ'), code: 'KeyN' })).toBe('ñ');
+  });
+
   it('ignores lone modifiers', () => {
     expect(chordFromEvent(event('Control', { ctrl: true }))).toBeNull();
   });

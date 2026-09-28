@@ -30,6 +30,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - `settings.json` rechargé à chaud, et réglages modifiables depuis l'interface.
 - `settings.json` accepte les commentaires, gardés quand un réglage est modifié depuis l'interface ; erreurs affichées dans un bandeau.
 - `keybindings.json` au format VS Code : ajout, remplacement et retrait (`-commande`) de raccourcis, rechargé à chaud.
+- Raccourcis Ctrl+Alt+lettre reconnus même quand Windows les traite comme AltGr (Ctrl+Alt+N qui donnait « ñ »).
 - Aide à l'édition de `settings.json` et `keybindings.json` : complétion des réglages, valeurs et commandes, erreurs soulignées, description au survol.
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.

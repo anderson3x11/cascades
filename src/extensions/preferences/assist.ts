@@ -25,7 +25,7 @@ export interface Suggestions {
 }
 
 const KEYBINDING_PROPERTIES: [string, string][] = [
-  ['key', 'Raccourci : "Ctrl+Alt+N", "Leader X"…'],
+  ['key', 'Raccourci : "Ctrl+Shift+N", "Leader X"…'],
   ['command', 'Commande lancée ; "-commande" retire un raccourci'],
   ['when', 'Condition : "editorFocus"…'],
   ['args', 'Argument passé à la commande'],

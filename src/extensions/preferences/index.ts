@@ -12,7 +12,7 @@ const SETTINGS_TEMPLATE = `// Réglages personnels : ils remplacent les valeurs 
 `;
 
 const KEYBINDINGS_TEMPLATE = `// Raccourcis personnels : ils s'ajoutent à ceux par défaut, ou les remplacent.
-//   { "key": "Ctrl+Alt+N", "command": "file.new" }
+//   { "key": "Ctrl+Shift+N", "command": "file.new" }
 // Un "-" devant la commande retire un raccourci par défaut :
 //   { "key": "Ctrl+D", "command": "-editor.addNextOccurrence" }
 [

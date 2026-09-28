@@ -104,6 +104,13 @@ export function chordFromEvent(event: KeyEventLike): string | null {
   // Ctrl or Alt held, use the digit printed on the physical key instead.
   const digit = /^Digit(\d)$/.exec(event.code ?? '')?.[1];
   if (digit && (event.ctrlKey || event.altKey) && !/^\d$/.test(key)) key = digit;
+  // On Windows Ctrl+Alt is AltGr: Ctrl+Alt+N may give "ñ", Ctrl+Alt+E "€".
+  // Same fix with the letter of the physical key, unless a plain letter came
+  // out (it follows the layout: the "A" key of AZERTY is KeyQ).
+  const letter = /^Key([A-Z])$/.exec(event.code ?? '')?.[1];
+  if (letter && (event.ctrlKey || event.altKey) && !/^[a-z]$/.test(key)) {
+    key = letter.toLowerCase();
+  }
   if (['control', 'alt', 'shift', 'meta', 'altgraph', 'os', 'dead', 'unidentified'].includes(key)) {
     return null;
   }

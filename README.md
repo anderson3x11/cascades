@@ -128,7 +128,7 @@ Même format que VS Code : une liste de raccourcis qui s'ajoutent à ceux par d�
 
 ```jsonc
 [
-  { "key": "Ctrl+Alt+N", "command": "file.new" },
+  { "key": "Ctrl+Shift+N", "command": "file.new" },
   // Ctrl+D ne sélectionne plus l'occurrence suivante
   { "key": "Ctrl+D", "command": "-editor.addNextOccurrence" },
   { "key": "Leader D", "command": "editor.duplicateLine", "when": "editorFocus" },
