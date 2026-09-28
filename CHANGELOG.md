@@ -41,6 +41,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Visionneuse PDF (pdf.js, chargée à la première ouverture) : pages dessinées au fil du défilement, texte sélectionnable, zoom (boutons, Ctrl+molette, ajuster à la largeur), numéro de page. API `ctx.fs.readBinary`.
 - Vue hexadécimale en lecture seule pour les fichiers binaires (adresse, octets, caractères), lue par morceaux et dessinée seulement à l'écran ; ces fichiers reviennent aussi avec la session. API `ctx.fs.fileSize`, option `binary` des visionneuses.
 - Barre d'état des PDF, images et vues hexadécimales : le type de vue et la taille du fichier, au lieu de la position et des mots.
+- Paires automatiques : ( [ { " ' se ferment en tapant (pas l'apostrophe dans un mot) ; en Markdown, `**` au deuxième astérisque, `` ` `` et les blocs ` ``` `. Un de ces caractères tapé sur une sélection l'entoure (et `_`, `~` en Markdown). Réglage `autoPairs.enabled`, par langage si besoin.
 - Commentaires grisés dans les fichiers JSON, et Ctrl+/ les commente avec `//`. Ctrl+: commente aussi, pour les claviers AZERTY.
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.

@@ -1,4 +1,5 @@
 import type { CascadesExtension } from '../api';
+import autoPairs from './auto-pairs';
 import cascades from './cascades';
 import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
@@ -30,6 +31,7 @@ export const builtinExtensions: CascadesExtension[] = [
   layout,
   editorSettings,
   indentKeep,
+  autoPairs,
   jsonComments,
   smartLists,
   cascades,
