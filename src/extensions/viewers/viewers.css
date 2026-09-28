@@ -116,6 +116,17 @@
   color: var(--ui-fg);
 }
 
+/* HTML ---------------------------------------------------------------------- */
+
+.cv-html {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  /* A page without its own background is shown as a browser would. */
+  background: #ffffff;
+}
+
 /* JSON ---------------------------------------------------------------------- */
 
 .cv-json {

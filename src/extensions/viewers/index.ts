@@ -14,6 +14,12 @@ export default defineExtension({
         description: 'Police des aperçus (Markdown, HTML).',
       },
       fontSize: { type: 'number', default: 15, description: 'Taille de police des aperçus (px).' },
+      htmlScripts: {
+        type: 'boolean',
+        default: false,
+        description:
+          'Exécuter les scripts des pages HTML prévisualisées (toujours isolées de l’application).',
+      },
     });
     const applyFont = () => {
       ctx.layout.setStyle('font-preview', ctx.settings.get<string>('preview.fontFamily'));
@@ -38,6 +44,19 @@ export default defineExtension({
           openFile: async (path) => {
             await ctx.commands.execute('file.openPath', path);
           },
+        }),
+    });
+
+    ctx.viewers.register({
+      id: 'html',
+      title: 'HTML',
+      extensions: ['html', 'htm', 'xhtml'],
+      languages: ['html'],
+      kind: 'preview',
+      load: async () =>
+        (await import('./html')).createHtmlViewer({
+          fileUrl: ctx.fs.fileUrl,
+          scriptsAllowed: () => ctx.settings.get<boolean>('preview.htmlScripts'),
         }),
     });
 
