@@ -13,6 +13,7 @@ import insertDate from './insert-date';
 import jsonComments from './json-comments';
 import layout from './layout';
 import links from './links';
+import markdownTables from './markdown-tables';
 import smartLists from './smart-lists';
 import palette from './palette';
 import preferences from './preferences';
@@ -36,6 +37,7 @@ export const builtinExtensions: CascadesExtension[] = [
   autoPairs,
   links,
   insertDate,
+  markdownTables,
   jsonComments,
   smartLists,
   cascades,

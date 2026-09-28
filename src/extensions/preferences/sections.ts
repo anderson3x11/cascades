@@ -9,6 +9,7 @@ const SECTION_TITLES: Record<string, string> = {
   autoPairs: 'Paires automatiques',
   links: 'Liens',
   insertDate: 'Date',
+  markdownTables: 'Tableaux Markdown',
   files: 'Fichiers',
   session: 'Session',
   workbench: 'Interface',
