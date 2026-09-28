@@ -10,6 +10,7 @@ import { defaultKeymap, history, historyKeymap, indentLess, insertTab } from '@c
 import { bracketMatching, foldKeymap, indentOnInput } from '@codemirror/language';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { editorTheme } from './editor-theme';
+import { hangingIndent } from './hanging-indent';
 
 /**
  * Editing behavior that every tab gets. Anything a user may want to toggle
@@ -33,6 +34,7 @@ export function baseExtensions(): Extension {
       ...searchKeymap,
       ...foldKeymap,
     ]),
+    hangingIndent(),
     editorTheme(),
   ];
 }

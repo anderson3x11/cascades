@@ -174,7 +174,8 @@ export function drawRow(
     const isActive = inActiveBranch && line === activeLine;
 
     if (g.kind === 'start') {
-      path(`M${x} ${f(cy + lh * 0.32)}V${f(height)}`, g, beforeActive);
+      // Under the last visual line, so a wrapped parent line is not crossed.
+      path(`M${x} ${f(height - lh + cy + lh * 0.32)}V${f(height)}`, g, beforeActive);
       continue;
     }
     if (g.kind === 'pass') {
