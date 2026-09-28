@@ -95,28 +95,31 @@ export interface KeyEventLike {
   altKey: boolean;
   shiftKey: boolean;
   metaKey: boolean;
+  getModifierState?(key: string): boolean;
 }
 
 /** Returns the normalized chord for a keyboard event, or null for a lone modifier press. */
 export function chordFromEvent(event: KeyEventLike): string | null {
   let key = normalizeKey(event.key);
+  // On Windows Ctrl+Alt is AltGr, and the webview may report it as AltGraph
+  // alone, with ctrlKey and altKey false: count it as Ctrl+Alt.
+  const altGraph = event.getModifierState?.('AltGraph') ?? false;
+  const ctrl = event.ctrlKey || altGraph;
+  const alt = event.altKey || altGraph;
   // On AZERTY the top-row digits need Shift: Ctrl + "0" key gives "à". With
   // Ctrl or Alt held, use the digit printed on the physical key instead.
   const digit = /^Digit(\d)$/.exec(event.code ?? '')?.[1];
-  if (digit && (event.ctrlKey || event.altKey) && !/^\d$/.test(key)) key = digit;
-  // On Windows Ctrl+Alt is AltGr: Ctrl+Alt+N may give "ñ", Ctrl+Alt+E "€".
-  // Same fix with the letter of the physical key, unless a plain letter came
-  // out (it follows the layout: the "A" key of AZERTY is KeyQ).
+  if (digit && (ctrl || alt) && !/^\d$/.test(key)) key = digit;
+  // Same with letters, as Ctrl+Alt+N may give "ñ" and Ctrl+Alt+E "€", unless a
+  // plain letter came out (it follows the layout: the "A" key of AZERTY is KeyQ).
   const letter = /^Key([A-Z])$/.exec(event.code ?? '')?.[1];
-  if (letter && (event.ctrlKey || event.altKey) && !/^[a-z]$/.test(key)) {
-    key = letter.toLowerCase();
-  }
+  if (letter && (ctrl || alt) && !/^[a-z]$/.test(key)) key = letter.toLowerCase();
   if (['control', 'alt', 'shift', 'meta', 'altgraph', 'os', 'dead', 'unidentified'].includes(key)) {
     return null;
   }
   const mods: Modifier[] = [];
-  if (event.ctrlKey) mods.push('ctrl');
-  if (event.altKey) mods.push('alt');
+  if (ctrl) mods.push('ctrl');
+  if (alt) mods.push('alt');
   if (event.shiftKey) mods.push('shift');
   if (event.metaKey) mods.push('meta');
   return [...mods, key].join('+');

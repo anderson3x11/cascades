@@ -69,6 +69,11 @@ describe('chordFromEvent', () => {
     // A plain letter follows the layout: the A key of AZERTY sits at KeyQ.
     expect(chordFromEvent({ ...event('a', { ctrl: true }), code: 'KeyQ' })).toBe('ctrl+a');
     expect(chordFromEvent({ ...event('ñ'), code: 'KeyN' })).toBe('ñ');
+    // The webview may report AltGraph instead of Ctrl and Alt.
+    const altGraph = (key: string) => key === 'AltGraph';
+    expect(chordFromEvent({ ...event('ñ'), code: 'KeyN', getModifierState: altGraph })).toBe(
+      'ctrl+alt+n',
+    );
   });
 
   it('ignores lone modifiers', () => {
