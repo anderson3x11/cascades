@@ -85,6 +85,8 @@ export function formatKeySequence(chords: readonly string[]): string {
 
 export interface KeyEventLike {
   key: string;
+  /** Physical key ("Digit0"), used for digits on layouts where they need Shift (AZERTY). */
+  code?: string;
   ctrlKey: boolean;
   altKey: boolean;
   shiftKey: boolean;
@@ -93,7 +95,11 @@ export interface KeyEventLike {
 
 /** Returns the normalized chord for a keyboard event, or null for a lone modifier press. */
 export function chordFromEvent(event: KeyEventLike): string | null {
-  const key = normalizeKey(event.key);
+  let key = normalizeKey(event.key);
+  // On AZERTY the top-row digits need Shift: Ctrl + "0" key gives "à". With
+  // Ctrl or Alt held, use the digit printed on the physical key instead.
+  const digit = /^Digit(\d)$/.exec(event.code ?? '')?.[1];
+  if (digit && (event.ctrlKey || event.altKey) && !/^\d$/.test(key)) key = digit;
   if (['control', 'alt', 'shift', 'meta', 'altgraph', 'os', 'dead', 'unidentified'].includes(key)) {
     return null;
   }

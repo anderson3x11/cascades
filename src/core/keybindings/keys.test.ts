@@ -55,6 +55,13 @@ describe('chordFromEvent', () => {
     expect(chordFromEvent(event('ArrowDown', { alt: true }))).toBe('alt+down');
   });
 
+  it('uses the physical digit on AZERTY', () => {
+    expect(chordFromEvent({ ...event('à', { ctrl: true }), code: 'Digit0' })).toBe('ctrl+0');
+    expect(chordFromEvent({ ...event('&', { ctrl: true }), code: 'Digit1' })).toBe('ctrl+1');
+    // Without Ctrl/Alt the typed character is kept.
+    expect(chordFromEvent({ ...event('à'), code: 'Digit0' })).toBe('à');
+  });
+
   it('ignores lone modifiers', () => {
     expect(chordFromEvent(event('Control', { ctrl: true }))).toBeNull();
   });
