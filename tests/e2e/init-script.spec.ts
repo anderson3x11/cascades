@@ -8,7 +8,11 @@ test('the example init.js adds a command, a keybinding and a status item', async
   await expect(page.getByRole('tab')).toHaveCount(1);
 
   await page.evaluate(async (source) => {
-    const { loadUserScript } = await import('/src/app/user-script.ts');
+    // Served by Vite in the page, not resolved by TypeScript.
+    const url = '/src/app/user-script.ts';
+    const { loadUserScript } = (await import(
+      /* @vite-ignore */ url
+    )) as typeof import('../../src/app/user-script');
     const workbench = (
       window as unknown as { __cascades: import('../../src/app/workbench').Workbench }
     ).__cascades;
