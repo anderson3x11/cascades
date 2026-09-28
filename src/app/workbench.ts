@@ -22,6 +22,7 @@ import { StatusBarModel } from './status-bar.svelte';
 import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
+import { PanelModel } from './panels.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
 import { ViewerService } from './viewers.svelte';
@@ -47,6 +48,7 @@ export class Workbench {
   readonly layout = new LayoutModel();
   readonly keyHint = new KeyHintModel();
   readonly viewers = new ViewerService();
+  readonly panels = new PanelModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -346,6 +348,13 @@ export class Workbench {
         replaceFor: (path) => this.viewers.replaceFor(path),
         previewMode: (tabId) => this.viewers.previewMode(tabId),
         setPreviewMode: (tabId, mode) => this.viewers.setPreviewMode(tabId, mode),
+      },
+      panels: {
+        register: (panel) => track(this.panels.register(panel)),
+        show: (id) => this.panels.show(id),
+        hide: (id) => this.panels.hide(id),
+        toggle: (id) => this.panels.toggle(id),
+        isVisible: (id) => this.panels.visible === id,
       },
     };
   }

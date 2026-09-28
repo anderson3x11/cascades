@@ -278,6 +278,24 @@ export interface ViewersApi {
   setPreviewMode(tabId: string, mode: PreviewMode): void;
 }
 
+// Side panels -----------------------------------------------------------------
+
+export interface PanelSpec {
+  id: string;
+  title: string;
+  /** Builds the panel content in `host` when it is shown; disposed when hidden. */
+  render(host: HTMLElement): Disposable;
+}
+
+export interface PanelsApi {
+  /** A panel on the right of the editor; one is shown at a time. */
+  register(panel: PanelSpec): Disposable;
+  show(id: string): void;
+  hide(id: string): void;
+  toggle(id: string): void;
+  isVisible(id: string): boolean;
+}
+
 // Quick pick ------------------------------------------------------------------
 
 export interface QuickPickItem<T> {
@@ -439,6 +457,7 @@ export interface ExtensionContext {
   readonly quickPick: QuickPickApi;
   readonly layout: LayoutApi;
   readonly viewers: ViewersApi;
+  readonly panels: PanelsApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

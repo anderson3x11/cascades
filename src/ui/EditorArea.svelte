@@ -3,12 +3,14 @@
   import type { Workbench } from '../app/workbench';
   import EditorHost from './EditorHost.svelte';
   import PreviewPane from './PreviewPane.svelte';
+  import SidePanel from './SidePanel.svelte';
 
   let { workbench, zen = false }: { workbench: Workbench; zen?: boolean } = $props();
 
   const ws = $derived(workbench.workspace);
   const viewers = $derived(workbench.viewers);
   const tab = $derived(ws.tabs.find((t) => t.id === ws.activeId) ?? null);
+  const panel = $derived(workbench.panels.current());
 
   const spec = $derived.by((): ViewerSpec | null => {
     void viewers.version;
@@ -59,6 +61,11 @@
   {#if mode !== 'off' && spec && tab}
     {#key `${tab.id}:${spec.id}`}
       <PreviewPane {workbench} {spec} tabId={tab.id} />
+    {/key}
+  {/if}
+  {#if panel && !zen}
+    {#key panel.id}
+      <SidePanel {workbench} {panel} />
     {/key}
   {/if}
 </div>
