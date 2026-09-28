@@ -10,8 +10,8 @@ import { ExtensionHost } from '../core/extensions/host';
 import { chordFromEvent, formatKeySequence } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
-import { withSetting } from '../core/settings/edit';
-import { SettingsRegistry, type RawSettings } from '../core/settings/registry';
+import { editSettings, parseSettings } from '../core/settings/file';
+import { SettingsRegistry } from '../core/settings/registry';
 import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
@@ -122,38 +122,39 @@ export class Workbench {
     }
   };
 
-  /** Parsed settings.json, {} when absent. Throws when the file is not a JSON object. */
-  private async readUserSettings(): Promise<RawSettings> {
-    const source = await fs.readConfigFile(SETTINGS_FILE);
-    if (source === null || source.trim() === '') return {};
-    const parsed: unknown = JSON.parse(source);
-    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-      throw new Error(`${SETTINGS_FILE} doit contenir un objet JSON`);
-    }
-    return parsed as RawSettings;
-  }
+  /** Banner shown while settings.json cannot be read. */
+  private settingsError: Disposable | null = null;
 
   private async loadUserSettings(): Promise<void> {
+    this.settingsError?.dispose();
+    this.settingsError = null;
     try {
-      this.settings.setUserSettings(await this.readUserSettings());
+      this.settings.setUserSettings(parseSettings(await fs.readConfigFile(SETTINGS_FILE)));
     } catch (err) {
-      console.error(`[cascades] could not load ${SETTINGS_FILE}`, err);
+      // The previous values stay in effect until the file is fixed.
+      this.settingsError = this.banners.show({
+        kind: 'warning',
+        message: `${SETTINGS_FILE} ignoré : ${err instanceof Error ? err.message : String(err)}`,
+      });
     }
   }
 
-  /** Writes one user setting to settings.json, keeping everything else in the file. */
+  /**
+   * Writes one user setting to settings.json. Only that value changes in the
+   * file: comments and everything else are kept as written.
+   */
   private async updateSetting(key: string, value: unknown, language?: string): Promise<void> {
     // Re-read the file so that edits made by hand are not lost, and refuse to
-    // overwrite a file the user is in the middle of fixing.
-    let raw: RawSettings;
+    // touch a file the user is in the middle of fixing.
+    const text = await fs.readConfigFile(SETTINGS_FILE);
     try {
-      raw = await this.readUserSettings();
+      parseSettings(text);
     } catch (err) {
       throw new Error(`${SETTINGS_FILE} contient une erreur, corrige-la d'abord.`, { cause: err });
     }
-    const next = withSetting(raw, key, value, language);
-    this.settings.setUserSettings(next);
-    await fs.writeConfigFile(SETTINGS_FILE, `${JSON.stringify(next, null, 2)}\n`);
+    const next = editSettings(text, key, value, language);
+    this.settings.setUserSettings(parseSettings(next));
+    await fs.writeConfigFile(SETTINGS_FILE, next);
   }
 
   /** Shows what can follow an unfinished key sequence, like which-key in Neovim. */
