@@ -150,6 +150,7 @@
         class="close"
         class:dirty={tab.dirty}
         aria-label="Fermer"
+        title={tab.dirty ? 'Modifications non enregistrées' : 'Fermer'}
         onpointerdown={(e) => e.stopPropagation()}
         onclick={(e) => {
           e.stopPropagation();
@@ -185,7 +186,7 @@
     padding: 0 6px 0 12px;
     color: var(--ui-fg);
     border-right: 1px solid var(--ui-border);
-    cursor: default;
+    cursor: pointer;
     user-select: none;
     white-space: nowrap;
   }
@@ -245,7 +246,8 @@
 
   .close.dirty::before {
     content: '●';
-    opacity: 0.7;
+    opacity: 1;
+    color: var(--accent);
     font-size: 10px;
   }
 
