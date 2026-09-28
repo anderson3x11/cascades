@@ -2,11 +2,15 @@
   import type { Banner } from '../app/banners.svelte';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench }: { workbench: Workbench } = $props();
+  /**
+   * Without `tabId`: the banners that concern the whole app. With it (inside
+   * a group): the banners of that group's shown tab.
+   */
+  let { workbench, tabId }: { workbench: Workbench; tabId?: string | null } = $props();
 
   const visible = $derived(
-    workbench.banners.banners.filter(
-      (b) => b.tabId === undefined || b.tabId === workbench.workspace.activeId,
+    workbench.banners.banners.filter((b) =>
+      tabId === undefined ? b.tabId === undefined : b.tabId !== undefined && b.tabId === tabId,
     ),
   );
 

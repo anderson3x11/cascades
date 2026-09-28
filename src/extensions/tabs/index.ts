@@ -8,18 +8,25 @@ export default defineExtension({
     /** Paths of closed tabs, most recent last. */
     const closed: string[] = [];
 
+    /** Next or previous tab within the active group. */
     const step = (delta: number) => {
-      const tabs = ctx.workspace.tabs();
+      const group = ctx.workspace.groups().find((g) => g.id === ctx.workspace.activeGroup());
       const active = ctx.workspace.active();
+      const tabs = group?.tabs ?? [];
       if (!active || tabs.length < 2) return;
       const index = tabs.findIndex((t) => t.id === active.id);
       const next = tabs[(index + delta + tabs.length) % tabs.length];
       if (next) ctx.workspace.activate(next.id);
     };
 
+    /** Other tabs showing the same document (clones in other groups). */
+    const otherViews = (tab: TabInfo) =>
+      ctx.workspace.tabs().filter((t) => t.documentId === tab.documentId && t.id !== tab.id);
+
     /** Resolves to false if the user cancelled. */
     const close = async (tab: TabInfo): Promise<boolean> => {
-      if (tab.dirty) {
+      // Closing one view of a document shown elsewhere loses nothing.
+      if (tab.dirty && otherViews(tab).length === 0) {
         const choice = await ctx.dialogs.choose(
           `Enregistrer les modifications de « ${tab.title} » ?`,
           { buttons: ['Enregistrer', 'Ne pas enregistrer', 'Annuler'] },
@@ -34,7 +41,7 @@ export default defineExtension({
     };
 
     ctx.events.on('workspace.didClose', (tab) => {
-      if (tab.path) {
+      if (tab.path && otherViews(tab).length === 0) {
         closed.push(tab.path);
         if (closed.length > MAX_CLOSED) closed.shift();
       }

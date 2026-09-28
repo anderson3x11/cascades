@@ -6,7 +6,6 @@
   import MenuBar from './MenuBar.svelte';
   import QuickPick from './QuickPick.svelte';
   import StatusBar from './StatusBar.svelte';
-  import TabBar from './TabBar.svelte';
 
   let { workbench }: { workbench: Workbench } = $props();
   const layout = $derived(workbench.layout);
@@ -14,9 +13,8 @@
 
 <div class="shell">
   {#if layout.shows('menuBar')}<MenuBar {workbench} />{/if}
-  {#if layout.shows('tabs')}<TabBar {workbench} />{/if}
   <Banners {workbench} />
-  <EditorArea {workbench} zen={layout.zen} />
+  <EditorArea {workbench} zen={layout.zen} showTabs={layout.tabs} />
   <KeyHint {workbench} />
   {#if layout.shows('statusBar')}<StatusBar {workbench} />{/if}
 </div>

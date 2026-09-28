@@ -3,8 +3,12 @@
   import type { ViewerInstance, ViewerSpec } from '../api';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench, spec, tabId }: { workbench: Workbench; spec: ViewerSpec; tabId: string } =
-    $props();
+  let {
+    workbench,
+    spec,
+    tabId,
+    groupId,
+  }: { workbench: Workbench; spec: ViewerSpec; tabId: string; groupId: string } = $props();
 
   /** Typing is followed with a short delay so a big document does not re-render on each key. */
   const UPDATE_DELAY_MS = 150;
@@ -26,7 +30,8 @@
     };
 
     // Follow the editor: the first visible line is sent to the viewer.
-    const view = ws.editorView();
+    // The editor of this preview's own group (views are created before previews).
+    const view = ws.groups.find((g) => g.id === groupId)?.view ?? null;
     const syncScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {

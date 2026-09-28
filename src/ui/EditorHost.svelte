@@ -2,11 +2,15 @@
   import { onMount } from 'svelte';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench, zen = false }: { workbench: Workbench; zen?: boolean } = $props();
+  let {
+    workbench,
+    groupId,
+    zen = false,
+  }: { workbench: Workbench; groupId: string; zen?: boolean } = $props();
   let host: HTMLElement;
 
   onMount(() => {
-    const attached = workbench.attachEditor(host);
+    const attached = workbench.attachEditor(groupId, host);
     return () => attached.dispose();
   });
 </script>

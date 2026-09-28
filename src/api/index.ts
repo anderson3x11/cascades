@@ -122,7 +122,23 @@ export interface TabInfo {
   readonly dirty: boolean;
   /** Id of the viewer shown instead of the editor (images), or null for a text tab. */
   readonly viewer: string | null;
+  /** Group (split pane) the tab is in. */
+  readonly groupId: string;
+  /** Tabs showing the same document (clones in other groups) share this id. */
+  readonly documentId: string;
 }
+
+export interface GroupInfo {
+  id: string;
+  tabs: readonly TabInfo[];
+  active: TabInfo | null;
+}
+
+/**
+ * Where a tab goes: an existing group by id, the next or previous one
+ * (created if needed), or a new group at the end.
+ */
+export type GroupTarget = string | 'next' | 'previous' | 'new';
 
 export interface OpenOptions {
   path: string | null;
@@ -153,14 +169,32 @@ export interface TabPatch {
 }
 
 export interface WorkspaceApi {
+  /** Every tab of every group. */
   tabs(): readonly TabInfo[];
+  /** Active tab of the active group. */
   active(): TabInfo | null;
+  /** A tab of the file, preferably in the active group. */
   findByPath(path: string): TabInfo | null;
-  /** Opens a new tab and activates it. */
-  open(options: OpenOptions): TabInfo;
+  /** Opens a new document in a tab of the active group (or `group`) and activates it. */
+  open(options: OpenOptions, group?: GroupTarget): TabInfo;
+  /** Activates a tab and its group. */
   activate(id: string): void;
   /** Closes without asking. Prompting for unsaved changes is the caller's job. */
   close(id: string): void;
+
+  /** Groups (split panes), in screen order. */
+  groups(): readonly GroupInfo[];
+  activeGroup(): string;
+  /** Focuses a group by position (0-based). */
+  focusGroup(index: number): void;
+  /** Shows the tab's document in another group too (same text, own cursor). Returns the new tab. */
+  clone(id: string, target?: GroupTarget): TabInfo | null;
+  /** Moves a tab to another group. */
+  moveToGroup(id: string, target?: GroupTarget): void;
+  /** Groups side by side ("row") or stacked ("column"). */
+  orientation(): 'row' | 'column';
+  setOrientation(orientation: 'row' | 'column'): void;
+
   /** Document text with "\n" line endings. */
   getText(id: string): string;
   update(id: string, patch: TabPatch): void;

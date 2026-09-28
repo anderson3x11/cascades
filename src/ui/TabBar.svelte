@@ -1,8 +1,58 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import type { Group } from '../app/tab.svelte';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench }: { workbench: Workbench } = $props();
+  let { workbench, group, focused }: { workbench: Workbench; group: Group; focused: boolean } =
+    $props();
   const ws = $derived(workbench.workspace);
+
+  /** Right-click menu of a tab. */
+  let menu = $state<{ x: number; y: number; id: string } | null>(null);
+
+  onMount(() => {
+    const close = (e: PointerEvent) => {
+      if (!(e.target as Element | null)?.closest('.tab-menu')) menu = null;
+    };
+    const escape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') menu = null;
+    };
+    window.addEventListener('pointerdown', close, true);
+    window.addEventListener('keydown', escape, true);
+    return () => {
+      window.removeEventListener('pointerdown', close, true);
+      window.removeEventListener('keydown', escape, true);
+    };
+  });
+
+  const menuItems = $derived.by(() => {
+    if (!menu) return [];
+    const index = ws.groups.indexOf(group);
+    const canGrow = ws.groups.length < 4;
+    const items: { label: string; command: string; enabled: boolean }[] = [
+      {
+        label: 'Cloner dans la vue suivante',
+        command: 'view.cloneToNextGroup',
+        enabled: index < ws.groups.length - 1 || canGrow,
+      },
+      {
+        label: 'Déplacer vers la vue suivante',
+        command: 'view.moveToNextGroup',
+        enabled: index < ws.groups.length - 1 || (canGrow && group.tabs.length > 1),
+      },
+      {
+        label: 'Déplacer vers la vue précédente',
+        command: 'view.moveToPreviousGroup',
+        enabled: index > 0,
+      },
+      { label: 'Fermer', command: 'tabs.close', enabled: true },
+    ];
+    return items;
+  });
+
+  function focusThisGroup() {
+    ws.focusGroup(ws.groups.indexOf(group));
+  }
 
   /**
    * Tab reordering with pointer events (native HTML drag and drop is taken
@@ -21,6 +71,8 @@
     rects: { left: number; width: number }[];
     /** Released: the tab is sliding to its new place. */
     landing: boolean;
+    /** Tab bar of another group under the pointer: dropping moves the tab there. */
+    otherBar: HTMLElement | null;
   }
 
   const DRAG_THRESHOLD = 5;
@@ -45,7 +97,7 @@
       const rect = el.getBoundingClientRect();
       return { left: rect.left, width: rect.width };
     });
-    const from = ws.tabs.findIndex((t) => t.id === id);
+    const from = group.tabs.findIndex((t) => t.id === id);
     drag = {
       id,
       from,
@@ -55,6 +107,7 @@
       target: from,
       rects,
       landing: false,
+      otherBar: null,
     };
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
@@ -67,6 +120,17 @@
     }
     if (!drag.moved && Math.abs(event.clientX - drag.startX) < DRAG_THRESHOLD) return;
     drag.moved = true;
+
+    // Over another group's tab bar: that bar lights up as the drop target.
+    const over = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>('.tabbar');
+    const other = over && over !== bar ? over : null;
+    if (other !== drag.otherBar) {
+      drag.otherBar?.classList.remove('drop-target');
+      other?.classList.add('drop-target');
+      drag.otherBar = other;
+    }
 
     const { rects, from } = drag;
     const self = rects[from];
@@ -91,6 +155,14 @@
     if (!drag || drag.landing) return;
     if (!drag.moved) {
       drag = null;
+      return;
+    }
+    if (drag.otherBar) {
+      drag.otherBar.classList.remove('drop-target');
+      const targetGroup = drag.otherBar.dataset.groupId;
+      const moved = drag.id;
+      drag = null;
+      if (targetGroup) ws.moveToGroup(moved, targetGroup);
       return;
     }
     const { rects, from, target, id } = drag;
@@ -120,24 +192,34 @@
 <div
   class="tabbar"
   class:instant
+  class:focused
   role="tablist"
   tabindex="-1"
+  data-group-id={group.id}
   bind:this={bar}
-  ondblclick={(e) => e.target === e.currentTarget && run('file.new')}
+  ondblclick={(e) => {
+    if (e.target !== e.currentTarget) return;
+    focusThisGroup();
+    run('file.new');
+  }}
 >
-  {#each ws.tabs as tab, index (tab.id)}
+  {#each group.tabs as tab, index (tab.id)}
     <div
       class="tab"
-      class:active={tab.id === ws.activeId}
+      class:active={tab.id === group.activeId}
       class:dragging={drag?.moved && drag.id === tab.id}
       class:landing={drag?.landing && drag.id === tab.id}
       style:transform={offset(index, tab.id) ? `translateX(${offset(index, tab.id)}px)` : null}
       role="tab"
       tabindex="0"
-      aria-selected={tab.id === ws.activeId}
+      aria-selected={tab.id === group.activeId}
       title={tab.path ?? tab.title}
       data-tab-id={tab.id}
       onclick={() => ws.activate(tab.id)}
+      oncontextmenu={(e) => {
+        e.preventDefault();
+        menu = { x: e.clientX, y: e.clientY, id: tab.id };
+      }}
       onkeydown={(e) => e.key === 'Enter' && ws.activate(tab.id)}
       onauxclick={(e) => onAuxClick(e, tab.id)}
       onpointerdown={(e) => onPointerDown(e, tab.id)}
@@ -163,9 +245,28 @@
     class="new"
     aria-label="Nouveau fichier"
     title="Nouveau fichier"
-    onclick={() => run('file.new')}>+</button
+    onclick={() => {
+      focusThisGroup();
+      run('file.new');
+    }}>+</button
   >
 </div>
+
+{#if menu}
+  <div class="tab-menu" role="menu" style:left="{menu.x}px" style:top="{menu.y}px">
+    {#each menuItems as item (item.command)}
+      <button
+        role="menuitem"
+        disabled={!item.enabled}
+        onclick={() => {
+          const id = menu?.id;
+          menu = null;
+          if (id) run(item.command, id);
+        }}>{item.label}</button
+      >
+    {/each}
+  </div>
+{/if}
 
 <style>
   .tabbar {
@@ -175,6 +276,53 @@
     border-bottom: 1px solid var(--ui-border);
     min-height: 34px;
     scrollbar-width: thin;
+  }
+
+  /* Another group's bar while a tab is dragged over it. */
+  .tabbar:global(.drop-target) {
+    background: var(--ui-hover);
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+
+  /* In a group that is not the one being typed in, the active tab is muted. */
+  .tabbar:not(.focused) .tab.active {
+    box-shadow: inset 0 -2px 0 var(--ui-border);
+    color: var(--ui-fg);
+  }
+
+  .tab-menu {
+    position: fixed;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    min-width: 230px;
+    padding: 4px;
+    background: var(--menu-bg);
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    box-shadow: var(--menu-shadow);
+  }
+
+  .tab-menu button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--fg);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tab-menu button:hover:not(:disabled) {
+    background: var(--menu-active-bg);
+    color: var(--menu-active-fg);
+  }
+
+  .tab-menu button:disabled {
+    color: var(--ui-fg);
+    opacity: 0.5;
+    cursor: default;
   }
 
   .tab {

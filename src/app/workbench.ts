@@ -87,18 +87,19 @@ export class Workbench {
     }
   }
 
-  /** Mounts the editor view and tracks its focus for `when` clauses. */
-  attachEditor(parent: HTMLElement): Disposable {
-    const view = this.workspace.attach(parent);
+  /** Mounts the editor view of a group and tracks its focus for `when` clauses. */
+  attachEditor(groupId: string, parent: HTMLElement): Disposable {
+    const attached = this.workspace.attach(groupId, parent);
+    const { view } = attached;
     const onFocus = () => this.contextKeys.set('editorFocus', view.hasFocus);
     view.dom.addEventListener('focusin', onFocus);
     view.dom.addEventListener('focusout', onFocus);
-    view.focus();
+    if (groupId === this.workspace.activeGroupId) view.focus();
     return {
       dispose: () => {
         view.dom.removeEventListener('focusin', onFocus);
         view.dom.removeEventListener('focusout', onFocus);
-        this.workspace.detach();
+        attached.dispose();
       },
     };
   }
@@ -274,9 +275,16 @@ export class Workbench {
         tabs: () => ws.tabs,
         active: () => ws.active(),
         findByPath: (path) => ws.findByPath(path),
-        open: (options) => ws.open(options),
+        open: (options, group) => ws.open(options, group),
         activate: (id) => ws.activate(id),
         close: (id) => ws.close(id),
+        groups: () => ws.groupInfos(),
+        activeGroup: () => ws.activeGroupId,
+        focusGroup: (index) => ws.focusGroup(index),
+        clone: (id, target) => ws.clone(id, target),
+        moveToGroup: (id, target) => ws.moveToGroup(id, target),
+        orientation: () => ws.orientation,
+        setOrientation: (orientation) => ws.setOrientation(orientation),
         getText: (id) => ws.getText(id),
         update: (id, patch) => ws.update(id, patch),
         markSaved: (id) => ws.markSaved(id),
