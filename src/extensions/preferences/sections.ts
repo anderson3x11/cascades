@@ -8,6 +8,7 @@ const SECTION_TITLES: Record<string, string> = {
   indentKeep: 'Indentation',
   autoPairs: 'Paires automatiques',
   links: 'Liens',
+  insertDate: 'Date',
   files: 'Fichiers',
   session: 'Session',
   workbench: 'Interface',

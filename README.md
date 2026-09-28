@@ -49,6 +49,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Cocher / décocher une tâche                     | Ctrl+Entrée                               |
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
 | Préférences                                     | Ctrl+,                                    |
+| Insérer la date                                 | Ctrl+;                                    |
 | Ajouter un dossier / Panneau de gauche          | Ctrl+Shift+O / Ctrl+B                     |
 | Rechercher dans les fichiers                    | Ctrl+Shift+F                              |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |

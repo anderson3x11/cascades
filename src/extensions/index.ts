@@ -9,6 +9,7 @@ import explorer from './explorer';
 import fileOps from './file-ops';
 import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
+import insertDate from './insert-date';
 import jsonComments from './json-comments';
 import layout from './layout';
 import links from './links';
@@ -34,6 +35,7 @@ export const builtinExtensions: CascadesExtension[] = [
   indentKeep,
   autoPairs,
   links,
+  insertDate,
   jsonComments,
   smartLists,
   cascades,
