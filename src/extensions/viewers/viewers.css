@@ -1,0 +1,56 @@
+/* Styles of the built-in viewers, loaded with the first viewer used. */
+
+.cv-json {
+  padding: 12px 16px;
+  font-family: var(--font-editor);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.cv-json .cv-children {
+  padding-left: 18px;
+  border-left: 1px solid var(--ui-border);
+  margin-left: 5px;
+}
+
+.cv-json summary {
+  cursor: pointer;
+}
+
+.cv-json summary::marker {
+  color: var(--ui-fg);
+}
+
+.cv-json .cv-leaf {
+  padding-left: 14px;
+}
+
+.cv-key {
+  color: var(--syn-property);
+}
+
+.cv-string {
+  color: var(--syn-string);
+}
+
+.cv-number {
+  color: var(--syn-number);
+}
+
+.cv-bool,
+.cv-null {
+  color: var(--syn-constant);
+}
+
+.cv-meta {
+  color: var(--ui-fg);
+}
+
+.cv-error {
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background: var(--banner-warning-bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+}

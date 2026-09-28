@@ -3,7 +3,16 @@
 use crate::config;
 use crate::fs::{self, Decoded, TextInfo};
 use crate::watcher::FileWatcher;
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, Manager, State};
+
+/// Lets the page load files of one folder through the asset protocol (images
+/// of an open Markdown file, an open image). Nothing is reachable before that.
+#[tauri::command]
+pub fn allow_asset_dir(app: AppHandle, dir: String) -> Result<(), String> {
+    app.asset_protocol_scope()
+        .allow_directory(&dir, false)
+        .map_err(|e| e.to_string())
+}
 
 #[tauri::command]
 pub fn watch_file(watcher: State<'_, FileWatcher>, path: String) -> Result<(), String> {

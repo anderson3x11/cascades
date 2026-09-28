@@ -13,6 +13,8 @@ export class Tab implements TabInfo {
   lineEnding = $state<LineEnding>('lf');
   language = $state('plaintext');
   dirty = $state(false);
+  /** Viewer shown instead of the editor (images), or null for a text tab. */
+  viewer = $state<string | null>(null);
 
   /** Editor state while the tab is not shown. The active tab's state lives in the view. */
   state: EditorState;

@@ -10,6 +10,7 @@ use tauri::Manager;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             commands::read_text_file,
             commands::write_text_file,
@@ -19,6 +20,7 @@ pub fn run() {
             commands::list_config_folder,
             commands::cursor_unhide,
             commands::cursor_restore,
+            commands::allow_asset_dir,
             commands::watch_file,
             commands::unwatch_file,
         ])

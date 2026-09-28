@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Workbench } from '../app/workbench';
   import Banners from './Banners.svelte';
-  import EditorHost from './EditorHost.svelte';
+  import EditorArea from './EditorArea.svelte';
   import KeyHint from './KeyHint.svelte';
   import MenuBar from './MenuBar.svelte';
   import QuickPick from './QuickPick.svelte';
@@ -16,7 +16,7 @@
   {#if layout.shows('menuBar')}<MenuBar {workbench} />{/if}
   {#if layout.shows('tabs')}<TabBar {workbench} />{/if}
   <Banners {workbench} />
-  <EditorHost {workbench} zen={layout.zen} />
+  <EditorArea {workbench} zen={layout.zen} />
   <KeyHint {workbench} />
   {#if layout.shows('statusBar')}<StatusBar {workbench} />{/if}
 </div>

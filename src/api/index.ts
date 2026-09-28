@@ -120,11 +120,15 @@ export interface TabInfo {
   /** Lower-case language name ("markdown", "javascript", "plaintext"). */
   readonly language: string;
   readonly dirty: boolean;
+  /** Id of the viewer shown instead of the editor (images), or null for a text tab. */
+  readonly viewer: string | null;
 }
 
 export interface OpenOptions {
   path: string | null;
   text: string;
+  /** Opens a view-only tab shown by this "replace" viewer (the text is ignored). */
+  viewer?: string;
   encoding?: string;
   bom?: boolean;
   lineEnding?: LineEnding;
@@ -224,6 +228,51 @@ export interface LayoutApi {
   setStyle(name: string, value: string | null): void;
 }
 
+// Viewers (previews) ------------------------------------------------------------
+
+export interface ViewerInput {
+  path: string | null;
+  /** Document text ("" for replace viewers). */
+  text: string;
+}
+
+export interface ViewerInstance {
+  /** New text or path; called as the document changes (debounced). */
+  update(input: ViewerInput): void;
+  /** Keeps the preview aligned with the editor's first visible line (1-based). */
+  scrollToLine?(line: number): void;
+  dispose(): void;
+}
+
+export interface ViewerFactory {
+  create(host: HTMLElement, input: ViewerInput): ViewerInstance;
+}
+
+export interface ViewerSpec {
+  id: string;
+  title: string;
+  /** File extensions it handles, lower case, without the dot ("md"). */
+  extensions: string[];
+  /** Languages it handles when the file has no known extension ("markdown"). */
+  languages?: string[];
+  /** "preview": next to the editor of a text file. "replace": instead of the editor (images). */
+  kind: 'preview' | 'replace';
+  /** Loaded the first time the viewer is needed, to keep startup fast. */
+  load(): Promise<ViewerFactory>;
+}
+
+export type PreviewMode = 'off' | 'side' | 'full';
+
+export interface ViewersApi {
+  register(viewer: ViewerSpec): Disposable;
+  /** Preview viewer for a text tab, or null. */
+  previewFor(tab: TabInfo): ViewerSpec | null;
+  /** Replace viewer for a file path (by extension), or null. */
+  replaceFor(path: string): ViewerSpec | null;
+  previewMode(tabId: string): PreviewMode;
+  setPreviewMode(tabId: string, mode: PreviewMode): void;
+}
+
 // Quick pick ------------------------------------------------------------------
 
 export interface QuickPickItem<T> {
@@ -284,6 +333,11 @@ export interface FsApi {
    * program, this one included: read the file to find out what changed.
    */
   watch(path: string, listener: () => void): Disposable;
+  /**
+   * URL the page can load for a local file (an image in a preview). Grants
+   * access to the file's folder only. Returns the path as is outside the app.
+   */
+  fileUrl(path: string): Promise<string>;
 }
 
 export interface DialogsApi {
@@ -340,6 +394,8 @@ export interface ThemesApi {
 export interface AppApi {
   /** Runs before the window closes; the app waits for returned promises (a few seconds at most). */
   onWillQuit(handler: () => void | Promise<void>): Disposable;
+  /** Opens a web link in the default browser. */
+  openExternal(url: string): Promise<void>;
 }
 
 // Events --------------------------------------------------------------------
@@ -377,6 +433,7 @@ export interface ExtensionContext {
   readonly banners: BannersApi;
   readonly quickPick: QuickPickApi;
   readonly layout: LayoutApi;
+  readonly viewers: ViewersApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

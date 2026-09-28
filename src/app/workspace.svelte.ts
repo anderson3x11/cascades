@@ -84,7 +84,9 @@ export class Workspace {
     tab.bom = options.bom ?? false;
     tab.lineEnding = options.lineEnding ?? 'lf';
     tab.language = languageId(findLanguage(options.path));
-    tab.state = this.createState(options.text, tab);
+    tab.viewer = options.viewer ?? null;
+    // A viewer tab has no text: its editor is empty and hidden.
+    tab.state = this.createState(tab.viewer ? '' : options.text, tab);
     tab.savedDoc =
       options.savedText === undefined ? tab.state.doc : Text.of(options.savedText.split('\n'));
     tab.dirty = !tab.state.doc.eq(tab.savedDoc);

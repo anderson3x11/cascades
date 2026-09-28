@@ -23,6 +23,8 @@ import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
+import { ViewerService } from './viewers.svelte';
+import { fileUrl, openExternal } from '../platform/assets';
 import { Workspace } from './workspace.svelte';
 
 /** How long closing the window waits for onWillQuit handlers. */
@@ -43,6 +45,7 @@ export class Workbench {
   readonly quickPick = new QuickPickModel();
   readonly layout = new LayoutModel();
   readonly keyHint = new KeyHintModel();
+  readonly viewers = new ViewerService();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -314,6 +317,7 @@ export class Workbench {
         readTextFile: fs.readTextFile,
         writeTextFile: fs.writeTextFile,
         watch: (path, listener) => track(watchFile(path, listener)),
+        fileUrl,
       },
       dialogs: {
         pickFilesToOpen: dialogs.pickFilesToOpen,
@@ -332,6 +336,14 @@ export class Workbench {
           this.willQuit.add(handler);
           return track({ dispose: () => void this.willQuit.delete(handler) });
         },
+        openExternal,
+      },
+      viewers: {
+        register: (viewer) => track(this.viewers.register(viewer)),
+        previewFor: (tab) => this.viewers.previewFor(tab),
+        replaceFor: (path) => this.viewers.replaceFor(path),
+        previewMode: (tabId) => this.viewers.previewMode(tabId),
+        setPreviewMode: (tabId, mode) => this.viewers.setPreviewMode(tabId, mode),
       },
     };
   }
