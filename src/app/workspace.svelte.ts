@@ -1,4 +1,11 @@
-import { Compartment, EditorState, type Extension, type StateEffect } from '@codemirror/state';
+import {
+  Compartment,
+  EditorSelection,
+  EditorState,
+  Text,
+  type Extension,
+  type StateEffect,
+} from '@codemirror/state';
 import { EditorView, type ViewUpdate } from '@codemirror/view';
 import type {
   AppEvents,
@@ -7,6 +14,7 @@ import type {
   OpenOptions,
   TabInfo,
   TabPatch,
+  ViewState,
 } from '../api';
 import type { EventBus } from '../core/events/emitter';
 import { baseExtensions } from './editor-base';
@@ -77,7 +85,21 @@ export class Workspace {
     tab.lineEnding = options.lineEnding ?? 'lf';
     tab.language = languageId(findLanguage(options.path));
     tab.state = this.createState(options.text, tab);
-    tab.savedDoc = tab.state.doc;
+    tab.savedDoc =
+      options.savedText === undefined ? tab.state.doc : Text.of(options.savedText.split('\n'));
+    tab.dirty = !tab.state.doc.eq(tab.savedDoc);
+    const length = tab.state.doc.length;
+    const clamp = (pos: number) => Math.max(0, Math.min(pos, length));
+    if (options.selection) {
+      const { anchor, head } = options.selection;
+      tab.state = tab.state.update({
+        selection: EditorSelection.single(clamp(anchor), clamp(head)),
+      }).state;
+    }
+    if (options.scrollTop !== undefined) {
+      tab.topPos = clamp(options.scrollTop);
+      tab.scroll = EditorView.scrollIntoView(tab.topPos, { y: 'start' });
+    }
 
     const index = this.tabs.findIndex((t) => t.id === this.activeId);
     this.tabs.splice(index + 1, 0, tab);
@@ -94,6 +116,7 @@ export class Workspace {
     if (prev && this.view) {
       prev.state = this.view.state;
       prev.scroll = this.view.scrollSnapshot();
+      prev.topPos = this.topPosition(this.view);
     }
     this.activeId = id;
     if (this.view) {
@@ -151,6 +174,16 @@ export class Workspace {
     this.events.emit('workspace.didSave', tab);
   }
 
+  viewState(id: string): ViewState {
+    const tab = this.get(id);
+    const view = tab.id === this.activeId ? this.view : null;
+    const { anchor, head } = (view ? view.state : tab.state).selection.main;
+    return {
+      selection: { anchor, head },
+      scrollTop: view ? this.topPosition(view) : tab.topPos,
+    };
+  }
+
   // Editor extensions ---------------------------------------------------------
 
   addExtension(provider: EditorExtensionProvider): EditorExtensionHandle {
@@ -201,6 +234,12 @@ export class Workspace {
         EditorView.updateListener.of((update) => this.onUpdate(tab, update)),
       ],
     });
+  }
+
+  /** Start of the first line visible at the top of the view. */
+  private topPosition(view: EditorView): number {
+    const height = view.scrollDOM.scrollTop - view.documentPadding.top;
+    return view.lineBlockAtHeight(Math.max(0, height)).from;
   }
 
   private emptyState(): EditorState {

@@ -116,6 +116,17 @@ export interface OpenOptions {
   encoding?: string;
   bom?: boolean;
   lineEnding?: LineEnding;
+  /** Content as saved on disk, when `text` has unsaved changes. Defaults to `text` (clean tab). */
+  savedText?: string;
+  selection?: { anchor: number; head: number };
+  /** Document position shown at the top of the editor. */
+  scrollTop?: number;
+}
+
+export interface ViewState {
+  selection: { anchor: number; head: number };
+  /** Document position shown at the top of the editor. */
+  scrollTop: number;
 }
 
 export interface TabPatch {
@@ -139,6 +150,8 @@ export interface WorkspaceApi {
   update(id: string, patch: TabPatch): void;
   /** Marks the current content as the saved state (clears `dirty`). */
   markSaved(id: string): void;
+  /** Cursor and scroll position of a tab, to restore it later with `open`. */
+  viewState(id: string): ViewState;
 }
 
 // Editor --------------------------------------------------------------------
@@ -213,6 +226,20 @@ export interface DialogsApi {
   ): Promise<T>;
 }
 
+// Config folder and app lifecycle --------------------------------------------
+
+export interface ConfigFilesApi {
+  /** Reads a file of the config folder by name ("session.json"). Null if missing. */
+  read(name: string): Promise<string | null>;
+  /** Writes a file of the config folder, atomically. */
+  write(name: string, content: string): Promise<void>;
+}
+
+export interface AppApi {
+  /** Runs before the window closes; the app waits for returned promises (a few seconds at most). */
+  onWillQuit(handler: () => void | Promise<void>): Disposable;
+}
+
 // Events --------------------------------------------------------------------
 
 export interface AppEvents {
@@ -246,6 +273,8 @@ export interface ExtensionContext {
   readonly events: EventsApi;
   readonly fs: FsApi;
   readonly dialogs: DialogsApi;
+  readonly configFiles: ConfigFilesApi;
+  readonly app: AppApi;
 }
 
 export interface CascadesExtension {

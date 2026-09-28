@@ -42,3 +42,13 @@ pub async fn read_config_file(app: AppHandle, name: String) -> Result<Option<Str
         Err(e) => Err(format!("{}: {e}", path.display())),
     }
 }
+
+#[tauri::command]
+pub async fn write_config_file(
+    app: AppHandle,
+    name: String,
+    content: String,
+) -> Result<(), String> {
+    let path = config::config_file(&config::config_dir(&app)?, &name)?;
+    config::write_atomic(&path, content.as_bytes()).map_err(|e| format!("{}: {e}", path.display()))
+}

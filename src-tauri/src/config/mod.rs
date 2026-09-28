@@ -30,9 +30,31 @@ pub fn config_file(dir: &Path, name: &str) -> Result<PathBuf, String> {
     Ok(dir.join(name))
 }
 
+/// Writes through a temporary file then renames it, so a crash never leaves a
+/// half-written file. Creates the parent folder if needed.
+pub fn write_atomic(path: &Path, content: &[u8]) -> std::io::Result<()> {
+    if let Some(dir) = path.parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    let tmp = path.with_extension("tmp");
+    std::fs::write(&tmp, content)?;
+    std::fs::rename(&tmp, path)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn write_atomic_creates_and_replaces() {
+        let dir = std::env::temp_dir().join(format!("cascades-test-{}", std::process::id()));
+        let path = dir.join("nested").join("session.json");
+        write_atomic(&path, b"one").unwrap();
+        write_atomic(&path, b"two").unwrap();
+        assert_eq!(std::fs::read(&path).unwrap(), b"two");
+        assert!(!path.with_extension("tmp").exists());
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn accepts_plain_names() {

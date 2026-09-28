@@ -19,6 +19,8 @@ export class Tab implements TabInfo {
   /** Document as last saved, to compute `dirty`. */
   savedDoc: Text;
   scroll: StateEffect<unknown> | null = null;
+  /** Document position at the top of the view when the tab was last shown. */
+  topPos = 0;
 
   private readonly untitledName: string;
 

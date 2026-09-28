@@ -12,6 +12,7 @@ pub fn run() {
             commands::write_text_file,
             commands::config_dir,
             commands::read_config_file,
+            commands::write_config_file,
             commands::cursor_unhide,
             commands::cursor_restore,
         ])
