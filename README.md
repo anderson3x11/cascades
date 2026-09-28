@@ -54,6 +54,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Déplacer vers la vue suivante / précédente      | Ctrl+Alt+→ / Ctrl+Alt+←                   |
 | Aller à la vue 1 à 4                            | Ctrl+1 … Ctrl+4                           |
 | Vues côte à côte / empilées                     | Leader Shift+S                            |
+| Réunir toutes les vues en une                   | Leader J                                  |
 | Masquer / afficher la cascade du bloc courant   | Leader Shift+C                            |
 | Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
 | Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |

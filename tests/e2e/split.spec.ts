@@ -104,6 +104,19 @@ test('the tab menu clones and moves; views can be stacked', async ({ page }) => 
   await expect(page.locator('.groups')).toHaveClass(/column/);
 });
 
+test('Leader J joins every view into one', async ({ page }) => {
+  await open(page, 'C:/notes/courses.txt', 'lait');
+  await page.keyboard.press('Control+Alt+ArrowRight'); // courses.txt to view 2
+  await page.keyboard.press('Control+\\'); // courses.txt cloned into view 3
+  await expect(groups(page)).toHaveCount(3);
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('J');
+  await expect(groups(page)).toHaveCount(1);
+  // One tab per file: the clone was not duplicated.
+  await expect(group(page, 0).getByRole('tab')).toHaveText(['review.txt', 'courses.txt']);
+  await expect(group(page, 0).getByRole('tab', { selected: true })).toContainText('courses.txt');
+});
+
 test('at most four views', async ({ page }) => {
   for (let i = 0; i < 5; i++) await page.keyboard.press('Control+\\');
   await expect(groups(page)).toHaveCount(4);

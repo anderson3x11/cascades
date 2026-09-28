@@ -45,6 +45,11 @@
         command: 'view.moveToPreviousGroup',
         enabled: index > 0,
       },
+      {
+        label: 'Réunir toutes les vues',
+        command: 'view.joinGroups',
+        enabled: ws.groups.length > 1,
+      },
       { label: 'Fermer', command: 'tabs.close', enabled: true },
     ];
     return items;

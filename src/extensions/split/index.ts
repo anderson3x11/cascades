@@ -34,6 +34,22 @@ export default defineExtension({
       () => ctx.workspace.setOrientation(ctx.workspace.orientation() === 'row' ? 'column' : 'row'),
       { title: 'Vues côte à côte / empilées', category: 'Affichage' },
     );
+    ctx.commands.register(
+      'view.joinGroups',
+      () => {
+        const [first, ...others] = ctx.workspace.groups();
+        if (!first) return;
+        const active = ctx.workspace.active()?.documentId;
+        // A tab whose document is already in the first view just closes there (moveToGroup does it).
+        for (const group of others) {
+          for (const tab of [...group.tabs]) ctx.workspace.moveToGroup(tab.id, first.id);
+        }
+        const keep = ctx.workspace.tabs().find((t) => t.documentId === active);
+        if (keep) ctx.workspace.activate(keep.id);
+      },
+      { title: 'Réunir toutes les vues', category: 'Affichage' },
+    );
+
     for (let n = 1; n <= 4; n++) {
       ctx.commands.register(`view.focusGroup${n}`, () => ctx.workspace.focusGroup(n - 1), {
         title: `Aller à la vue ${n}`,
@@ -46,6 +62,7 @@ export default defineExtension({
       // "\" needs AltGr on AZERTY, so the leader also gives both commands on plain keys.
       { key: 'Leader Shift+S', command: 'view.toggleSplitOrientation' },
       { key: 'Leader S', command: 'view.cloneToNextGroup' },
+      { key: 'Leader J', command: 'view.joinGroups' },
       { key: 'Ctrl+Alt+Right', command: 'view.moveToNextGroup' },
       { key: 'Ctrl+Alt+Left', command: 'view.moveToPreviousGroup' },
       { key: 'Leader \\', command: 'view.toggleSplitOrientation' },
@@ -63,6 +80,7 @@ export default defineExtension({
       group: '5_split',
       order: 3,
     });
+    ctx.menus.registerItem('view', { command: 'view.joinGroups', group: '5_split', order: 5 });
     ctx.menus.registerItem('view', {
       command: 'view.toggleSplitOrientation',
       group: '5_split',
