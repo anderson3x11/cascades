@@ -127,6 +127,60 @@
   background: #ffffff;
 }
 
+/* Tables (CSV, TSV) ---------------------------------------------------------- */
+
+.cv-table {
+  padding: 0 0 16px;
+  font-size: 13px;
+}
+
+.cv-table-info {
+  margin: 0;
+  padding: 8px 12px;
+  color: var(--ui-fg);
+}
+
+.cv-table table {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+
+.cv-table th {
+  position: sticky;
+  top: 0;
+  padding: 0;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+}
+
+.cv-table th button {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cv-table th button:hover {
+  background: var(--ui-hover);
+}
+
+.cv-table td {
+  padding: 4px 10px;
+  border: 1px solid var(--ui-border);
+  white-space: pre-wrap;
+  vertical-align: top;
+}
+
+.cv-table tbody tr:nth-child(even) {
+  background: var(--active-line);
+}
+
 /* JSON ---------------------------------------------------------------------- */
 
 .cv-json {

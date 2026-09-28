@@ -61,6 +61,21 @@ export default defineExtension({
     });
 
     ctx.viewers.register({
+      id: 'csv',
+      title: 'Tableau',
+      extensions: ['csv'],
+      kind: 'preview',
+      load: async () => (await import('./table')).createTableViewer(),
+    });
+    ctx.viewers.register({
+      id: 'tsv',
+      title: 'Tableau',
+      extensions: ['tsv', 'tab'],
+      kind: 'preview',
+      load: async () => (await import('./table')).createTableViewer('\t'),
+    });
+
+    ctx.viewers.register({
       id: 'json',
       title: 'JSON',
       extensions: ['json', 'jsonc', 'geojson'],
