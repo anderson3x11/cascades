@@ -28,6 +28,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Barre de menus, onglets et barre d'état masquables ; mode zen plein écran (Leader Z).
 - Retrait suspendu : une ligne indentée qui passe à la ligne reste alignée sous son texte.
 - `settings.json` rechargé à chaud, et réglages modifiables depuis l'interface.
+- Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
+- Visionneuse d'images avec zoom, dans un onglet dédié.
+- API : `ctx.viewers` pour ajouter des aperçus, `ctx.editor.highlightCode`, `ctx.fs.fileUrl`, `ctx.app.openExternal`.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.
 - Entrée conserve l'indentation exacte de la ligne (tabulations comprises).
 - Lecture et écriture avec détection d'encodage (UTF-8, UTF-8 BOM, UTF-16, Latin-1 et autres), de fins de ligne et de fichiers binaires.

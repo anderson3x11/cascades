@@ -61,6 +61,27 @@ export default defineExtension({
     });
 
     ctx.viewers.register({
+      id: 'image',
+      title: 'Image',
+      extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'ico', 'avif'],
+      kind: 'replace',
+      load: async () =>
+        (await import('./image')).createImageViewer(({ path }) =>
+          path ? ctx.fs.fileUrl(path) : Promise.resolve(''),
+        ),
+    });
+    ctx.viewers.register({
+      id: 'svg',
+      title: 'SVG',
+      extensions: ['svg'],
+      kind: 'preview',
+      load: async () =>
+        (await import('./image')).createImageViewer(({ text }) =>
+          Promise.resolve(URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }))),
+        ),
+    });
+
+    ctx.viewers.register({
       id: 'csv',
       title: 'Tableau',
       extensions: ['csv'],

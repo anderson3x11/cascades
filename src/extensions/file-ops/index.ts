@@ -6,6 +6,9 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
     ctx.workspace.activate(existing.id);
     return existing;
   }
+  // Images and other files shown by a viewer are not read as text.
+  const viewer = ctx.viewers.replaceFor(path);
+  if (viewer) return ctx.workspace.open({ path, text: '', viewer: viewer.id });
   const file = await ctx.fs.readTextFile(path);
   if (file.binary) {
     await ctx.dialogs.alert(`${path}\n\nCe fichier est binaire et ne peut pas encore être ouvert.`);
@@ -26,12 +29,15 @@ function target(ctx: ExtensionContext, id: unknown): TabInfo | null {
 }
 
 async function write(ctx: ExtensionContext, tab: TabInfo, path: string): Promise<void> {
+  // A viewer tab (image) has no text: writing would empty the file.
+  if (tab.viewer) return;
   await ctx.fs.writeTextFile(path, ctx.workspace.getText(tab.id), tab);
   if (path !== tab.path) ctx.workspace.update(tab.id, { path });
   ctx.workspace.markSaved(tab.id);
 }
 
 async function saveAs(ctx: ExtensionContext, tab: TabInfo): Promise<boolean> {
+  if (tab.viewer) return false;
   const ext = ctx.settings.get<string>('files.defaultExtension').replace(/^\./, '');
   const filters = [
     ...(ext ? [{ name: `Fichier .${ext}`, extensions: [ext] }] : []),

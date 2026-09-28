@@ -6,6 +6,9 @@ const SAVE_DELAY_MS = 1000;
 
 async function restoreTab(ctx: ExtensionContext, tab: SessionTab): Promise<OpenOptions | null> {
   const view = { selection: tab.selection, scrollTop: tab.scrollTop };
+  // Files shown by a viewer (images) are reopened as such, without reading them.
+  const viewer = tab.path && tab.content === undefined ? ctx.viewers.replaceFor(tab.path) : null;
+  if (viewer) return { path: tab.path, text: '', viewer: viewer.id };
   const disk = tab.path ? await ctx.fs.readTextFile(tab.path).catch(() => null) : null;
   if (tab.content === undefined) {
     // Saved file: reload it from disk, skip it if it is gone.

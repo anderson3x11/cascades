@@ -48,6 +48,7 @@
 }
 
 .cv-markdown code {
+  font-variant-ligatures: none;
   padding: 0.1em 0.35em;
   border-radius: 4px;
   background: var(--ui-bg);
@@ -179,6 +180,71 @@
 
 .cv-table tbody tr:nth-child(even) {
   background: var(--active-line);
+}
+
+/* Images -------------------------------------------------------------------- */
+
+.cv-image {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cv-image-stage {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  /* Checkerboard behind transparent pixels. */
+  background: repeating-conic-gradient(var(--ui-bg) 0 25%, var(--bg) 0 50%) 0 0 / 16px 16px;
+}
+
+.cv-image-stage img {
+  display: block;
+  image-rendering: auto;
+  box-shadow: 0 0 0 1px var(--ui-border);
+}
+
+.cv-image-stage.fit img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cv-image-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-bg);
+  color: var(--ui-fg);
+  font-size: 12px;
+}
+
+.cv-image-bar > span:first-child {
+  margin-right: auto;
+}
+
+.cv-image-level {
+  min-width: 48px;
+  text-align: center;
+}
+
+.cv-image-bar button {
+  padding: 2px 8px;
+  border: 1px solid var(--ui-border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+}
+
+.cv-image-bar button:hover {
+  background: var(--ui-hover);
 }
 
 /* JSON ---------------------------------------------------------------------- */

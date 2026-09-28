@@ -129,7 +129,8 @@ export default defineExtension({
       if (current?.path === tab.path) return;
       current?.watch.dispose();
       watches.delete(tab.id);
-      if (tab.path) {
+      // Viewer tabs (images) have no text to compare or reload.
+      if (tab.path && !tab.viewer) {
         watches.set(tab.id, {
           path: tab.path,
           watch: ctx.fs.watch(tab.path, () => schedule(tab.id)),

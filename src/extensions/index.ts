@@ -30,13 +30,14 @@ export const builtinExtensions: CascadesExtension[] = [
   editorCommands,
   fileOps,
   fileWatcher,
+  // Before the session, which reopens images with their viewer.
+  viewers,
+  preview,
   // Before tabs, which opens an untitled tab only when nothing was restored.
   session,
   tabs,
   palette,
   quickOpen,
-  viewers,
-  preview,
   statusBar,
   defaultKeybindings,
 ];

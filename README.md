@@ -22,31 +22,33 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Polices réglables (éditeur et interface), zoom au clavier ou avec Ctrl+molette.
 - Barre de menus, onglets et barre d'état masquables, **mode zen** plein écran.
 - Fusion des modifications externes, avec résolution des conflits dans le texte.
+- **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json` et script `init.js`.
 
 ## Raccourcis par défaut
 
-| Action                                          | Raccourci                              |
-| ----------------------------------------------- | -------------------------------------- |
-| Nouveau / Ouvrir / Enregistrer                  | Ctrl+N / Ctrl+O / Ctrl+S               |
-| Enregistrer sous                                | Ctrl+Shift+S                           |
-| Fermer l'onglet / Rouvrir le dernier fermé      | Ctrl+W / Ctrl+Shift+T                  |
-| Onglet suivant / précédent                      | Ctrl+Tab / Ctrl+Shift+Tab              |
-| Rechercher / Remplacer                          | Ctrl+F / Ctrl+H                        |
-| Dupliquer la ligne                              | Shift+Alt+Bas                          |
-| Déplacer la ligne                               | Alt+Haut / Alt+Bas                     |
-| Supprimer la ligne                              | Ctrl+Shift+K                           |
-| Commenter                                       | Ctrl+/                                 |
-| Ajouter l'occurrence suivante                   | Ctrl+D                                 |
-| Cocher / décocher une tâche                     | Ctrl+Entrée                            |
-| Palette de commandes                            | Ctrl+Shift+P / Leader P                |
-| Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                      |
-| Choisir le thème                                | Leader T                               |
-| Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette |
-| Mode zen (Échap pour sortir)                    | Leader Z                               |
-| Afficher / masquer les cascades                 | Leader C                               |
-| Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B       |
+| Action                                          | Raccourci                                 |
+| ----------------------------------------------- | ----------------------------------------- |
+| Nouveau / Ouvrir / Enregistrer                  | Ctrl+N / Ctrl+O / Ctrl+S                  |
+| Enregistrer sous                                | Ctrl+Shift+S                              |
+| Fermer l'onglet / Rouvrir le dernier fermé      | Ctrl+W / Ctrl+Shift+T                     |
+| Onglet suivant / précédent                      | Ctrl+Tab / Ctrl+Shift+Tab                 |
+| Rechercher / Remplacer                          | Ctrl+F / Ctrl+H                           |
+| Dupliquer la ligne                              | Shift+Alt+Bas                             |
+| Déplacer la ligne                               | Alt+Haut / Alt+Bas                        |
+| Supprimer la ligne                              | Ctrl+Shift+K                              |
+| Commenter                                       | Ctrl+/                                    |
+| Ajouter l'occurrence suivante                   | Ctrl+D                                    |
+| Cocher / décocher une tâche                     | Ctrl+Entrée                               |
+| Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
+| Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |
+| Choisir le thème                                | Leader T                                  |
+| Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
+| Mode zen (Échap pour sortir)                    | Leader Z                                  |
+| Afficher / masquer les cascades                 | Leader C                                  |
+| Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
+| Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |
 
 **Leader** est la touche leader, **Ctrl+Espace** par défaut (réglage `keyboard.leader`) : on l'appuie, puis la touche suivante. Une barre en bas de la fenêtre affiche alors les touches possibles.
 
@@ -87,6 +89,8 @@ Le dossier de config est :
 | `workbench.fontFamily` / `workbench.fontSize`          | police système / `13`                    | Police de l'interface                                                          |
 | `workbench.showMenuBar` / `showTabs` / `showStatusBar` | `true`                                   | Afficher chaque barre                                                          |
 | `keyboard.leader`                                      | `"Ctrl+Space"`                           | Touche leader des raccourcis `Leader X`                                        |
+| `preview.fontFamily` / `preview.fontSize`              | police système / `15`                    | Police des aperçus                                                             |
+| `preview.htmlScripts`                                  | `false`                                  | Exécuter les scripts des pages HTML prévisualisées                             |
 | `zen.width`                                            | `80`                                     | Largeur du texte en mode zen (caractères)                                      |
 | `files.defaultExtension`                               | `"txt"`                                  | Extension proposée pour un nouveau fichier                                     |
 | `files.autoSave`                                       | `"off"`                                  | `afterDelay` enregistre les fichiers modifiés automatiquement                  |
