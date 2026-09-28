@@ -4,7 +4,7 @@ import { tags as t } from '@lezer/highlight';
 import type { Extension } from '@codemirror/state';
 
 /** Syntax colors, read from the theme's CSS variables so light and dark share one style. */
-const highlight = HighlightStyle.define([
+export const highlight = HighlightStyle.define([
   {
     tag: [t.keyword, t.modifier, t.controlKeyword, t.operatorKeyword],
     color: 'var(--syn-keyword)',

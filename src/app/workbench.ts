@@ -19,6 +19,7 @@ import { watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
+import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
@@ -289,6 +290,7 @@ export class Workbench {
           const tab = ws.activeTab();
           return tab ? ws.stateOf(tab) : null;
         },
+        highlightCode,
       },
       statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
       banners: { show: (options) => track(this.banners.show(options)) },

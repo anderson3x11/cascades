@@ -15,6 +15,11 @@ export default defineConfig({
     watch: { ignored: ['**/src-tauri/**'] },
   },
   envPrefix: ['VITE_', 'TAURI_ENV_*'],
+  // Dependencies of lazily loaded viewers: bundled at startup, otherwise the dev
+  // server discovers them on first use and reloads the page.
+  optimizeDeps: {
+    include: ['markdown-it', 'markdown-it-footnote', 'markdown-it-task-lists', 'dompurify'],
+  },
   build: {
     target: 'es2022',
     minify: !process.env.TAURI_ENV_DEBUG,

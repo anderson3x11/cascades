@@ -191,6 +191,11 @@ export interface EditorApi {
   /** The view showing the active tab. */
   view(): EditorView | null;
   state(): EditorState | null;
+  /**
+   * HTML of `code` colored like the editor ("javascript", "python", "rust"...),
+   * or null for an unknown language. The HTML is escaped and safe to insert.
+   */
+  highlightCode(code: string, language: string): Promise<string | null>;
 }
 
 // Status bar ----------------------------------------------------------------
