@@ -1,5 +1,6 @@
 import { defineExtension, type Disposable, type TabInfo } from '../../api';
 import { decide } from './decide';
+import { MARKER_MINE, merge3, renderMerge } from './merge';
 
 /** Events often come in bursts during a save; wait for the file to settle. */
 const SETTLE_MS = 250;
@@ -29,6 +30,42 @@ export default defineExtension({
       banners.set(tab.id, ctx.banners.show({ tabId: tab.id, kind: 'warning', message, actions }));
     };
 
+    /**
+     * Three-way merge of the last saved text, the editor text and the disk.
+     * The result stays unsaved; conflicts are left in the text for the
+     * conflicts extension to resolve.
+     */
+    const mergeWithDisk = (id: string, theirs: string) => {
+      const { text, conflicts } = renderMerge(
+        merge3(ctx.workspace.savedText(id), ctx.workspace.getText(id), theirs),
+      );
+      ctx.workspace.reload(id, text);
+      ctx.workspace.setSavedText(id, theirs);
+      if (conflicts === 0) return;
+
+      const view = ctx.editor.view();
+      if (view && ctx.workspace.active()?.id === id) {
+        const index = text.split('\n').indexOf(MARKER_MINE);
+        const pos = view.state.doc.line(index + 1).from;
+        view.dispatch({ selection: { anchor: pos }, scrollIntoView: true });
+      }
+      const tab = ctx.workspace.tabs().find((t) => t.id === id);
+      if (tab) {
+        clearBanner(id);
+        banners.set(
+          id,
+          ctx.banners.show({
+            tabId: id,
+            message:
+              conflicts === 1
+                ? 'Fusion faite, 1 conflit à résoudre : choisis la version à garder dans le texte.'
+                : `Fusion faite, ${conflicts} conflits à résoudre : choisis la version à garder dans le texte.`,
+            actions: [{ label: 'OK', run: () => {} }],
+          }),
+        );
+      }
+    };
+
     const check = async (id: string) => {
       const tab = ctx.workspace.tabs().find((t) => t.id === id);
       if (!tab?.path) return;
@@ -48,17 +85,23 @@ export default defineExtension({
           clearBanner(id);
           ctx.workspace.reload(id, disk ?? '');
           return;
-        case 'ask':
+        case 'ask': {
+          const theirs = disk ?? '';
           showBanner(
             tab,
             `« ${tab.title} » a été modifié sur le disque, et vous avez des modifications non enregistrées.`,
             [
-              { label: 'Recharger', run: () => ctx.workspace.reload(id, disk ?? '') },
+              { label: 'Fusionner', run: () => mergeWithDisk(id, theirs) },
               // Keep the editor text; saving will then overwrite the new version knowingly.
-              { label: 'Garder ma version', run: () => ctx.workspace.setSavedText(id, disk ?? '') },
+              { label: 'Garder ma version', run: () => ctx.workspace.setSavedText(id, theirs) },
+              {
+                label: 'Prendre la version du disque',
+                run: () => ctx.workspace.reload(id, theirs),
+              },
             ],
           );
           return;
+        }
         case 'removed':
           // The text only exists in the editor now: flag it as unsaved.
           ctx.workspace.setSavedText(id, '');

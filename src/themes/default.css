@@ -28,6 +28,9 @@
   --match: rgb(255 223 93 / 0.5);
   --match-selected: rgb(255 170 50 / 0.6);
   --bracket-match: rgb(9 105 218 / 0.15);
+  --conflict-marker-bg: rgb(140 149 159 / 0.15);
+  --conflict-mine-bg: rgb(26 127 55 / 0.12);
+  --conflict-theirs-bg: rgb(9 105 218 / 0.12);
 
   /* Cascades: single color, per-depth colors, highlighted branch */
   --cascade: #8c959f;
@@ -87,6 +90,9 @@
     --match: rgb(187 128 9 / 0.4);
     --match-selected: rgb(255 170 50 / 0.45);
     --bracket-match: rgb(96 165 250 / 0.25);
+    --conflict-marker-bg: rgb(139 148 158 / 0.15);
+    --conflict-mine-bg: rgb(63 185 80 / 0.15);
+    --conflict-theirs-bg: rgb(88 166 255 / 0.15);
 
     --cascade: #6e7681;
     --cascade-1: #4f7cb0;

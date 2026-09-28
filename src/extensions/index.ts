@@ -1,5 +1,6 @@
 import type { CascadesExtension } from '../api';
 import cascades from './cascades';
+import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
 import editorCommands from './editor-commands';
 import editorSettings from './editor-settings';
@@ -17,6 +18,7 @@ export const builtinExtensions: CascadesExtension[] = [
   indentKeep,
   smartLists,
   cascades,
+  conflicts,
   editorCommands,
   fileOps,
   fileWatcher,

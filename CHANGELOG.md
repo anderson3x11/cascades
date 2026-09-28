@@ -15,7 +15,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Listes intelligentes : continuation et sortie de liste avec Entrée, changement de niveau avec Tab et Shift+Tab, renumérotation automatique (annulable en un seul Ctrl+Z), Ctrl+Entrée pour cocher une tâche. Chaque comportement est désactivable.
 - Restauration de session : onglets, curseur, scroll et texte non enregistré sont restaurés au démarrage. Fermer la fenêtre ne demande plus de confirmation.
 - Sauvegarde automatique optionnelle (`files.autoSave`).
-- Détection des modifications externes : rechargement automatique d'un onglet sans modification en cours, bandeau « Recharger / Garder ma version » sinon, et avertissement si le fichier est supprimé.
+- Détection des modifications externes : rechargement automatique d'un onglet sans modification en cours, sinon un bandeau propose de fusionner (fusion à trois voies, comme git), de garder sa version ou de prendre celle du disque, et avertissement si le fichier est supprimé.
+- Conflits : les blocs `<<<<<<<` / `=======` / `>>>>>>>` (issus d'une fusion ou de git) sont colorés, avec les boutons « Garder la mienne », « Garder celle du disque » et « Garder les deux ».
+- Repli : chevron plus grand, étiquette « ⋯ N lignes ».
+- Onglets : l'onglet glissé se détache et les autres se décalent en douceur.
 - Glisser-déposer de fichiers dans la fenêtre pour les ouvrir.
 - API : `ctx.banners`, `ctx.configFiles`, `ctx.app.onWillQuit`, `ctx.fs.watch`.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.
