@@ -422,6 +422,8 @@ export interface QuickPickOptions<T> {
   activeValue?: T;
   /** Called as the highlighted item changes (e.g. to preview a theme). */
   onHighlight?: (item: QuickPickItem<T>) => void;
+  /** Items added to the list once ready, for those that take time to find. */
+  more?: Promise<QuickPickItem<T>[]>;
 }
 
 export interface QuickPickApi {
@@ -474,6 +476,15 @@ export interface FsApi {
   fileUrl(path: string): Promise<string>;
   /** Entries of a folder, unsorted. */
   listDir(path: string): Promise<{ name: string; isDir: boolean }[]>;
+  /**
+   * Every file under the folders, at most `limit`, skipping what .gitignore
+   * files ignore and the names matching `exclude` ("node_modules", "*.log").
+   */
+  listFiles(
+    roots: string[],
+    exclude: string[],
+    limit: number,
+  ): Promise<{ files: string[]; truncated: boolean }>;
   /** Creates an empty file; fails if the name is taken. */
   createFile(path: string): Promise<void>;
   createDir(path: string): Promise<void>;

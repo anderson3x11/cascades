@@ -55,6 +55,68 @@ pub fn rename(from: &Path, to: &Path) -> io::Result<()> {
     fs::rename(from, to)
 }
 
+#[derive(Debug, Serialize)]
+pub struct FileList {
+    pub files: Vec<String>,
+    /// The limit was reached: some files are missing.
+    pub truncated: bool,
+}
+
+/// Whether a name matches a pattern where `*` stands for any text, ignoring case.
+fn matches(name: &str, pattern: &str) -> bool {
+    let name = name.to_lowercase();
+    let pattern = pattern.to_lowercase();
+    let mut parts = pattern.split('*');
+    let first = parts.next().unwrap_or_default();
+    let Some(mut rest) = name.strip_prefix(first) else {
+        return false;
+    };
+    let parts: Vec<&str> = parts.collect();
+    for (i, part) in parts.iter().enumerate() {
+        if i == parts.len() - 1 {
+            return rest.ends_with(part);
+        }
+        match rest.find(part) {
+            Some(at) => rest = &rest[at + part.len()..],
+            None => return false,
+        }
+    }
+    rest.is_empty()
+}
+
+/// Every file under the folders, at most `limit`, skipping what .gitignore
+/// files ignore and the names matching `exclude` (see the explorer.exclude setting).
+pub fn list_files(roots: &[String], exclude: &[String], limit: usize) -> FileList {
+    let mut files = Vec::new();
+    for root in roots {
+        let patterns = exclude.to_vec();
+        let walker = ignore::WalkBuilder::new(root)
+            .hidden(false)
+            .require_git(false)
+            .filter_entry(move |entry| {
+                let name = entry.file_name().to_string_lossy();
+                !patterns.iter().any(|p| matches(&name, p))
+            })
+            .build();
+        for entry in walker.flatten() {
+            if !entry.file_type().is_some_and(|t| t.is_file()) {
+                continue;
+            }
+            if files.len() == limit {
+                return FileList {
+                    files,
+                    truncated: true,
+                };
+            }
+            files.push(entry.path().to_string_lossy().into_owned());
+        }
+    }
+    FileList {
+        files,
+        truncated: false,
+    }
+}
+
 /// Sends a file or folder to the recycle bin.
 pub fn trash(path: &Path) -> Result<(), String> {
     trash::delete(path).map_err(|e| e.to_string())
@@ -71,6 +133,50 @@ mod tests {
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         dir
+    }
+
+    #[test]
+    fn names_match_simple_patterns() {
+        assert!(matches("node_modules", "node_modules"));
+        assert!(matches("Debug.LOG", "*.log"));
+        assert!(matches("notes-2025.txt", "notes*.txt"));
+        assert!(!matches("notes.txt", "*.log"));
+        assert!(!matches("my.git", ".git"));
+    }
+
+    #[test]
+    fn lists_files_with_gitignore_and_exclusions() {
+        let dir = temp_dir("list");
+        fs::write(
+            dir.join(".gitignore"),
+            "*.tmp
+",
+        )
+        .unwrap();
+        fs::create_dir_all(dir.join("notes")).unwrap();
+        fs::create_dir_all(dir.join("node_modules/lib")).unwrap();
+        fs::write(dir.join("notes/a.txt"), "").unwrap();
+        fs::write(dir.join("b.tmp"), "").unwrap();
+        fs::write(dir.join("node_modules/lib/c.js"), "").unwrap();
+
+        let roots = [dir.to_string_lossy().into_owned()];
+        let list = list_files(&roots, &["node_modules".into()], 100);
+        let mut names: Vec<String> = list
+            .files
+            .iter()
+            .map(|f| {
+                Path::new(f)
+                    .file_name()
+                    .unwrap()
+                    .to_string_lossy()
+                    .into_owned()
+            })
+            .collect();
+        names.sort();
+        assert_eq!(names, vec![".gitignore", "a.txt"]);
+        assert!(!list.truncated);
+        assert!(list_files(&roots, &[], 1).truncated);
+        fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]

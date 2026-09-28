@@ -452,6 +452,7 @@ export class Workbench {
         watch: (path, listener) => track(watchFile(path, listener)),
         fileUrl,
         listDir: fs.listDir,
+        listFiles: fs.listFiles,
         createFile: fs.createFile,
         createDir: fs.createDir,
         rename: fs.renamePath,

@@ -13,12 +13,19 @@
   let list = $state<HTMLElement>();
 
   const session = $derived(model.session);
-  const results = $derived(session ? fuzzyFilter(query, session.items, (item) => item.label) : []);
+  const matches = $derived(session ? fuzzyFilter(query, session.items, (item) => item.label) : []);
+  /** Only the best ones are drawn: typing more narrows the rest down. */
+  const MAX_SHOWN = 200;
+  const results = $derived(matches.slice(0, MAX_SHOWN));
+
+  /** The list being shown: items added to it later keep the query typed. */
+  let shownFor: unknown = null;
 
   // A new session starts on its active value with an empty query.
   $effect(() => {
     const s = session;
-    if (!s) return;
+    if (!s || s.resolve === shownFor) return;
+    shownFor = s.resolve;
     query = '';
     const index = s.items.findIndex((item) => item.value === s.options.activeValue);
     active = Math.max(0, index);
@@ -109,6 +116,11 @@
       {:else}
         <li class="empty">Aucun résultat</li>
       {/each}
+      {#if matches.length > results.length}
+        <li class="empty">
+          {matches.length - results.length} autres résultats : précise la recherche.
+        </li>
+      {/if}
     </ul>
   </div>
 {/if}

@@ -1,7 +1,7 @@
 //! Tauri commands exposed to the frontend (see src/platform/fs.ts).
 
 use crate::config;
-use crate::folder::{self, DirEntry};
+use crate::folder::{self, DirEntry, FileList};
 use crate::fs::{self, Decoded, TextInfo};
 use crate::watcher::FileWatcher;
 use std::path::Path;
@@ -39,6 +39,18 @@ pub fn unwatch_dir(watcher: State<'_, FileWatcher>, path: String) {
 #[tauri::command]
 pub async fn list_dir(path: String) -> Result<Vec<DirEntry>, String> {
     folder::list_dir(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
+}
+
+/// Runs on a worker thread: walking a big folder must not hold up other commands.
+#[tauri::command]
+pub async fn list_files(
+    roots: Vec<String>,
+    exclude: Vec<String>,
+    limit: usize,
+) -> Result<FileList, String> {
+    tauri::async_runtime::spawn_blocking(move || folder::list_files(&roots, &exclude, limit))
+        .await
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]

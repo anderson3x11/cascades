@@ -43,6 +43,25 @@ export async function listDir(path: string): Promise<DirEntry[]> {
   return await invoke<DirEntry[]>('list_dir', { path });
 }
 
+export interface FileList {
+  files: string[];
+  /** The limit was reached: some files are missing. */
+  truncated: boolean;
+}
+
+/**
+ * Every file under the folders, at most `limit`, skipping what .gitignore
+ * files ignore and the names matching `exclude` ("node_modules", "*.log").
+ */
+export async function listFiles(
+  roots: string[],
+  exclude: string[],
+  limit: number,
+): Promise<FileList> {
+  if (!isTauri()) return fakeFs.listFiles(roots, exclude, limit);
+  return await invoke<FileList>('list_files', { roots, exclude, limit });
+}
+
 /** Creates an empty file; fails if the name is taken. */
 export async function createFile(path: string): Promise<void> {
   if (!isTauri()) return fakeFs.createFile(path);

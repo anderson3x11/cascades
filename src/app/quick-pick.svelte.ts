@@ -8,16 +8,27 @@ interface Session {
 
 /** The one quick pick shown at a time. Opening another cancels the current one. */
 export class QuickPickModel {
-  session = $state<Session | null>(null);
+  // Raw: the items (thousands of files) need no deep reactivity, the session is replaced.
+  session = $state.raw<Session | null>(null);
 
   show<T>(items: QuickPickItem<T>[], options: QuickPickOptions<T> = {}): Promise<T | undefined> {
     this.close(undefined);
     return new Promise<T | undefined>((resolve) => {
-      this.session = {
+      const session: Session = {
         items: items as QuickPickItem<unknown>[],
         options: options as QuickPickOptions<unknown>,
         resolve: resolve as (value: unknown) => void,
       };
+      this.session = session;
+      void options.more?.then((more) => {
+        // Only if this list is still the one shown.
+        if (this.session?.resolve === session.resolve) {
+          this.session = {
+            ...session,
+            items: [...session.items, ...more] as QuickPickItem<unknown>[],
+          };
+        }
+      });
     });
   }
 

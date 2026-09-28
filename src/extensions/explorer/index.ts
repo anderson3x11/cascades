@@ -71,6 +71,11 @@ export default defineExtension({
       title: 'Ajouter un dossier…',
       category: 'Fichier',
     });
+    // For other extensions (quick open, search in files).
+    ctx.commands.register('explorer.folders', () => [...model.roots], {
+      title: 'Dossiers ouverts',
+      hidden: true,
+    });
     ctx.commands.register('explorer.removeAllFolders', () => model.removeAll(), {
       title: 'Fermer tous les dossiers',
       category: 'Fichier',

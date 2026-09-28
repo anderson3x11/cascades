@@ -28,6 +28,22 @@ function exists(path: string): boolean {
   return files.has(path) || dirs.has(path);
 }
 
+/** Whether a name matches a pattern where "*" stands for any text, ignoring case. */
+function wildcard(name: string, pattern: string): boolean {
+  const [first = '', ...rest] = pattern.toLowerCase().split('*');
+  let text = name.toLowerCase();
+  if (!text.startsWith(first)) return false;
+  text = text.slice(first.length);
+  if (rest.length === 0) return text === '';
+  const last = rest.pop() ?? '';
+  for (const part of rest) {
+    const at = text.indexOf(part);
+    if (at === -1) return false;
+    text = text.slice(at + part.length);
+  }
+  return text.endsWith(last);
+}
+
 function fail(message: string): never {
   throw new Error(message);
 }
@@ -68,6 +84,22 @@ export const fakeFs = {
       if (parentOf(path) === dir) entries.push({ name: nameOf(path), isDir: true });
     }
     return entries;
+  },
+
+  /** Files under the folders; `exclude` patterns may use "*". No .gitignore here. */
+  listFiles(roots: string[], exclude: string[], limit: number) {
+    const excluded = (name: string) => exclude.some((pattern) => wildcard(name, pattern));
+    const kept = [...files.keys()].filter((path) =>
+      roots.some(
+        (root) =>
+          path.startsWith(`${root}/`) &&
+          !path
+            .slice(root.length + 1)
+            .split('/')
+            .some(excluded),
+      ),
+    );
+    return { files: kept.slice(0, limit), truncated: kept.length > limit };
   },
 
   createFile(path: string): void {

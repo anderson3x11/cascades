@@ -27,6 +27,7 @@ pub fn run() {
             commands::watch_dir,
             commands::unwatch_dir,
             commands::list_dir,
+            commands::list_files,
             commands::create_file,
             commands::create_dir,
             commands::rename_path,
