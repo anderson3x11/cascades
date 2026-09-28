@@ -10,21 +10,27 @@
   }: { workbench: Workbench; zen?: boolean; showTabs?: boolean } = $props();
 
   const ws = $derived(workbench.workspace);
-  const panel = $derived(workbench.panels.current());
+  const left = $derived(workbench.panels.current('left'));
+  const right = $derived(workbench.panels.current('right'));
   /** Zen shows only the group being written in. */
   const groups = $derived(zen ? ws.groups.filter((g) => g.id === ws.activeGroupId) : ws.groups);
 </script>
 
 <div class="area">
+  {#if left && !zen}
+    {#key left.id}
+      <SidePanel {workbench} panel={left} side="left" />
+    {/key}
+  {/if}
   <div class="groups" class:column={ws.orientation === 'column'}>
     {#each groups as group, index (group.id)}
       {#if index > 0}<div class="separator" aria-hidden="true"></div>{/if}
       <GroupPane {workbench} {group} {zen} showTabs={showTabs && !zen} />
     {/each}
   </div>
-  {#if panel && !zen}
-    {#key panel.id}
-      <SidePanel {workbench} {panel} />
+  {#if right && !zen}
+    {#key right.id}
+      <SidePanel {workbench} panel={right} side="right" />
     {/key}
   {/if}
 </div>

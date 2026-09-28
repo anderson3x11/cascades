@@ -1,8 +1,10 @@
 //! Tauri commands exposed to the frontend (see src/platform/fs.ts).
 
 use crate::config;
+use crate::folder::{self, DirEntry};
 use crate::fs::{self, Decoded, TextInfo};
 use crate::watcher::FileWatcher;
+use std::path::Path;
 use tauri::{AppHandle, Manager, State};
 
 /// Lets the page load files of one folder through the asset protocol (images
@@ -22,6 +24,41 @@ pub fn watch_file(watcher: State<'_, FileWatcher>, path: String) -> Result<(), S
 #[tauri::command]
 pub fn unwatch_file(watcher: State<'_, FileWatcher>, path: String) {
     watcher.unwatch(&path);
+}
+
+#[tauri::command]
+pub fn watch_dir(watcher: State<'_, FileWatcher>, path: String) -> Result<(), String> {
+    watcher.watch_dir(&path)
+}
+
+#[tauri::command]
+pub fn unwatch_dir(watcher: State<'_, FileWatcher>, path: String) {
+    watcher.unwatch_dir(&path);
+}
+
+#[tauri::command]
+pub async fn list_dir(path: String) -> Result<Vec<DirEntry>, String> {
+    folder::list_dir(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
+}
+
+#[tauri::command]
+pub async fn create_file(path: String) -> Result<(), String> {
+    folder::create_file(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
+}
+
+#[tauri::command]
+pub async fn create_dir(path: String) -> Result<(), String> {
+    folder::create_dir(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
+}
+
+#[tauri::command]
+pub async fn rename_path(from: String, to: String) -> Result<(), String> {
+    folder::rename(Path::new(&from), Path::new(&to)).map_err(|e| format!("{to}: {e}"))
+}
+
+#[tauri::command]
+pub async fn trash_path(path: String) -> Result<(), String> {
+    folder::trash(Path::new(&path)).map_err(|e| format!("{path}: {e}"))
 }
 
 #[tauri::command]

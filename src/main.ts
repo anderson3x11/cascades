@@ -1,6 +1,7 @@
 import { mount } from 'svelte';
 import { Workbench } from './app/workbench';
 import { builtinExtensions } from './extensions';
+import { fakeFs } from './platform/fake-fs';
 import App from './ui/App.svelte';
 import './ui/global.css';
 
@@ -18,4 +19,4 @@ mount(App, { target, props: { workbench } });
 void workbench.start(builtinExtensions);
 
 // Handle for e2e tests and debugging in the dev build only.
-if (import.meta.env.DEV) Object.assign(window, { __cascades: workbench });
+if (import.meta.env.DEV) Object.assign(window, { __cascades: workbench, __cascadesFs: fakeFs });

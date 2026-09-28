@@ -349,20 +349,36 @@ export interface ViewersApi {
 
 // Side panels -----------------------------------------------------------------
 
+export type PanelSide = 'left' | 'right';
+
 export interface PanelSpec {
   id: string;
   title: string;
+  /** Right by default. The panels of one side are shown one at a time, as tabs on the left. */
+  side?: PanelSide;
   /** Builds the panel content in `host` when it is shown; disposed when hidden. */
   render(host: HTMLElement): Disposable;
 }
 
 export interface PanelsApi {
-  /** A panel on the right of the editor; one is shown at a time. */
+  /** A panel beside the editor; one is shown at a time on each side. */
   register(panel: PanelSpec): Disposable;
   show(id: string): void;
   hide(id: string): void;
   toggle(id: string): void;
   isVisible(id: string): boolean;
+  /** Hides a side, or shows the panel it showed last. */
+  toggleSide(side: PanelSide): void;
+}
+
+// Context menu ----------------------------------------------------------------
+
+export type ContextMenuItem =
+  { label: string; run: () => void; disabled?: boolean; shortcut?: string } | 'separator';
+
+export interface ContextMenuApi {
+  /** Shows a right-click menu at a point of the window (usually the mouse event's clientX/Y). */
+  show(position: { x: number; y: number }, items: ContextMenuItem[]): void;
 }
 
 // Modals ----------------------------------------------------------------------
@@ -447,11 +463,24 @@ export interface FsApi {
    * access to the file's folder only. Returns the path as is outside the app.
    */
   fileUrl(path: string): Promise<string>;
+  /** Entries of a folder, unsorted. */
+  listDir(path: string): Promise<{ name: string; isDir: boolean }[]>;
+  /** Creates an empty file; fails if the name is taken. */
+  createFile(path: string): Promise<void>;
+  createDir(path: string): Promise<void>;
+  /** Renames a file or folder; fails if the new name is taken. */
+  rename(from: string, to: string): Promise<void>;
+  /** Sends a file or folder to the recycle bin. */
+  trash(path: string): Promise<void>;
+  /** Calls `listener` when an entry of the folder is created, removed or renamed. */
+  watchDir(path: string, listener: () => void): Disposable;
 }
 
 export interface DialogsApi {
   alert(message: string, title?: string): Promise<void>;
   pickFilesToOpen(): Promise<string[]>;
+  /** A folder chosen by the user, or null. */
+  pickFolder(): Promise<string | null>;
   /** The first filter's extension is appended when the user types a name without one. */
   pickSavePath(
     defaultPath?: string,
@@ -559,6 +588,7 @@ export interface ExtensionContext {
   readonly viewers: ViewersApi;
   readonly panels: PanelsApi;
   readonly modals: ModalsApi;
+  readonly contextMenu: ContextMenuApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

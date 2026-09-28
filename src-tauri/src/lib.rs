@@ -1,6 +1,7 @@
 mod commands;
 mod config;
 mod cursor;
+mod folder;
 mod fs;
 mod watcher;
 
@@ -23,6 +24,13 @@ pub fn run() {
             commands::allow_asset_dir,
             commands::watch_file,
             commands::unwatch_file,
+            commands::watch_dir,
+            commands::unwatch_dir,
+            commands::list_dir,
+            commands::create_file,
+            commands::create_dir,
+            commands::rename_path,
+            commands::trash_path,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

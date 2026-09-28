@@ -4,6 +4,7 @@ import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
 import editorCommands from './editor-commands';
 import editorSettings from './editor-settings';
+import explorer from './explorer';
 import fileOps from './file-ops';
 import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
@@ -44,6 +45,7 @@ export const builtinExtensions: CascadesExtension[] = [
   split,
   palette,
   quickOpen,
+  explorer,
   quarantine,
   statusBar,
   preferences,

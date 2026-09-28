@@ -1,10 +1,14 @@
 <script lang="ts">
-  import type { PanelSpec } from '../api';
+  import type { PanelSide, PanelSpec } from '../api';
   import type { Workbench } from '../app/workbench';
 
-  let { workbench, panel }: { workbench: Workbench; panel: PanelSpec } = $props();
+  let { workbench, panel, side }: { workbench: Workbench; panel: PanelSpec; side: PanelSide } =
+    $props();
 
   let host: HTMLElement;
+
+  /** The panels of this side, shown as tabs when there are several. */
+  const siblings = $derived(workbench.panels.of(side));
 
   $effect(() => {
     const content = panel.render(host);
@@ -12,10 +16,24 @@
   });
 </script>
 
-<aside class="panel" aria-label={panel.title}>
+<aside class="panel {side}" aria-label={panel.title}>
   <header>
-    <h2>{panel.title}</h2>
+    {#if siblings.length > 1}
+      <div class="tabs" role="tablist">
+        {#each siblings as sibling (sibling.id)}
+          <button
+            role="tab"
+            class="tab"
+            aria-selected={sibling.id === panel.id}
+            onclick={() => workbench.panels.show(sibling.id)}>{sibling.title}</button
+          >
+        {/each}
+      </div>
+    {:else}
+      <h2>{panel.title}</h2>
+    {/if}
     <button
+      class="close"
       aria-label="Fermer le panneau"
       title="Fermer"
       onclick={() => workbench.panels.hide(panel.id)}>×</button
@@ -32,7 +50,15 @@
     width: 320px;
     min-height: 0;
     background: var(--ui-bg);
+  }
+
+  .panel.right {
     border-left: 1px solid var(--ui-border);
+  }
+
+  .panel.left {
+    width: 260px;
+    border-right: 1px solid var(--ui-border);
   }
 
   header {
@@ -43,7 +69,8 @@
     border-bottom: 1px solid var(--ui-border);
   }
 
-  h2 {
+  h2,
+  .tab {
     margin: 0;
     color: var(--ui-fg);
     font-size: 11px;
@@ -52,7 +79,32 @@
     text-transform: uppercase;
   }
 
-  header button {
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-left: -6px;
+  }
+
+  .tab {
+    padding: 3px 6px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .tab:hover {
+    color: var(--fg);
+  }
+
+  .tab[aria-selected='true'] {
+    color: var(--fg);
+    box-shadow: inset 0 -2px 0 var(--accent);
+    border-radius: 0;
+  }
+
+  .close {
     width: 22px;
     height: 22px;
     border: none;
@@ -64,9 +116,14 @@
     cursor: pointer;
   }
 
-  header button:hover {
+  .close:hover {
     background: var(--ui-hover);
     color: var(--fg);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
 
   .body {

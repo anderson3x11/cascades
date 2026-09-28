@@ -24,13 +24,14 @@ import { SettingsRegistry } from '../core/settings/registry';
 import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
-import { watchFile } from '../platform/watch';
+import { watchDir, watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
 import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
+import { ContextMenuModel } from './context-menu.svelte';
 import { ModalModel } from './modals.svelte';
 import { PanelModel } from './panels.svelte';
 import { QuickPickModel } from './quick-pick.svelte';
@@ -61,6 +62,7 @@ export class Workbench {
   readonly viewers = new ViewerService();
   readonly panels = new PanelModel();
   readonly modals = new ModalModel();
+  readonly contextMenu = new ContextMenuModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -443,9 +445,16 @@ export class Workbench {
         writeTextFile: fs.writeTextFile,
         watch: (path, listener) => track(watchFile(path, listener)),
         fileUrl,
+        listDir: fs.listDir,
+        createFile: fs.createFile,
+        createDir: fs.createDir,
+        rename: fs.renamePath,
+        trash: fs.trashPath,
+        watchDir: (path, listener) => track(watchDir(path, listener)),
       },
       dialogs: {
         pickFilesToOpen: dialogs.pickFilesToOpen,
+        pickFolder: dialogs.pickFolder,
         pickSavePath: dialogs.pickSavePath,
         choose: dialogs.choose,
         alert: dialogs.alert,
@@ -478,7 +487,11 @@ export class Workbench {
         show: (id) => this.panels.show(id),
         hide: (id) => this.panels.hide(id),
         toggle: (id) => this.panels.toggle(id),
-        isVisible: (id) => this.panels.visible === id,
+        isVisible: (id) => this.panels.isVisible(id),
+        toggleSide: (side) => this.panels.toggleSide(side),
+      },
+      contextMenu: {
+        show: (position, items) => this.contextMenu.show(position, items),
       },
     };
   }

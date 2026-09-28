@@ -1,4 +1,5 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
+import { fakeFs } from './fake-fs';
 
 export type LineEnding = 'lf' | 'crlf';
 
@@ -15,15 +16,54 @@ export interface ReadResult extends TextFileInfo {
   binary: boolean;
 }
 
-export function readTextFile(path: string): Promise<ReadResult> {
-  return invoke<ReadResult>('read_text_file', { path });
+export async function readTextFile(path: string): Promise<ReadResult> {
+  if (!isTauri()) {
+    const text = fakeFs.read(path);
+    return { text, binary: false, encoding: 'utf-8', bom: false, lineEnding: 'lf' };
+  }
+  return await invoke<ReadResult>('read_text_file', { path });
 }
 
 /** `text` uses "\n"; it is converted to `info.lineEnding` and encoded by the backend. */
-export function writeTextFile(path: string, text: string, info: TextFileInfo): Promise<void> {
+export async function writeTextFile(path: string, text: string, info: TextFileInfo): Promise<void> {
+  if (!isTauri()) return fakeFs.write(path, text);
   // Copy the fields: `info` may be a class instance whose fields are accessors.
   const { encoding, bom, lineEnding } = info;
-  return invoke('write_text_file', { path, text, info: { encoding, bom, lineEnding } });
+  await invoke('write_text_file', { path, text, info: { encoding, bom, lineEnding } });
+}
+
+export interface DirEntry {
+  name: string;
+  isDir: boolean;
+}
+
+/** Entries of a folder, unsorted. */
+export async function listDir(path: string): Promise<DirEntry[]> {
+  if (!isTauri()) return fakeFs.list(path);
+  return await invoke<DirEntry[]>('list_dir', { path });
+}
+
+/** Creates an empty file; fails if the name is taken. */
+export async function createFile(path: string): Promise<void> {
+  if (!isTauri()) return fakeFs.createFile(path);
+  await invoke('create_file', { path });
+}
+
+export async function createDir(path: string): Promise<void> {
+  if (!isTauri()) return fakeFs.createDir(path);
+  await invoke('create_dir', { path });
+}
+
+/** Renames a file or folder; fails if the new name is taken. */
+export async function renamePath(from: string, to: string): Promise<void> {
+  if (!isTauri()) return fakeFs.rename(from, to);
+  await invoke('rename_path', { from, to });
+}
+
+/** Sends a file or folder to the recycle bin. */
+export async function trashPath(path: string): Promise<void> {
+  if (!isTauri()) return fakeFs.remove(path);
+  await invoke('trash_path', { path });
 }
 
 export function configDir(): Promise<string> {

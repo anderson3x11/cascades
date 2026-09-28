@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Workbench } from '../app/workbench';
   import Banners from './Banners.svelte';
+  import ContextMenu from './ContextMenu.svelte';
   import EditorArea from './EditorArea.svelte';
   import KeyHint from './KeyHint.svelte';
   import MenuBar from './MenuBar.svelte';
@@ -20,6 +21,7 @@
   {#if layout.shows('statusBar')}<StatusBar {workbench} />{/if}
 </div>
 <QuickPick {workbench} />
+<ContextMenu {workbench} />
 {#if workbench.modals.current}
   {#key workbench.modals.current}
     <Modal {workbench} modal={workbench.modals.current} />

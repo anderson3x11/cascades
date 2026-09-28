@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { message, open, save } from '@tauri-apps/plugin-dialog';
 
 /**
@@ -19,6 +19,11 @@ export async function pickFilesToOpen(): Promise<string[]> {
   return result ?? [];
 }
 
+/** A folder chosen by the user, or null. */
+export async function pickFolder(): Promise<string | null> {
+  return await withCursor(() => open({ multiple: false, directory: true }));
+}
+
 export interface FileFilter {
   name: string;
   extensions: string[];
@@ -33,6 +38,7 @@ export async function pickSavePath(
 }
 
 export async function alert(text: string, title = 'cascades'): Promise<void> {
+  if (!isTauri()) return window.alert(text);
   await withCursor(() => message(text, { title, kind: 'info' }));
 }
 
@@ -48,6 +54,8 @@ export async function choose<T extends string>(
   options: ChoiceOptions<T>,
 ): Promise<T> {
   const [yes, no, cancel] = options.buttons;
+  // In a browser (dev server, e2e tests): a plain confirm box.
+  if (!isTauri()) return window.confirm(text) ? yes : (cancel ?? no);
   const buttons = cancel ? { yes, no, cancel } : { ok: yes, cancel: no };
   const result = await withCursor(() =>
     message(text, { title: options.title ?? 'cascades', kind: 'warning', buttons }),

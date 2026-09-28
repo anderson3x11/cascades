@@ -25,6 +25,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Vues scindées** (jusqu'à 4, côte à côte ou empilées) : un fichier différent dans chacune, ou le même fichier cloné dans plusieurs vues, synchronisées, chacune avec son curseur et son historique. Clic droit sur un onglet pour cloner ou déplacer, ou glisser l'onglet vers une autre vue.
 - **Quarantaine** : mettre de côté un passage (Leader Q) pour essayer le texte sans lui. Chaque passage devient une carte dans un panneau propre au fichier, gardée entre les sessions, et se replace n'importe où (bouton ou glisser dans le texte). Ctrl+Z et Ctrl+Y suivent.
 - **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
+- **Explorateur** (Fichier > Ouvrir un dossier…, Ctrl+Shift+O) : le dossier en arbre à gauche, mis à jour tout seul. Clic droit ou boutons pour créer un fichier ou un dossier, F2 pour renommer (les onglets ouverts suivent), Suppr pour mettre à la corbeille. `.git` et `node_modules` sont masqués (`explorer.exclude`). Ctrl+B masque le panneau.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 
@@ -45,6 +46,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Cocher / décocher une tâche                     | Ctrl+Entrée                               |
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
 | Préférences                                     | Ctrl+,                                    |
+| Ouvrir un dossier / Panneau de gauche           | Ctrl+Shift+O / Ctrl+B                     |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |
 | Choisir le thème                                | Leader T                                  |
 | Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
