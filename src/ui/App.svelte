@@ -1,23 +1,22 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { EditorView, basicSetup } from 'codemirror';
+  import type { Workbench } from '../app/workbench';
+  import EditorHost from './EditorHost.svelte';
+  import StatusBar from './StatusBar.svelte';
+  import TabBar from './TabBar.svelte';
 
-  let host: HTMLElement;
-
-  onMount(() => {
-    const view = new EditorView({ doc: '', extensions: [basicSetup], parent: host });
-    view.focus();
-    return () => view.destroy();
-  });
+  let { workbench }: { workbench: Workbench } = $props();
 </script>
 
-<main bind:this={host}></main>
+<div class="shell">
+  <TabBar {workbench} />
+  <EditorHost {workbench} />
+  <StatusBar {workbench} />
+</div>
 
 <style>
-  main {
+  .shell {
+    display: flex;
+    flex-direction: column;
     height: 100vh;
-  }
-  main :global(.cm-editor) {
-    height: 100%;
   }
 </style>
