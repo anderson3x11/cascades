@@ -21,10 +21,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Onglets : l'onglet glissé se détache et les autres se décalent en douceur.
 - Glisser-déposer de fichiers dans la fenêtre pour les ouvrir.
 - API : `ctx.banners`, `ctx.configFiles`, `ctx.app.onWillQuit`, `ctx.fs.watch`.
-- Moteur de thèmes : 7 thèmes fournis (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox), thèmes utilisateur en JSON rechargés à chaud, sélecteur avec aperçu en direct (Ctrl+K Ctrl+T).
-- Sélecteur rapide avec recherche floue (base de la future palette de commandes).
+- Moteur de thèmes : 7 thèmes fournis (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox), thèmes utilisateur en JSON rechargés à chaud, sélecteur avec aperçu en direct (Leader T).
+- Sélecteur rapide avec recherche floue, palette de commandes (Ctrl+Shift+P) et ouverture rapide des onglets et fichiers récents (Ctrl+P).
+- Touche leader configurable (Ctrl+Espace par défaut), avec une barre qui affiche les touches possibles, comme which-key dans Neovim.
 - Réglages de police de l'éditeur et de l'interface, zoom (Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette) mémorisé.
-- Barre de menus, onglets et barre d'état masquables ; mode zen plein écran (Ctrl+K Z).
+- Barre de menus, onglets et barre d'état masquables ; mode zen plein écran (Leader Z).
 - Retrait suspendu : une ligne indentée qui passe à la ligne reste alignée sous son texte.
 - `settings.json` rechargé à chaud, et réglages modifiables depuis l'interface.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.

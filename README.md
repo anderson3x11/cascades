@@ -40,10 +40,14 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Commenter                                       | Ctrl+/                                 |
 | Ajouter l'occurrence suivante                   | Ctrl+D                                 |
 | Cocher / décocher une tâche                     | Ctrl+Entrée                            |
-| Choisir le thème                                | Ctrl+K Ctrl+T                          |
+| Palette de commandes                            | Ctrl+Shift+P / Leader P                |
+| Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                      |
+| Choisir le thème                                | Leader T                               |
 | Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette |
-| Mode zen (Échap pour sortir)                    | Ctrl+K Z                               |
-| Afficher / masquer menus, onglets, barre d'état | Ctrl+K M / Ctrl+K T / Ctrl+K B         |
+| Mode zen (Échap pour sortir)                    | Leader Z                               |
+| Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B       |
+
+**Leader** est la touche leader, **Ctrl+Espace** par défaut (réglage `keyboard.leader`) : on l'appuie, puis la touche suivante. Une barre en bas de la fenêtre affiche alors les touches possibles.
 
 ## Configuration
 
@@ -81,6 +85,7 @@ Le dossier de config est :
 | `workbench.themeLight` / `workbench.themeDark`         | `"light"` / `"dark"`                     | Thèmes utilisés en mode `auto`                                |
 | `workbench.fontFamily` / `workbench.fontSize`          | police système / `13`                    | Police de l'interface                                         |
 | `workbench.showMenuBar` / `showTabs` / `showStatusBar` | `true`                                   | Afficher chaque barre                                         |
+| `keyboard.leader`                                      | `"Ctrl+Space"`                           | Touche leader des raccourcis `Leader X`                       |
 | `zen.width`                                            | `80`                                     | Largeur du texte en mode zen (caractères)                     |
 | `files.defaultExtension`                               | `"txt"`                                  | Extension proposée pour un nouveau fichier                    |
 | `files.autoSave`                                       | `"off"`                                  | `afterDelay` enregistre les fichiers modifiés automatiquement |
@@ -113,7 +118,7 @@ Un thème est un fichier JSON placé dans le sous-dossier `themes` du dossier de
 }
 ```
 
-Le fichier `themes/sepia.json` donne le thème `user.sepia`, à choisir avec Ctrl+K Ctrl+T. Il est rechargé à chaque enregistrement. La liste des couleurs disponibles est dans [src/themes/default.css](src/themes/default.css).
+Le fichier `themes/sepia.json` donne le thème `user.sepia`, à choisir avec Ctrl+Espace T. Il est rechargé à chaque enregistrement. La liste des couleurs disponibles est dans [src/themes/default.css](src/themes/default.css).
 
 ### init.js
 
@@ -122,7 +127,7 @@ Le fichier `themes/sepia.json` donne le thème `user.sepia`, à choisir avec Ctr
 ```js
 export default function (ctx) {
   ctx.commands.register('user.hello', () => ctx.dialogs.alert('Bonjour'));
-  ctx.keybindings.register({ key: 'Ctrl+K H', command: 'user.hello' });
+  ctx.keybindings.register({ key: 'Leader H', command: 'user.hello' });
   ctx.menus.registerItem('edit', { command: 'user.hello', title: 'Dire bonjour', group: '9_user' });
 }
 ```
