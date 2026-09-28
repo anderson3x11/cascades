@@ -176,7 +176,11 @@ export interface FsApi {
 export interface DialogsApi {
   alert(message: string, title?: string): Promise<void>;
   pickFilesToOpen(): Promise<string[]>;
-  pickSavePath(defaultPath?: string): Promise<string | null>;
+  /** The first filter's extension is appended when the user types a name without one. */
+  pickSavePath(
+    defaultPath?: string,
+    filters?: { name: string; extensions: string[] }[],
+  ): Promise<string | null>;
   /** Message box with 2 or 3 buttons; returns the clicked label (last one on cancel). */
   choose<T extends string>(
     message: string,

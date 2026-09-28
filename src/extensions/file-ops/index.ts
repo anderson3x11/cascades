@@ -32,7 +32,13 @@ async function write(ctx: ExtensionContext, tab: TabInfo, path: string): Promise
 }
 
 async function saveAs(ctx: ExtensionContext, tab: TabInfo): Promise<boolean> {
-  const path = await ctx.dialogs.pickSavePath(tab.path ?? tab.title);
+  const ext = ctx.settings.get<string>('files.defaultExtension').replace(/^\./, '');
+  const filters = [
+    ...(ext ? [{ name: `Fichier .${ext}`, extensions: [ext] }] : []),
+    { name: 'Tous les fichiers', extensions: ['*'] },
+  ];
+  const defaultPath = tab.path ?? (ext ? `${tab.title}.${ext}` : tab.title);
+  const path = await ctx.dialogs.pickSavePath(defaultPath, filters);
   if (!path) return false;
   await write(ctx, tab, path);
   return true;
@@ -45,6 +51,14 @@ export default defineExtension({
       console.error(err);
       void ctx.dialogs.alert(String(err instanceof Error ? err.message : err), 'Erreur');
     };
+
+    ctx.settings.register('files', {
+      defaultExtension: {
+        type: 'string',
+        default: 'txt',
+        description: 'Extension proposée pour un nouveau fichier ("" pour aucune).',
+      },
+    });
 
     ctx.commands.register('file.new', () => ctx.workspace.open({ path: null, text: '' }), {
       title: 'Nouveau fichier',

@@ -5,8 +5,17 @@ export async function pickFilesToOpen(): Promise<string[]> {
   return result ?? [];
 }
 
-export async function pickSavePath(defaultPath?: string): Promise<string | null> {
-  return await save(defaultPath ? { defaultPath } : {});
+export interface FileFilter {
+  name: string;
+  extensions: string[];
+}
+
+/** The first filter's extension is appended when the user types a name without one. */
+export async function pickSavePath(
+  defaultPath?: string,
+  filters?: FileFilter[],
+): Promise<string | null> {
+  return await save({ defaultPath, filters });
 }
 
 export async function alert(text: string, title = 'cascades'): Promise<void> {

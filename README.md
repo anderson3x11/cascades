@@ -59,6 +59,7 @@ Le dossier de config est :
 | `editor.folding`             | `true`  | Marge de repli                                |
 | `editor.highlightActiveLine` | `true`  | Surligner la ligne du curseur                 |
 | `editor.fontSize`            | `14`    | Taille de police de l'éditeur (px)            |
+| `files.defaultExtension`     | `"txt"` | Extension proposée pour un nouveau fichier    |
 | `indentKeep.enabled`         | `true`  | Entrée garde l'indentation exacte de la ligne |
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
