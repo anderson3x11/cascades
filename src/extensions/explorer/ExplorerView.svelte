@@ -2,6 +2,7 @@
   import { tick } from 'svelte';
   import type { ExtensionContext } from '../../api';
   import type { ExplorerModel, Row } from './model.svelte';
+  import { ICON_PATHS, iconFor } from './icons';
   import { baseName, parentOf, samePath } from './paths';
 
   let { ctx, model }: { ctx: ExtensionContext; model: ExplorerModel } = $props();
@@ -134,19 +135,17 @@
     ]);
   }
 
-  /** A click anywhere in the panel but on a control puts the keyboard in the tree. */
+  /**
+   * A click anywhere in the panel but on a control puts the keyboard in the
+   * tree (never on a row itself: the tree shows which row is selected).
+   */
   function focusTree(event: PointerEvent) {
     const target = event.target as Element;
-    if (!target.closest('button, input, [role="treeitem"]')) {
+    if (!target.closest('button, input')) {
       event.preventDefault();
       tree?.focus();
     }
   }
-
-  const newIn = (kind: 'file' | 'folder') => {
-    const dir = model.folderFor(model.selected);
-    if (dir) void model.startNew(kind, dir);
-  };
 
   /** Focuses the name field when it appears, with the name but not the extension selected. */
   function field(input: HTMLInputElement) {
@@ -197,41 +196,6 @@
       </button>
     </div>
   {:else}
-    <div class="toolbar">
-      <button
-        class="icon"
-        title="Nouveau fichier"
-        aria-label="Nouveau fichier"
-        onclick={() => newIn('file')}
-      >
-        <svg viewBox="0 0 16 16" aria-hidden="true"
-          ><path d="M9 1.5H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5L9 1.5Z" /><path
-            d="M9 1.5v4h4M8 8v4M6 10h4"
-          /></svg
-        >
-      </button>
-      <button
-        class="icon"
-        title="Nouveau dossier"
-        aria-label="Nouveau dossier"
-        onclick={() => newIn('folder')}
-      >
-        <svg viewBox="0 0 16 16" aria-hidden="true"
-          ><path
-            d="M1.5 4a1 1 0 0 1 1-1h3.5l1.5 1.5h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4Z"
-          /><path d="M8 7v4M6 9h4" /></svg
-        >
-      </button>
-      <button
-        class="icon"
-        title="Tout replier"
-        aria-label="Tout replier"
-        onclick={() => model.collapseAll()}
-      >
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4" /></svg>
-      </button>
-    </div>
-
     {#if model.error}<p class="error" role="alert">{model.error}</p>{/if}
 
     <div
@@ -262,6 +226,7 @@
             </p>{/if}
         {:else}
           {@const row = item.row}
+          {@const icon = iconFor(row.name, row.isDir, row.expanded)}
           <!-- The keys are handled by the tree, which points to the selected row. -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <div
@@ -282,6 +247,9 @@
           >
             <span class="chevron" class:open={row.expanded} aria-hidden="true"
               >{row.isDir ? '▸' : ''}</span
+            >
+            <svg class="icon {icon}" viewBox="0 0 16 16" aria-hidden="true"
+              ><path d={ICON_PATHS[icon]} /></svg
             >
             {#if renaming(row)}
               <input
@@ -344,41 +312,6 @@
     cursor: pointer;
   }
 
-  .toolbar {
-    display: flex;
-    gap: 2px;
-    justify-content: flex-end;
-    padding: 4px 6px 2px;
-  }
-
-  .icon {
-    display: grid;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    border-radius: 4px;
-    background: none;
-    color: var(--ui-fg);
-    cursor: pointer;
-    place-items: center;
-  }
-
-  .icon:hover {
-    background: var(--ui-hover);
-    color: var(--fg);
-  }
-
-  .icon svg {
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 1.2;
-  }
-
   .error {
     margin: 4px 12px;
     padding: 6px 8px;
@@ -428,12 +361,53 @@
     background: var(--ui-hover);
   }
 
+  .row:focus {
+    outline: none;
+  }
+
+  /* Selected: grey; while the keyboard is in the tree, tinted with the accent. */
   .row.selected {
     background: var(--ui-hover);
   }
 
-  .tree:focus-visible .row.selected {
-    box-shadow: inset 0 0 0 1px var(--accent);
+  .tree:focus .row.selected {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  .icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: var(--ui-fg);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.1;
+  }
+
+  .icon.folder,
+  .icon.folderOpen {
+    stroke: var(--syn-type);
+  }
+
+  .icon.markdown {
+    stroke: var(--syn-heading);
+  }
+
+  .icon.code {
+    stroke: var(--syn-function);
+  }
+
+  .icon.data {
+    stroke: var(--syn-number);
+  }
+
+  .icon.image {
+    stroke: var(--syn-string);
+  }
+
+  .icon.pdf {
+    stroke: var(--syn-invalid);
   }
 
   .row.active .name {

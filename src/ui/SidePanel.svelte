@@ -9,6 +9,7 @@
 
   /** The panels of this side, shown as tabs when there are several. */
   const siblings = $derived(workbench.panels.of(side));
+  const actions = $derived(panel.actions?.() ?? []);
 
   $effect(() => {
     const content = panel.render(host);
@@ -32,6 +33,13 @@
     {:else}
       <h2>{panel.title}</h2>
     {/if}
+    <span class="actions">
+      {#each actions as action (action.label)}
+        <button class="action" title={action.label} aria-label={action.label} onclick={action.run}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d={action.icon} /></svg>
+        </button>
+      {/each}
+    </span>
     <button
       class="close"
       aria-label="Fermer le panneau"
@@ -102,6 +110,40 @@
     color: var(--fg);
     box-shadow: inset 0 -2px 0 var(--accent);
     border-radius: 0;
+  }
+
+  .actions {
+    display: flex;
+    gap: 2px;
+    margin-left: auto;
+  }
+
+  .action {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--ui-fg);
+    cursor: pointer;
+    place-items: center;
+  }
+
+  .action:hover {
+    background: var(--ui-hover);
+    color: var(--fg);
+  }
+
+  .action svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.2;
   }
 
   .close {

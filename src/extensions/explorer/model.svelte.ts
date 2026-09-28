@@ -196,6 +196,12 @@ export class ExplorerModel {
     this.editing = { kind, dir };
   }
 
+  /** A new file or folder next to the selection (or in the first folder). */
+  async newNearSelection(kind: 'file' | 'folder'): Promise<void> {
+    const dir = this.folderFor(this.selected);
+    if (dir) await this.startNew(kind, dir);
+  }
+
   startRename(path: string): void {
     if (this.isRoot(path)) return;
     const node = this.find(path);

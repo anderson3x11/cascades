@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { iconFor } from './icons';
 import {
   baseName,
   isExcluded,
@@ -51,5 +52,17 @@ describe('paths', () => {
     expect(nameProblem('  ')).toMatch(/vide/);
     expect(nameProblem('a:b')).toMatch(/interdits/);
     expect(nameProblem('notes.')).toMatch(/finir/);
+  });
+});
+
+describe('iconFor', () => {
+  it('picks an icon from the extension', () => {
+    expect(iconFor('notes.TXT', false, false)).toBe('text');
+    expect(iconFor('README', false, false)).toBe('text');
+    expect(iconFor('idées.md', false, false)).toBe('markdown');
+    expect(iconFor('app.ts', false, false)).toBe('code');
+    expect(iconFor('photo.jpeg', false, false)).toBe('image');
+    expect(iconFor('archive.zip', false, false)).toBe('file');
+    expect(iconFor('notes', true, true)).toBe('folderOpen');
   });
 });

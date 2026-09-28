@@ -356,8 +356,17 @@ export interface PanelSpec {
   title: string;
   /** Right by default. The panels of one side are shown one at a time, as tabs on the left. */
   side?: PanelSide;
+  /** Buttons in the panel header. Called again when the state it reads changes. */
+  actions?: () => PanelAction[];
   /** Builds the panel content in `host` when it is shown; disposed when hidden. */
   render(host: HTMLElement): Disposable;
+}
+
+export interface PanelAction {
+  label: string;
+  /** SVG path data on a 16×16 grid, drawn as a 1.2 px stroke. */
+  icon: string;
+  run(): void;
 }
 
 export interface PanelsApi {
