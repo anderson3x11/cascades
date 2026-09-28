@@ -12,6 +12,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Coloration syntaxique selon l'extension du fichier.
 - **Cascades** : des connecteurs relient chaque ligne indentée à sa ligne parente, sans rien ajouter au fichier. Chaque ligne parente est repliable.
 - Entrée conserve l'indentation exacte de la ligne (les tabulations restent des tabulations).
+- **Listes intelligentes** (`-`, `*`, `+`, `1.`, `a)`, `- [ ]`) : Entrée continue la liste, Tab et Shift+Tab changent le niveau, les numéros se mettent à jour tout seuls, Ctrl+Entrée coche une tâche.
 - Barre d'état : position, mots, caractères, langage, encodage, fin de ligne.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json` et script `init.js`.

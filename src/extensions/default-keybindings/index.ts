@@ -27,6 +27,7 @@ export const DEFAULT_KEYBINDINGS: KeybindingSpec[] = [
   { key: 'Ctrl+Shift+K', command: 'editor.deleteLine', when: EDITOR },
   { key: 'Ctrl+/', command: 'editor.toggleComment', when: EDITOR },
   { key: 'Ctrl+D', command: 'editor.addNextOccurrence', when: EDITOR },
+  { key: 'Ctrl+Enter', command: 'editor.toggleTask', when: EDITOR },
 ];
 
 export default defineExtension({
