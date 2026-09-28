@@ -22,6 +22,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Polices réglables (éditeur et interface), zoom au clavier ou avec Ctrl+molette.
 - Barre de menus, onglets et barre d'état masquables, **mode zen** plein écran.
 - Fusion des modifications externes, avec résolution des conflits dans le texte.
+- **Quarantaine** : mettre de côté un passage (Leader Q) pour essayer le texte sans lui. Chaque passage devient une carte dans un panneau propre au fichier, gardée entre les sessions, et se replace n'importe où (bouton ou glisser dans le texte). Ctrl+Z et Ctrl+Y suivent.
 - **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json` et script `init.js`.

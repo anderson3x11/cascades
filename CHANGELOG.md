@@ -31,6 +31,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.
 - API : `ctx.viewers` pour ajouter des aperçus, `ctx.editor.highlightCode`, `ctx.fs.fileUrl`, `ctx.app.openExternal`.
+- Quarantaine : mettre de côté des passages d'un fichier (Leader Q) dans un panneau latéral propre au fichier, gardé entre les sessions (jamais écrit dans le fichier). Chaque passage est une carte, à réinsérer au curseur ou à glisser n'importe où dans le texte ; Ctrl+Z et Ctrl+Y gardent fichier et quarantaine synchronisés.
+- API : `ctx.panels` pour les panneaux latéraux.
 - Palettes claire et sombre qui suivent le thème du système, y compris la coloration syntaxique.
 - Entrée conserve l'indentation exacte de la ligne (tabulations comprises).
 - Lecture et écriture avec détection d'encodage (UTF-8, UTF-8 BOM, UTF-16, Latin-1 et autres), de fins de ligne et de fichiers binaires.

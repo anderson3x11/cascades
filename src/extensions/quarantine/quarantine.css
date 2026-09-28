@@ -1,0 +1,112 @@
+.qx-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.qx-intro {
+  margin: 0;
+  color: var(--ui-fg);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.qx-card {
+  padding: 8px 10px;
+  border: 1px solid var(--ui-border);
+  border-radius: 6px;
+  background: var(--bg);
+  cursor: grab;
+  touch-action: none;
+}
+
+.qx-card:hover {
+  border-color: var(--accent);
+}
+
+.qx-card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.qx-text {
+  max-height: 9.6em;
+  margin: 0 0 6px;
+  overflow: hidden;
+  color: var(--fg);
+  font-family: var(--font-editor);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  tab-size: 4;
+  -webkit-mask-image: linear-gradient(to bottom, #000 75%, transparent);
+  mask-image: linear-gradient(to bottom, #000 75%, transparent);
+}
+
+.qx-meta {
+  margin-bottom: 6px;
+  color: var(--ui-fg);
+  font-size: 11px;
+}
+
+.qx-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.qx-actions button,
+.qx-undo button {
+  padding: 2px 8px;
+  border: 1px solid var(--ui-border);
+  border-radius: 4px;
+  background: var(--ui-bg);
+  color: var(--fg);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.qx-actions button:hover,
+.qx-undo button:hover {
+  background: var(--ui-hover);
+}
+
+.qx-actions button[data-armed] {
+  background: var(--banner-warning-bg);
+}
+
+.qx-undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--banner-bg);
+  font-size: 12px;
+}
+
+.qx-ghost {
+  position: fixed;
+  z-index: 300;
+  max-width: 260px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--menu-active-bg);
+  color: var(--menu-active-fg);
+  font-family: var(--font-editor);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.qx-caret {
+  position: fixed;
+  z-index: 299;
+  width: 2px;
+  background: var(--accent);
+  pointer-events: none;
+}

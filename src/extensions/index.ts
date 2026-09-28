@@ -12,6 +12,7 @@ import smartLists from './smart-lists';
 import palette from './palette';
 import preview from './preview';
 import viewers from './viewers';
+import quarantine from './quarantine';
 import quickOpen from './quick-open';
 import session from './session';
 import statusBar from './status-bar';
@@ -38,6 +39,7 @@ export const builtinExtensions: CascadesExtension[] = [
   tabs,
   palette,
   quickOpen,
+  quarantine,
   statusBar,
   defaultKeybindings,
 ];
