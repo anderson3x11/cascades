@@ -120,7 +120,7 @@ Le dossier de config est :
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
 
-`settings.json` accepte les commentaires (`//` et `/* */`) et les virgules finales. Il est rechargé dès qu'on l'enregistre, et une erreur s'affiche dans un bandeau (les réglages précédents restent actifs). Menu Fichier > Ouvrir settings.json.
+`settings.json` accepte les commentaires (`//` et `/* */`) et les virgules finales. Il est rechargé dès qu'on l'enregistre, et une erreur s'affiche dans un bandeau (les réglages précédents restent actifs). Menu Fichier > Ouvrir settings.json : dans ce fichier, les noms de réglages et leurs valeurs possibles sont proposés au fil de la frappe (Ctrl+Espace pour forcer), les erreurs sont soulignées et le survol d'un réglage affiche sa description.
 
 ### keybindings.json
 
@@ -135,7 +135,7 @@ Même format que VS Code : une liste de raccourcis qui s'ajoutent à ceux par d�
 ]
 ```
 
-Sans `key` (ou avec `""`), une règle de retrait enlève tous les raccourcis de la commande. `args` passe un argument à la commande. Le fichier est rechargé à chaud ; une entrée invalide est ignorée et signalée, les autres s'appliquent. Menu Fichier > Ouvrir keybindings.json.
+Sans `key` (ou avec `""`), une règle de retrait enlève tous les raccourcis de la commande. `args` passe un argument à la commande. Le fichier est rechargé à chaud ; une entrée invalide est ignorée et signalée, les autres s'appliquent. Menu Fichier > Ouvrir keybindings.json : les commandes y sont proposées pendant la frappe, et une touche, une condition ou une commande inconnue est soulignée.
 
 ### Thèmes
 

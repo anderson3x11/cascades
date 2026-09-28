@@ -33,13 +33,13 @@ function tokenize(source: string): Token[] {
     }
     if (ch === "'" || ch === '"') {
       const end = source.indexOf(ch, i + 1);
-      if (end === -1) throw new Error(`Unterminated string in when clause: ${source}`);
+      if (end === -1) throw new Error(`guillemet fermant manquant dans « ${source} »`);
       tokens.push({ kind: 'literal', value: source.slice(i + 1, end) });
       i = end + 1;
       continue;
     }
     const match = /^[\w.:-]+/.exec(source.slice(i));
-    if (!match) throw new Error(`Unexpected '${ch}' in when clause: ${source}`);
+    if (!match) throw new Error(`« ${ch} » inattendu dans « ${source} »`);
     const word = match[0];
     if (word === 'true' || word === 'false') {
       tokens.push({ kind: 'literal', value: word === 'true' });
@@ -63,7 +63,7 @@ export function parseWhen(source: string): WhenExpr {
   };
 
   const fail = (): never => {
-    throw new Error(`Invalid when clause: ${source}`);
+    throw new Error(`condition invalide : « ${source} »`);
   };
 
   // or := and ('||' and)*

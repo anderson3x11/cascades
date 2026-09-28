@@ -46,11 +46,11 @@ export function normalizeChord(chord: string): string {
   // Split on '+' but keep a literal trailing '+' key ("Ctrl++").
   const parts = chord.trim().split(/\+(?!$)/);
   const key = parts.pop();
-  if (!key) throw new Error(`Invalid chord: '${chord}'`);
+  if (!key) throw new Error(`touche invalide : « ${chord} »`);
   const mods = new Set<Modifier>();
   for (const part of parts) {
     const mod = MODIFIER_ALIASES[part.toLowerCase()];
-    if (!mod) throw new Error(`Unknown modifier '${part}' in '${chord}'`);
+    if (!mod) throw new Error(`modificateur inconnu « ${part} » dans « ${chord} »`);
     mods.add(mod);
   }
   return [...MODIFIER_ORDER.filter((m) => mods.has(m)), normalizeKey(key)].join('+');
@@ -59,7 +59,7 @@ export function normalizeChord(chord: string): string {
 /** Parses "Ctrl+K Ctrl+S" into ["ctrl+k", "ctrl+s"]. */
 export function parseKeySequence(sequence: string): string[] {
   const chords = sequence.trim().split(/\s+/).filter(Boolean);
-  if (chords.length === 0) throw new Error('Empty key sequence');
+  if (chords.length === 0) throw new Error('raccourci vide');
   return chords.map(normalizeChord);
 }
 

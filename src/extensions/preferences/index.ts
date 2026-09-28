@@ -1,4 +1,9 @@
 import { defineExtension, type ExtensionContext } from '../../api';
+import type { ConfigFileName } from './assist';
+import { configFileAssist } from './editor-assist';
+
+/** Path form for comparisons: Windows paths ignore case and separator style. */
+const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
 
 const SETTINGS_TEMPLATE = `// Réglages personnels : ils remplacent les valeurs par défaut.
 // Un bloc "[markdown]": { … } ne vaut que pour les fichiers de ce langage.
@@ -42,6 +47,20 @@ export default defineExtension({
       command: 'preferences.openKeybindingsFile',
       group: '8_preferences',
       order: 2,
+    });
+
+    // Help while editing the files themselves.
+    let files = new Map<string, ConfigFileName>();
+    const handle = ctx.editor.addExtension((tab) => {
+      const file = tab.path ? files.get(samePath(tab.path)) : undefined;
+      return file ? configFileAssist(ctx, file) : [];
+    });
+    const names: ConfigFileName[] = ['settings.json', 'keybindings.json'];
+    void Promise.all(
+      names.map(async (name) => [samePath(await ctx.configFiles.path(name)), name] as const),
+    ).then((entries) => {
+      files = new Map(entries);
+      handle.refresh();
     });
   },
 });

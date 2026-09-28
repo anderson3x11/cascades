@@ -65,6 +65,8 @@ export async function listConfigFolder(folder: string): Promise<string[]> {
 
 /** Absolute path of a config file ("themes/nord.json"), with the OS separator. */
 export async function configFilePath(name: string): Promise<string> {
+  // In the browser the files are in localStorage: a stand-in path identifies them.
+  if (!isTauri()) return `config/${name}`;
   const dir = await configDir();
   const sep = dir.includes('\\') ? '\\' : '/';
   return `${dir}${sep}${name.split('/').join(sep)}`;

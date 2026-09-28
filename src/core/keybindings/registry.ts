@@ -115,7 +115,7 @@ export class KeybindingRegistry {
   /** Changes the chord that "Leader" stands for, e.g. "Ctrl+Space". */
   setLeader(key: string): void {
     const chord = normalizeChord(key);
-    if (chord === LEADER) throw new Error('The leader cannot be "Leader"');
+    if (chord === LEADER) throw new Error('la touche leader ne peut pas être « Leader »');
     this.leader = chord;
     this.pending = [];
   }

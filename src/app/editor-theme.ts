@@ -85,6 +85,22 @@ const chrome = EditorView.theme({
     backgroundColor: 'var(--menu-bg)',
     color: 'var(--fg)',
     border: '1px solid var(--ui-border)',
+    borderRadius: '6px',
+    boxShadow: 'var(--menu-shadow)',
+  },
+  '.cm-tooltip-autocomplete > ul > li': { padding: '2px 8px' },
+  '.cm-tooltip-autocomplete > ul > li[aria-selected]': {
+    backgroundColor: 'var(--menu-active-bg)',
+    color: 'var(--menu-active-fg)',
+  },
+  '.cm-completionDetail': { marginLeft: '1em', opacity: '0.7', fontStyle: 'normal' },
+  '.cm-tooltip.cm-completionInfo, .cm-tooltip-hover, .cm-diagnosticText': {
+    fontFamily: 'var(--font-ui)',
+    whiteSpace: 'pre-line',
+  },
+  '.cm-tooltip.cm-completionInfo, .cm-tooltip-hover > div': {
+    padding: '6px 10px',
+    maxWidth: '36em',
   },
 });
 

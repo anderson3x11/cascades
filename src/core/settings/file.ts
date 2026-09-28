@@ -1,4 +1,12 @@
-import { applyEdits, modify, parse, printParseErrorCode, type ParseError } from 'jsonc-parser';
+import {
+  applyEdits,
+  modify,
+  parse,
+  parseTree,
+  printParseErrorCode,
+  type Node,
+  type ParseError,
+} from 'jsonc-parser';
 import type { RawSettings } from './registry';
 
 const FORMAT = { formattingOptions: { insertSpaces: true, tabSize: 2, eol: '\n' } };
@@ -17,18 +25,58 @@ const ERROR_MESSAGES: Record<string, string> = {
   UnexpectedEndOfComment: 'commentaire /* non fermé',
 };
 
+/** A mistake in a config file, for the editor to underline. */
+export interface ConfigProblem {
+  from: number;
+  to: number;
+  severity: 'error' | 'warning';
+  message: string;
+}
+
+const PARSE_OPTIONS = { allowTrailingComma: true };
+
+function syntaxMessage(error: ParseError): string {
+  const name = printParseErrorCode(error.error);
+  return ERROR_MESSAGES[name] ?? name;
+}
+
 /** Parses a JSON-with-comments file (settings.json, keybindings.json). Throws on errors. */
 export function parseJsonc(text: string): unknown {
   const errors: ParseError[] = [];
-  const value: unknown = parse(text, errors, { allowTrailingComma: true });
+  const value: unknown = parse(text, errors, PARSE_OPTIONS);
   const first = errors[0];
   if (first) {
     const line = text.slice(0, first.offset).split('\n').length;
-    const name = printParseErrorCode(first.error);
-    const message = ERROR_MESSAGES[name] ?? name;
-    throw new Error(`${message} (ligne ${line})`);
+    throw new Error(`${syntaxMessage(first)} (ligne ${line})`);
   }
   return value;
+}
+
+/** Syntax errors of a JSON-with-comments text, and its tree (undefined when empty). */
+export function parseJsoncTree(text: string): {
+  tree: Node | undefined;
+  problems: ConfigProblem[];
+} {
+  // A blank file means "nothing configured", as when loading.
+  if (text.trim() === '') return { tree: undefined, problems: [] };
+  const errors: ParseError[] = [];
+  const tree = parseTree(text, errors, PARSE_OPTIONS);
+  const problems = errors.map((error): ConfigProblem => ({
+    from: error.offset,
+    to: error.offset + Math.max(error.length, 1),
+    severity: 'error',
+    message: syntaxMessage(error),
+  }));
+  return { tree, problems };
+}
+
+/** A problem spanning a node of the tree. */
+export function problemAt(
+  node: Pick<Node, 'offset' | 'length'>,
+  severity: ConfigProblem['severity'],
+  message: string,
+): ConfigProblem {
+  return { from: node.offset, to: node.offset + node.length, severity, message };
 }
 
 /** settings.json content as an object. Empty or absent means no user settings. */

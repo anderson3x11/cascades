@@ -7,11 +7,13 @@ import { ContextKeys } from '../core/context/context-keys';
 import { DisposableStore, type Disposable } from '../core/disposable';
 import { EventBus } from '../core/events/emitter';
 import { ExtensionHost } from '../core/extensions/host';
+import { checkKeybindings } from '../core/keybindings/check';
 import { parseKeybindings } from '../core/keybindings/file';
 import { chordFromEvent, formatKeySequence } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
-import { editSettings, parseSettings } from '../core/settings/file';
+import { checkSettings } from '../core/settings/check';
+import { editSettings, parseSettings, type ConfigProblem } from '../core/settings/file';
 import { SettingsRegistry } from '../core/settings/registry';
 import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
@@ -176,6 +178,12 @@ export class Workbench {
     }
   }
 
+  private checkConfigFile(name: string, text: string): ConfigProblem[] {
+    if (name === SETTINGS_FILE) return checkSettings(text, (key) => this.settings.schema(key));
+    if (name === KEYBINDINGS_FILE) return checkKeybindings(text, (id) => this.commands.has(id));
+    return [];
+  }
+
   private showFileError(file: string, openCommand: string, problem: string): Disposable {
     const open = () => this.commands.execute(openCommand).catch(console.error);
     return this.banners.show({
@@ -315,6 +323,7 @@ export class Workbench {
         get: (key, language) => this.settings.get(key, language),
         onDidChange: (listener) => track(this.settings.onDidChange.on(listener)),
         update: (key, value, language) => this.updateSetting(key, value, language),
+        schemas: () => this.settings.allSchemas().map(([key, schema]) => ({ key, ...schema })),
       },
       context: {
         get: (key) => this.contextKeys.get(key),
@@ -392,6 +401,7 @@ export class Workbench {
         list: fs.listConfigFolder,
         path: fs.configFilePath,
         watch: (name, listener) => track(this.watchConfigFile(name, listener)),
+        check: (name, text) => this.checkConfigFile(name, text),
       },
       app: {
         onWillQuit: (handler) => {

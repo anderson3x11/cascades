@@ -89,6 +89,8 @@ export interface SettingsApi {
   /** Effective value, with the per-language override when `language` is given. */
   get<T>(key: string, language?: string): T;
   onDidChange(listener: (change: { keys: string[] }) => void): Disposable;
+  /** Every declared setting with its schema. */
+  schemas(): (SettingSchema & { key: string })[];
   /**
    * Writes a user setting to settings.json (or to its "[language]" block).
    * `undefined` removes it, going back to the default.
@@ -425,6 +427,18 @@ export interface ConfigFilesApi {
   path(name: string): Promise<string>;
   /** Calls `listener` when the file changes on disk (in the browser: when written). */
   watch(name: string, listener: () => void): Disposable;
+  /**
+   * Mistakes in the text of settings.json or keybindings.json (syntax, unknown
+   * settings or commands, wrong values), with their position. Empty for other files.
+   */
+  check(name: string, text: string): ConfigProblem[];
+}
+
+export interface ConfigProblem {
+  from: number;
+  to: number;
+  severity: 'error' | 'warning';
+  message: string;
 }
 
 // Themes --------------------------------------------------------------------
