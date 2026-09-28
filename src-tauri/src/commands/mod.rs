@@ -3,8 +3,13 @@
 use crate::config;
 use crate::folder::{self, DirEntry, FileList};
 use crate::fs::{self, Decoded, TextInfo};
+use crate::search;
 use crate::watcher::FileWatcher;
+use serde::Serialize;
 use std::path::Path;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, Ordering};
+use tauri::ipc::Channel;
 use tauri::{AppHandle, Manager, State};
 
 /// Lets the page load files of one folder through the asset protocol (images
@@ -51,6 +56,118 @@ pub async fn list_files(
     tauri::async_runtime::spawn_blocking(move || folder::list_files(&roots, &exclude, limit))
         .await
         .map_err(|e| e.to_string())
+}
+
+/// The search in progress: starting another one or cancelling bumps it, and
+/// the older search stops at its next file.
+#[derive(Default)]
+pub struct Searches(Arc<AtomicU64>);
+
+#[derive(Serialize)]
+pub struct SearchDone {
+    /// Files sent to the channel, so that the page knows when it has them all.
+    files: usize,
+    /// The limit of matches was reached.
+    truncated: bool,
+    /// Another search replaced this one.
+    cancelled: bool,
+}
+
+/// Searches the folders, sending each file with matches to `on_file`.
+#[allow(clippy::too_many_arguments)]
+#[tauri::command]
+pub async fn search_files(
+    on_file: Channel<search::FileMatches>,
+    searches: State<'_, Searches>,
+    id: u64,
+    roots: Vec<String>,
+    exclude: Vec<String>,
+    query: String,
+    options: search::SearchOptions,
+    replacement: Option<String>,
+    max_matches: usize,
+) -> Result<SearchDone, String> {
+    let re = search::build(&query, &options)?;
+    let current = searches.0.clone();
+    current.store(id, Ordering::SeqCst);
+    tauri::async_runtime::spawn_blocking(move || {
+        let mut total = 0;
+        let mut files = 0;
+        let mut cancelled = false;
+        let complete = folder::walk_files(&roots, &exclude, |path| {
+            if current.load(Ordering::SeqCst) != id {
+                cancelled = true;
+                return false;
+            }
+            let Some(decoded) = search::read(path) else {
+                return true;
+            };
+            let matches = search::find(&decoded.text, &re, replacement.as_deref(), &options);
+            if matches.is_empty() {
+                return true;
+            }
+            total += matches.len();
+            let file = search::FileMatches {
+                path: path.to_string_lossy().into_owned(),
+                matches,
+            };
+            if on_file.send(file).is_ok() {
+                files += 1;
+            }
+            total < max_matches
+        });
+        SearchDone {
+            files,
+            truncated: !complete && !cancelled,
+            cancelled,
+        }
+    })
+    .await
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn cancel_search(searches: State<'_, Searches>) {
+    searches.0.fetch_add(1, Ordering::SeqCst);
+}
+
+#[derive(Serialize)]
+pub struct Replaced {
+    path: String,
+    count: usize,
+    error: Option<String>,
+}
+
+/// Replaces in each file, line by line as the search found the matches.
+#[tauri::command]
+pub async fn replace_in_files(
+    paths: Vec<String>,
+    query: String,
+    options: search::SearchOptions,
+    replacement: String,
+) -> Result<Vec<Replaced>, String> {
+    let re = search::build(&query, &options)?;
+    tauri::async_runtime::spawn_blocking(move || {
+        paths
+            .into_iter()
+            .map(|path| {
+                match search::replace_in_file(Path::new(&path), &re, &replacement, &options) {
+                    Ok(count) => Replaced {
+                        path,
+                        count,
+                        error: None,
+                    },
+                    Err(error) => Replaced {
+                        path,
+                        count: 0,
+                        error: Some(error),
+                    },
+                }
+            })
+            .collect()
+    })
+    .await
+    .map_err(|e| e.to_string())
 }
 
 #[tauri::command]

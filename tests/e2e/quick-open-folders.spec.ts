@@ -25,7 +25,9 @@ test('Ctrl+P finds the files of the open folders', async ({ page }) => {
   await expect(picker.getByRole('option')).toContainText('projet/jeux');
 
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('tab', { selected: true })).toContainText('Elden Ring.txt');
+  await expect(page.locator('.tabbar').getByRole('tab', { selected: true })).toContainText(
+    'Elden Ring.txt',
+  );
   await expect(page.locator('.cm-line').first()).toHaveText('Elden Ring');
 });
 

@@ -84,10 +84,14 @@ fn matches(name: &str, pattern: &str) -> bool {
     rest.is_empty()
 }
 
-/// Every file under the folders, at most `limit`, skipping what .gitignore
-/// files ignore and the names matching `exclude` (see the explorer.exclude setting).
-pub fn list_files(roots: &[String], exclude: &[String], limit: usize) -> FileList {
-    let mut files = Vec::new();
+/// Calls `visit` for every file under the folders, skipping what .gitignore
+/// files ignore and the names matching `exclude` (see the explorer.exclude
+/// setting). Stops when `visit` returns false; returns false then.
+pub fn walk_files(
+    roots: &[String],
+    exclude: &[String],
+    mut visit: impl FnMut(&Path) -> bool,
+) -> bool {
     for root in roots {
         let patterns = exclude.to_vec();
         let walker = ignore::WalkBuilder::new(root)
@@ -99,21 +103,27 @@ pub fn list_files(roots: &[String], exclude: &[String], limit: usize) -> FileLis
             })
             .build();
         for entry in walker.flatten() {
-            if !entry.file_type().is_some_and(|t| t.is_file()) {
-                continue;
+            if entry.file_type().is_some_and(|t| t.is_file()) && !visit(entry.path()) {
+                return false;
             }
-            if files.len() == limit {
-                return FileList {
-                    files,
-                    truncated: true,
-                };
-            }
-            files.push(entry.path().to_string_lossy().into_owned());
         }
     }
+    true
+}
+
+/// Every file under the folders, at most `limit` (see walk_files).
+pub fn list_files(roots: &[String], exclude: &[String], limit: usize) -> FileList {
+    let mut files = Vec::new();
+    let complete = walk_files(roots, exclude, |path| {
+        if files.len() == limit {
+            return false;
+        }
+        files.push(path.to_string_lossy().into_owned());
+        true
+    });
     FileList {
         files,
-        truncated: false,
+        truncated: !complete,
     }
 }
 

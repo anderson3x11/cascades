@@ -26,6 +26,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Quarantaine** : mettre de côté un passage (Leader Q) pour essayer le texte sans lui. Chaque passage devient une carte dans un panneau propre au fichier, gardée entre les sessions, et se replace n'importe où (bouton ou glisser dans le texte). Ctrl+Z et Ctrl+Y suivent.
 - **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
 - **Explorateur** (Fichier > Ajouter un dossier…, Ctrl+Shift+O) : un ou plusieurs dossiers en arbre à gauche, mis à jour tout seuls. Clic droit sur un dossier ajouté pour le retirer de la liste (rien n'est supprimé). Clic droit ou boutons pour créer un fichier ou un dossier, F2 pour renommer (les onglets ouverts suivent), Suppr pour mettre à la corbeille. `.git` et `node_modules` sont masqués (`explorer.exclude`). Ctrl+B masque le panneau. Ctrl+P trouve aussi les fichiers de tous les dossiers ouverts (le `.gitignore` est respecté).
+- **Rechercher dans les fichiers** (Ctrl+Shift+F, onglet Rechercher à gauche) : dans tous les dossiers ouverts, avec la casse, le mot entier ou une expression régulière. Les résultats arrivent au fil de l'eau ; un clic ouvre le fichier sur l'occurrence. **Remplacer** montre l'aperçu (ancien texte barré, nouveau en couleur), demande confirmation, garde l'encodage et les fins de ligne de chaque fichier, et laisse de côté les fichiers ouverts avec des modifications non enregistrées.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 
@@ -47,6 +48,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
 | Préférences                                     | Ctrl+,                                    |
 | Ajouter un dossier / Panneau de gauche          | Ctrl+Shift+O / Ctrl+B                     |
+| Rechercher dans les fichiers                    | Ctrl+Shift+F                              |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |
 | Choisir le thème                                | Leader T                                  |
 | Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |

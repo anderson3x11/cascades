@@ -17,6 +17,7 @@ import preview from './preview';
 import viewers from './viewers';
 import quarantine from './quarantine';
 import quickOpen from './quick-open';
+import search from './search';
 import session from './session';
 import split from './split';
 import statusBar from './status-bar';
@@ -46,6 +47,8 @@ export const builtinExtensions: CascadesExtension[] = [
   palette,
   quickOpen,
   explorer,
+  // After the explorer: its tab comes second in the left panel.
+  search,
   quarantine,
   statusBar,
   preferences,

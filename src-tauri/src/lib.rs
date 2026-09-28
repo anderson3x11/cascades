@@ -3,6 +3,7 @@ mod config;
 mod cursor;
 mod folder;
 mod fs;
+mod search;
 mod watcher;
 
 use tauri::Manager;
@@ -28,6 +29,9 @@ pub fn run() {
             commands::unwatch_dir,
             commands::list_dir,
             commands::list_files,
+            commands::search_files,
+            commands::cancel_search,
+            commands::replace_in_files,
             commands::create_file,
             commands::create_dir,
             commands::rename_path,
@@ -42,6 +46,7 @@ pub fn run() {
                 )?;
             }
             app.manage(watcher::FileWatcher::new(app.handle().clone())?);
+            app.manage(commands::Searches::default());
             Ok(())
         })
         .run(tauri::generate_context!())

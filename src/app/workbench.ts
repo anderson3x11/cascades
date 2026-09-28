@@ -24,6 +24,7 @@ import { SettingsRegistry } from '../core/settings/registry';
 import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
+import * as search from '../platform/search';
 import { watchDir, watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
@@ -453,6 +454,8 @@ export class Workbench {
         fileUrl,
         listDir: fs.listDir,
         listFiles: fs.listFiles,
+        searchFiles: search.searchFiles,
+        replaceInFiles: search.replaceInFiles,
         createFile: fs.createFile,
         createDir: fs.createDir,
         rename: fs.renamePath,

@@ -494,6 +494,61 @@ export interface FsApi {
   trash(path: string): Promise<void>;
   /** Calls `listener` when an entry of the folder is created, removed or renamed. */
   watchDir(path: string, listener: () => void): Disposable;
+  /**
+   * Searches the text files of the folders line by line (same skipping as
+   * listFiles); `onFile` gets each file with matches as it is found. A new
+   * search cancels the previous one.
+   */
+  searchFiles(request: SearchRequest, onFile: (file: FileMatches) => void): SearchRun;
+  /** Replaces what the same search finds in each file, keeping encodings and line endings. */
+  replaceInFiles(
+    paths: string[],
+    query: string,
+    options: SearchOptions,
+    replacement: string,
+  ): Promise<{ path: string; count: number; error: string | null }[]>;
+}
+
+export interface SearchOptions {
+  caseSensitive: boolean;
+  wholeWord: boolean;
+  regex: boolean;
+}
+
+export interface SearchRequest {
+  roots: string[];
+  exclude: string[];
+  query: string;
+  options: SearchOptions;
+  /** To preview each replacement ("$1" refers to groups in regex mode). */
+  replacement?: string | null;
+  /** The search stops past this many matches. */
+  maxMatches: number;
+}
+
+export interface LineMatch {
+  /** 1-based. */
+  line: number;
+  /** Position and length in the line, in JavaScript string units. */
+  column: number;
+  length: number;
+  /** Text around the match, cut on long lines. */
+  before: string;
+  matched: string;
+  after: string;
+  /** What the match becomes, when a replacement is given. */
+  replacement: string | null;
+}
+
+export interface FileMatches {
+  path: string;
+  matches: LineMatch[];
+}
+
+export interface SearchRun {
+  /** Resolves when the search is over; rejects on an invalid expression. */
+  done: Promise<{ truncated: boolean; cancelled: boolean }>;
+  cancel(): void;
 }
 
 export interface DialogsApi {

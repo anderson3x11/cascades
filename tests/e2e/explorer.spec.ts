@@ -37,7 +37,9 @@ test('the folder shows on the left, folders first, hidden names left out', async
   await item(page, 'archives').click();
   await expect(item(page, '2025.md')).toBeVisible();
   await item(page, '2025.md').click();
-  await expect(page.getByRole('tab', { selected: true })).toContainText('2025.md');
+  await expect(page.locator('.tabbar').getByRole('tab', { selected: true })).toContainText(
+    '2025.md',
+  );
   await expect(page.locator('.cm-content')).toHaveText('# Archives');
 
   // Ctrl+B hides and shows the panel.
@@ -61,7 +63,9 @@ test('a new file is named in place and opened', async ({ page }) => {
   await field.press('Enter');
   await expect(item(page, 'idées.md')).toBeVisible();
   expect(await exists(page, `${ROOT}/idées.md`)).toBe(true);
-  await expect(page.getByRole('tab', { selected: true })).toContainText('idées.md');
+  await expect(page.locator('.tabbar').getByRole('tab', { selected: true })).toContainText(
+    'idées.md',
+  );
 });
 
 test('F2 renames, and the open tab follows', async ({ page }) => {
@@ -73,7 +77,9 @@ test('F2 renames, and the open tab follows', async ({ page }) => {
   await field.press('Enter');
   await expect(item(page, 'courses.txt')).toBeVisible();
   expect(await exists(page, `${ROOT}/courses.txt`)).toBe(true);
-  await expect(page.getByRole('tab', { selected: true })).toContainText('courses.txt');
+  await expect(page.locator('.tabbar').getByRole('tab', { selected: true })).toContainText(
+    'courses.txt',
+  );
 });
 
 test('Delete sends to the recycle bin after asking', async ({ page }) => {
