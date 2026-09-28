@@ -1,4 +1,4 @@
-import { RangeSetBuilder } from '@codemirror/state';
+import { EditorState, RangeSetBuilder } from '@codemirror/state';
 import {
   Decoration,
   EditorView,
@@ -54,13 +54,20 @@ const theme = EditorView.baseTheme({
   },
 });
 
+// Comment syntax for "Commenter / décommenter" (Ctrl+/), which JSON does not declare.
+const commentTokens = EditorState.languageData.of(() => [
+  { commentTokens: { line: '//', block: { open: '/*', close: '*/' } } },
+]);
+
 /**
- * Colors comments in JSON files (settings.json, keybindings.json, tsconfig…)
- * like comments of any other language.
+ * Comments in JSON files (settings.json, keybindings.json, tsconfig…): colored
+ * like comments of any other language, and toggled with Ctrl+/.
  */
 export default defineExtension({
   id: 'cascades.json-comments',
   activate(ctx) {
-    ctx.editor.addExtension((tab) => (tab.language === 'json' ? [commentHighlighter, theme] : []));
+    ctx.editor.addExtension((tab) =>
+      tab.language === 'json' ? [commentHighlighter, theme, commentTokens] : [],
+    );
   },
 });

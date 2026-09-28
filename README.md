@@ -40,7 +40,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Dupliquer la ligne                              | Shift+Alt+Bas                             |
 | Déplacer la ligne                               | Alt+Haut / Alt+Bas                        |
 | Supprimer la ligne                              | Ctrl+Shift+K                              |
-| Commenter                                       | Ctrl+/                                    |
+| Commenter                                       | Ctrl+/ (Ctrl+: en AZERTY)                 |
 | Ajouter l'occurrence suivante                   | Ctrl+D                                    |
 | Cocher / décocher une tâche                     | Ctrl+Entrée                               |
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |

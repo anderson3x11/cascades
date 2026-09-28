@@ -29,6 +29,8 @@ export const DEFAULT_KEYBINDINGS: KeybindingSpec[] = [
   { key: 'Alt+Up', command: 'editor.moveLineUp', when: EDITOR },
   { key: 'Alt+Down', command: 'editor.moveLineDown', when: EDITOR },
   { key: 'Ctrl+Shift+K', command: 'editor.deleteLine', when: EDITOR },
+  // "/" needs Shift on AZERTY: Ctrl+: is the same key, as in VS Code.
+  { key: 'Ctrl+:', command: 'editor.toggleComment', when: EDITOR },
   { key: 'Ctrl+/', command: 'editor.toggleComment', when: EDITOR },
   { key: 'Ctrl+D', command: 'editor.addNextOccurrence', when: EDITOR },
   { key: 'Ctrl+Enter', command: 'editor.toggleTask', when: EDITOR },

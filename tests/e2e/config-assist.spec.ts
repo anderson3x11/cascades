@@ -52,6 +52,16 @@ test('JSON comments are grayed', async ({ page }) => {
   expect(await color('.cm-json-comment')).not.toBe(await color('.cm-content'));
 });
 
+test('Ctrl+/ and Ctrl+: comment a JSON line with //', async ({ page }) => {
+  await openConfig(page, 'settings.json', '{\n  "editor.tabSize": 2\n}');
+  const line = page.locator('.cm-line').nth(1);
+  await line.click();
+  await page.keyboard.press('Control+/');
+  await expect(line).toHaveText('  // "editor.tabSize": 2');
+  await page.keyboard.press('Control+:');
+  await expect(line).toHaveText('  "editor.tabSize": 2');
+});
+
 test('settings.json: mistakes are underlined', async ({ page }) => {
   await openConfig(page, 'settings.json', '{ "editor.tabsize": 2, "editor.tabSize": "2" }');
   await expect(page.locator('.cm-lintRange-warning')).toHaveText('"editor.tabsize"');
