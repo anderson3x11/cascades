@@ -50,10 +50,10 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Mode zen (Échap pour sortir)                    | Leader Z                                  |
 | Afficher / masquer les cascades                 | Leader C                                  |
 | Mettre en quarantaine / panneau de quarantaine  | Leader Q / Leader Shift+Q                 |
-| Cloner dans la vue suivante                     | Ctrl+\                                    |
+| Cloner dans la vue suivante                     | Ctrl+\ ou Leader S                        |
 | Déplacer vers la vue suivante / précédente      | Ctrl+Alt+→ / Ctrl+Alt+←                   |
 | Aller à la vue 1 à 4                            | Ctrl+1 … Ctrl+4                           |
-| Vues côte à côte / empilées                     | Leader \                                  |
+| Vues côte à côte / empilées                     | Leader Shift+S                            |
 | Masquer / afficher la cascade du bloc courant   | Leader Shift+C                            |
 | Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
 | Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |

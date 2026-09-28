@@ -43,6 +43,9 @@ export default defineExtension({
 
     ctx.keybindings.register([
       { key: 'Ctrl+\\', command: 'view.cloneToNextGroup' },
+      // "\" needs AltGr on AZERTY, so the leader also gives both commands on plain keys.
+      { key: 'Leader Shift+S', command: 'view.toggleSplitOrientation' },
+      { key: 'Leader S', command: 'view.cloneToNextGroup' },
       { key: 'Ctrl+Alt+Right', command: 'view.moveToNextGroup' },
       { key: 'Ctrl+Alt+Left', command: 'view.moveToPreviousGroup' },
       { key: 'Leader \\', command: 'view.toggleSplitOrientation' },
