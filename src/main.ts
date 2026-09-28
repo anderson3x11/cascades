@@ -10,3 +10,6 @@ if (!target) throw new Error('Missing #app element');
 const workbench = new Workbench();
 mount(App, { target, props: { workbench } });
 void workbench.start(builtinExtensions);
+
+// Handle for e2e tests and debugging in the dev build only.
+if (import.meta.env.DEV) Object.assign(window, { __cascades: workbench });
