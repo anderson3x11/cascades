@@ -32,6 +32,10 @@ describe('suggest in settings.json', () => {
     });
   });
 
+  it('leaves out a brace right after an unclosed name', () => {
+    expect(at('settings.json', '{\n"edi|}')?.typed).toBe('"edi');
+  });
+
   it('only renames when a value already follows', () => {
     const result = at('settings.json', '{ "editor.tab|Size": 2 }');
     expect(result?.typed).toBe('"editor.tabSize"');

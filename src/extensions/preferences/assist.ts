@@ -43,14 +43,19 @@ function settingKeyOf(path: Location['path']): string | null {
   return null;
 }
 
-/** Range of the word being typed: the string under the cursor, or a partial word. */
+/**
+ * Range of the word being typed: from the start of the string under the cursor
+ * (or of a partial word) to the end of the word. An unclosed string runs to
+ * the end of the line, so its node cannot give the end: in `"edi}` the brace
+ * is not part of the word.
+ */
 function rangeAt(text: string, pos: number, location: Location): { from: number; to: number } {
   const node = location.previousNode;
-  if (node && node.offset <= pos && pos <= node.offset + node.length) {
-    return { from: node.offset, to: node.offset + node.length };
-  }
-  const word = /"?[\w.-]*$/.exec(text.slice(0, pos))?.[0] ?? '';
-  return { from: pos - word.length, to: pos };
+  const before = /"?[\w.[\]-]*$/.exec(text.slice(0, pos))?.[0] ?? '';
+  const inNode = node && node.offset <= pos && pos <= node.offset + node.length;
+  const from = inNode ? node.offset : pos - before.length;
+  const after = /^[\w.[\]-]*"?/.exec(text.slice(pos))?.[0] ?? '';
+  return { from, to: pos + after.length };
 }
 
 const describe = (schema: SettingSchema) =>

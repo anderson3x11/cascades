@@ -7,6 +7,7 @@ import editorSettings from './editor-settings';
 import fileOps from './file-ops';
 import fileWatcher from './file-watcher';
 import indentKeep from './indent-keep';
+import jsonComments from './json-comments';
 import layout from './layout';
 import smartLists from './smart-lists';
 import palette from './palette';
@@ -27,6 +28,7 @@ export const builtinExtensions: CascadesExtension[] = [
   layout,
   editorSettings,
   indentKeep,
+  jsonComments,
   smartLists,
   cascades,
   conflicts,

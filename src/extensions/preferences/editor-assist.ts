@@ -19,7 +19,7 @@ export function configFileAssist(ctx: ExtensionContext, file: ConfigFileName): E
       override: [
         (context: CompletionContext) => {
           const result = suggest(file, context.state.doc.toString(), context.pos, knowledge());
-          // Open by itself only once something is typed; Ctrl+Space opens it anywhere.
+          // Open by itself only once something is typed, a quote at least.
           if (!result || (!context.explicit && result.from === context.pos)) return null;
           return { ...result, validFor: /^"?-?[\w.[\]-]*"?$/ };
         },

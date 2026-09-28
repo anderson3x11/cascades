@@ -120,7 +120,7 @@ Le dossier de config est :
 
 Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `javascript`, `plaintext`...).
 
-`settings.json` accepte les commentaires (`//` et `/* */`) et les virgules finales. Il est rechargé dès qu'on l'enregistre, et une erreur s'affiche dans un bandeau (les réglages précédents restent actifs). Menu Fichier > Ouvrir settings.json : dans ce fichier, les noms de réglages et leurs valeurs possibles sont proposés au fil de la frappe (Ctrl+Espace pour forcer), les erreurs sont soulignées et le survol d'un réglage affiche sa description.
+`settings.json` accepte les commentaires (`//` et `/* */`) et les virgules finales. Il est rechargé dès qu'on l'enregistre, et une erreur s'affiche dans un bandeau (les réglages précédents restent actifs). Menu Fichier > Ouvrir settings.json : dans ce fichier, les noms de réglages et leurs valeurs possibles sont proposés au fil de la frappe (taper `"` ouvre la liste), les commentaires sont grisés, les erreurs sont soulignées et le survol d'un réglage affiche sa description.
 
 ### keybindings.json
 

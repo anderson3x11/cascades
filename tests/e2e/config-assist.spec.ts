@@ -30,6 +30,28 @@ test('settings.json: completion of setting names and values', async ({ page }) =
   await expect(page.locator('.cm-line').nth(1)).toHaveText(/^\s*"editor\.tabSize": \d+$/);
 });
 
+test('settings.json: completion right before the closing brace', async ({ page }) => {
+  await openConfig(page, 'settings.json', '{}');
+  await page.locator('.cm-line').first().click();
+  await page.keyboard.press('End');
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('Enter');
+  await page.keyboard.type('"edi');
+  await expect(page.locator('.cm-tooltip-autocomplete')).toContainText('editor.tabSize');
+});
+
+test('JSON comments are grayed', async ({ page }) => {
+  await openConfig(page, 'settings.json', '// mes réglages\n{}');
+  const comment = page.locator('.cm-json-comment');
+  await expect(comment).toHaveText('// mes réglages');
+  const color = (selector: string) =>
+    page.evaluate(
+      (selector) => getComputedStyle(document.querySelector(selector) as Element).color,
+      selector,
+    );
+  expect(await color('.cm-json-comment')).not.toBe(await color('.cm-content'));
+});
+
 test('settings.json: mistakes are underlined', async ({ page }) => {
   await openConfig(page, 'settings.json', '{ "editor.tabsize": 2, "editor.tabSize": "2" }');
   await expect(page.locator('.cm-lintRange-warning')).toHaveText('"editor.tabsize"');
