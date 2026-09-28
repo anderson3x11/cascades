@@ -74,6 +74,16 @@ test('tabs can be reordered by dragging', async ({ page }) => {
   await page.mouse.move(last.x + 20, last.y + 10, { steps: 10 });
   await page.mouse.up();
   await expect(tabs).toHaveText(['Sans titre 2', 'Sans titre 3', 'Sans titre 1']);
+
+  // And back to the front, dragging to the left.
+  const moved = await tabs.nth(2).boundingBox();
+  const front = await tabs.nth(0).boundingBox();
+  if (!moved || !front) throw new Error('tabs not laid out');
+  await page.mouse.move(moved.x + 20, moved.y + 10);
+  await page.mouse.down();
+  await page.mouse.move(front.x + 5, front.y + 10, { steps: 10 });
+  await page.mouse.up();
+  await expect(tabs).toHaveText(['Sans titre 1', 'Sans titre 2', 'Sans titre 3']);
 });
 
 test('editor commands run through the command registry', async ({ page }) => {
