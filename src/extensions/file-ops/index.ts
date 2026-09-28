@@ -58,6 +58,41 @@ export default defineExtension({
         default: 'txt',
         description: 'Extension proposée pour un nouveau fichier ("" pour aucune).',
       },
+      autoSave: {
+        type: 'string',
+        default: 'off',
+        enum: ['off', 'afterDelay'],
+        description:
+          'Enregistrer automatiquement les fichiers modifiés (pas les onglets sans titre).',
+      },
+      autoSaveDelay: {
+        type: 'number',
+        default: 1000,
+        description: 'Délai en millisecondes avant l’enregistrement automatique.',
+      },
+    });
+
+    const autoSaveTimers = new Map<string, ReturnType<typeof setTimeout>>();
+    ctx.subscriptions.add({
+      dispose: () => autoSaveTimers.forEach((timer) => clearTimeout(timer)),
+    });
+    ctx.events.on('editor.didUpdate', ({ tab, docChanged }) => {
+      if (!docChanged || !tab.path) return;
+      if (ctx.settings.get<string>('files.autoSave', tab.language) !== 'afterDelay') return;
+      clearTimeout(autoSaveTimers.get(tab.id));
+      const delay = ctx.settings.get<number>('files.autoSaveDelay', tab.language);
+      autoSaveTimers.set(
+        tab.id,
+        setTimeout(() => {
+          autoSaveTimers.delete(tab.id);
+          const current = ctx.workspace.tabs().find((t) => t.id === tab.id);
+          if (current?.dirty) void ctx.commands.execute('file.save', tab.id);
+        }, delay),
+      );
+    });
+    ctx.events.on('workspace.didClose', (tab) => {
+      clearTimeout(autoSaveTimers.get(tab.id));
+      autoSaveTimers.delete(tab.id);
     });
 
     ctx.commands.register('file.new', () => ctx.workspace.open({ path: null, text: '' }), {
