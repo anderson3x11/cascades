@@ -59,6 +59,32 @@ test('is off for code files', async ({ page }) => {
   await expect(rows(page)).toHaveCount(0);
 });
 
+test('Leader C hides and shows the cascades, and the choice is saved', async ({ page }) => {
+  await open(page, 'C:/n/notes.txt', NOTES);
+  await page.locator('.cm-content').click();
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('C');
+  await expect(rows(page)).toHaveCount(0);
+  const saved = await page.evaluate(() => localStorage.getItem('cascades-config:settings.json'));
+  expect(JSON.parse(saved ?? '{}')).toEqual({ 'cascades.enabled': false });
+
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('C');
+  await expect(rows(page)).toHaveCount(6);
+});
+
+test('the style picker previews and saves a style', async ({ page }) => {
+  await open(page, 'C:/n/notes.txt', NOTES);
+  await page.getByRole('menuitem', { name: 'Affichage' }).click();
+  await page.getByRole('menuitem', { name: /Style des cascades/ }).click();
+  await page.keyboard.type('points');
+  // Previewed right away: bullets instead of arrowheads.
+  await expect(page.locator('.cm-cascade-row path.dot').first()).toBeAttached();
+  await page.keyboard.press('Enter');
+  const saved = await page.evaluate(() => localStorage.getItem('cascades-config:settings.json'));
+  expect(JSON.parse(saved ?? '{}')).toEqual({ 'cascades.style': 'bullet' });
+});
+
 test('can be disabled by a setting', async ({ page }) => {
   await open(page, 'C:/n/notes.txt', NOTES);
   await expect(rows(page)).toHaveCount(6);

@@ -25,10 +25,23 @@ import {
   type SourceLine,
 } from './tree';
 
-export type CascadeStyle = 'arrow' | 'line' | 'dotted' | 'rounded';
+export const CASCADE_STYLES = [
+  'arrow',
+  'rounded',
+  'curved',
+  'bullet',
+  'line',
+  'dashed',
+  'dotted',
+  'guides',
+] as const;
+
+export type CascadeStyle = (typeof CASCADE_STYLES)[number];
 
 export interface CascadeConfig {
   style: CascadeStyle;
+  /** Stroke width in px. */
+  lineWidth: number;
   colorByDepth: boolean;
   highlight: boolean;
   /** Ignore Markdown lists and code blocks. */
@@ -183,29 +196,49 @@ export function drawRow(
       continue;
     }
 
+    const { style } = config;
+    if (style === 'guides') {
+      // Indent guides only: a vertical line through every child line.
+      path(`M${x} 0V${f(height)}`, g, isActive || beforeActive);
+      continue;
+    }
+
     // tee or elbow: vertical part, then the branch to the child.
     const end = f(g.toCol * cw - cw * 0.3);
     const length = end - x;
-    const r = config.style === 'rounded' ? f(Math.min(cw, cy * 0.8, length / 2)) : 0;
     if (g.kind === 'tee') {
       path(`M${x} 0V${f(cy)}`, g, isActive || beforeActive);
       path(`M${x} ${f(cy)}V${f(height)}`, g, beforeActive);
     }
-    const corner = r > 0 ? `V${f(cy - r)}Q${x} ${f(cy)} ${f(x + r)} ${f(cy)}` : `V${f(cy)}`;
-    const branch =
-      g.kind === 'elbow'
-        ? `M${x} 0${corner}H${end}`
-        : `M${x} ${f(cy - r)}${r > 0 ? `Q${x} ${f(cy)} ${f(x + r)} ${f(cy)}` : ''}H${end}`;
+    // Where the branch leaves the vertical line, and how it turns toward the child.
+    const top = g.kind === 'elbow' ? `M${x} 0` : '';
+    let branch: string;
+    if (style === 'curved') {
+      const from = f(cy - lh * 0.4);
+      const turn = `C${x} ${f(cy)} ${f(x + length * 0.3)} ${f(cy)} ${end} ${f(cy)}`;
+      branch = top ? `${top}V${from}${turn}` : `M${x} ${from}${turn}`;
+    } else if (style === 'rounded') {
+      const r = f(Math.min(cw, cy * 0.8, length / 2));
+      const turn = `Q${x} ${f(cy)} ${f(x + r)} ${f(cy)}H${end}`;
+      branch = top ? `${top}V${f(cy - r)}${turn}` : `M${x} ${f(cy - r)}${turn}`;
+    } else {
+      branch = top ? `${top}V${f(cy)}H${end}` : `M${x} ${f(cy)}H${end}`;
+    }
     path(branch, g, isActive);
 
-    if (config.style !== 'line' && length >= cw * 1.2) {
+    if (style === 'bullet') {
+      paths.push(
+        `<path d="M${end} ${f(cy)}h0.01" class="dot ${colorClass(g, config)}${isActive ? ' on' : ''}"/>`,
+      );
+    } else if (style !== 'line' && length >= cw * 1.2) {
       const a = f(Math.min(cw * 0.3, 4));
       path(`M${f(end - a)} ${f(cy - a)}L${end} ${f(cy)}L${f(end - a)} ${f(cy + a)}`, g, isActive);
     }
   }
   const width = f((Math.max(...glyphs.map((g) => g.toCol)) + 1) * cw);
-  const cls = config.style === 'dotted' ? ' class="dotted"' : '';
-  return `<svg width="${width}" height="${f(height)}"${cls}>${paths.join('')}</svg>`;
+  const dash =
+    config.style === 'dotted' || config.style === 'dashed' ? ` class="${config.style}"` : '';
+  return `<svg width="${width}" height="${f(height)}"${dash} style="--cascade-width:${config.lineWidth}">${paths.join('')}</svg>`;
 }
 
 class RowMarker implements LayerMarker {
@@ -260,11 +293,17 @@ const theme = EditorView.theme({
   '.cm-cascade-row svg': { display: 'block', overflow: 'visible' },
   '.cm-cascade-row path': {
     fill: 'none',
-    strokeWidth: '1.2',
+    strokeWidth: 'var(--cascade-width, 1.2)',
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
   },
   '.cm-cascade-row svg.dotted path': { strokeDasharray: '0.5 3.5' },
+  '.cm-cascade-row svg.dashed path': { strokeDasharray: '4 3' },
+  // A zero-length path with a round cap draws the bullet.
+  '.cm-cascade-row path.dot, .cm-cascade-row svg path.dot.on': {
+    strokeWidth: 'calc(var(--cascade-width, 1.2) * 4)',
+    strokeDasharray: 'none',
+  },
   '.cm-cascade-row path.c0': { stroke: 'var(--cascade)' },
   ...Object.fromEntries(
     Array.from({ length: DEPTH_COLORS }, (_, i) => [
@@ -272,7 +311,10 @@ const theme = EditorView.theme({
       { stroke: `var(--cascade-${i + 1})` },
     ]),
   ),
-  '.cm-cascade-row path.on': { stroke: 'var(--cascade-active)', strokeWidth: '1.8' },
+  '.cm-cascade-row path.on': {
+    stroke: 'var(--cascade-active)',
+    strokeWidth: 'calc(var(--cascade-width, 1.2) + 0.6)',
+  },
   '.cm-cascade-parent': { backgroundColor: 'var(--cascade-parent-bg)' },
 });
 
