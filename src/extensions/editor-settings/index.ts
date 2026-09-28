@@ -1,6 +1,7 @@
-import { EditorState } from '@codemirror/state';
+import { EditorState, Prec, type Extension } from '@codemirror/state';
 import {
   EditorView,
+  ViewPlugin,
   highlightActiveLine,
   highlightActiveLineGutter,
   lineNumbers,
@@ -62,10 +63,34 @@ const folding = [
   }),
 ];
 
-/** Editor options driven by settings, overridable per language. */
+const STATE_FILE = 'ui-state.json';
+const MIN_FONT = 6;
+const MAX_FONT = 72;
+/** Wheel distance for one zoom step: one mouse notch (touchpads add up smaller deltas). */
+const WHEEL_STEP = 100;
+
+/** Ctrl+wheel zooms; the listener is not passive so the page itself does not zoom. */
+function wheelZoom(zoomBy: (steps: number) => void): Extension {
+  return ViewPlugin.define((view) => {
+    let accumulated = 0;
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      accumulated += event.deltaY;
+      const steps = Math.trunc(accumulated / WHEEL_STEP);
+      if (steps === 0) return;
+      accumulated -= steps * WHEEL_STEP;
+      zoomBy(-steps);
+    };
+    view.scrollDOM.addEventListener('wheel', onWheel, { passive: false });
+    return { destroy: () => view.scrollDOM.removeEventListener('wheel', onWheel) };
+  });
+}
+
+/** Editor options driven by settings, overridable per language, and zoom. */
 export default defineExtension({
   id: 'cascades.editor-settings',
-  activate(ctx) {
+  async activate(ctx) {
     ctx.settings.register('editor', {
       tabSize: { type: 'number', default: 4, description: 'Largeur d’une tabulation.' },
       insertSpaces: {
@@ -86,11 +111,48 @@ export default defineExtension({
         description: 'Surligner la ligne du curseur.',
       },
       fontSize: { type: 'number', default: 14, description: 'Taille de police de l’éditeur (px).' },
+      fontFamily: {
+        type: 'string',
+        default: "'Cascadia Code', Consolas, monospace",
+        description: 'Police de l’éditeur (liste CSS, la première installée est utilisée).',
+      },
+      lineHeight: {
+        type: 'number',
+        default: 1.6,
+        description: 'Hauteur de ligne, en multiple de la taille de police.',
+      },
+      fontLigatures: {
+        type: 'boolean',
+        default: false,
+        description: 'Activer les ligatures de la police (=> devient ⇒ avec Cascadia Code…).',
+      },
     });
+
+    // Zoom: a number of 1px steps added to every editor font size, kept across restarts.
+    let zoom = 0;
+    try {
+      const saved: unknown = JSON.parse((await ctx.configFiles.read(STATE_FILE)) ?? '{}');
+      const value = (saved as { zoom?: unknown }).zoom;
+      if (typeof value === 'number' && Number.isInteger(value)) zoom = value;
+    } catch {
+      // A broken state file only loses the zoom level.
+    }
+
+    const zoomBy = (steps: number) => {
+      // Keep the zoom within what the font size limits allow, so no step is wasted.
+      const base = ctx.settings.get<number>('editor.fontSize');
+      const next =
+        steps === 0 ? 0 : Math.max(MIN_FONT - base, Math.min(MAX_FONT - base, zoom + steps));
+      if (next === zoom) return;
+      zoom = next;
+      handle.refresh();
+      void ctx.configFiles.write(STATE_FILE, JSON.stringify({ zoom }));
+    };
 
     const handle = ctx.editor.addExtension((tab) => {
       const get = <T>(key: string) => ctx.settings.get<T>(`editor.${key}`, tab.language);
       const tabSize = get<number>('tabSize');
+      const fontSize = Math.max(MIN_FONT, Math.min(MAX_FONT, get<number>('fontSize') + zoom));
       return [
         EditorState.tabSize.of(tabSize),
         indentUnit.of(get<boolean>('insertSpaces') ? ' '.repeat(tabSize) : '\t'),
@@ -98,12 +160,39 @@ export default defineExtension({
         get<boolean>('lineNumbers') ? [lineNumbers(), highlightActiveLineGutter()] : [],
         get<boolean>('folding') ? folding : [],
         get<boolean>('highlightActiveLine') ? highlightActiveLine() : [],
-        EditorView.theme({ '.cm-scroller': { fontSize: `${get<number>('fontSize')}px` } }),
+        // Above the base theme, which sets default fonts.
+        Prec.highest(
+          EditorView.theme({
+            '.cm-scroller': {
+              fontSize: `${fontSize}px`,
+              fontFamily: get<string>('fontFamily'),
+              lineHeight: String(get<number>('lineHeight')),
+              fontVariantLigatures: get<boolean>('fontLigatures') ? 'normal' : 'none',
+            },
+          }),
+        ),
+        wheelZoom((steps) => zoomBy(steps)),
       ];
     });
 
     ctx.settings.onDidChange(({ keys }) => {
       if (keys.some((k) => k.startsWith('editor.'))) handle.refresh();
     });
+
+    ctx.commands.register('view.zoomIn', () => zoomBy(1), {
+      title: 'Agrandir le texte',
+      category: 'Affichage',
+    });
+    ctx.commands.register('view.zoomOut', () => zoomBy(-1), {
+      title: 'Réduire le texte',
+      category: 'Affichage',
+    });
+    ctx.commands.register('view.zoomReset', () => zoomBy(0), {
+      title: 'Taille de texte normale',
+      category: 'Affichage',
+    });
+    ctx.menus.registerItem('view', { command: 'view.zoomIn', group: '3_zoom', order: 1 });
+    ctx.menus.registerItem('view', { command: 'view.zoomOut', group: '3_zoom', order: 2 });
+    ctx.menus.registerItem('view', { command: 'view.zoomReset', group: '3_zoom', order: 3 });
   },
 });
