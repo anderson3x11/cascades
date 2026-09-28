@@ -223,8 +223,12 @@
   }
 
   .close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 18px;
     height: 18px;
+    padding: 0;
     border: none;
     border-radius: 4px;
     background: transparent;
@@ -244,11 +248,14 @@
     opacity: 0.7;
   }
 
+  /* A drawn dot rather than a glyph, so it is centered whatever the font. */
   .close.dirty::before {
-    content: '●';
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
     opacity: 1;
-    color: var(--accent);
-    font-size: 10px;
   }
 
   .new {
@@ -278,7 +285,10 @@
 
   .close:hover::before {
     content: '×';
-    font-size: inherit;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
     opacity: 1;
   }
 </style>
