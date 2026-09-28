@@ -70,22 +70,24 @@ export default defineExtension({
         const active = ctx.workspace.active()?.id;
         const tabs = ctx.workspace.tabs().filter((t) => t.id !== active);
         const openPaths = new Set(ctx.workspace.tabs().map((t) => t.path));
+        const folders = await openFolders(ctx);
+        const inFolders = (path: string) => relativeDir(path, folders) !== split(path).dir;
         const items = [
           ...tabs.map((t) => ({
             label: t.title,
-            description: t.path ? `${split(t.path).dir} · ouvert` : 'ouvert',
+            description: t.path ? `${relativeDir(t.path, folders)} · ouvert` : 'ouvert',
             value: { tab: t.id, path: t.path },
           })),
           ...recent
             .filter((p) => !openPaths.has(p))
             .map((p) => ({
               label: split(p).name,
-              description: split(p).dir,
+              // Files outside the open folders say where they come from.
+              description: inFolders(p) ? relativeDir(p, folders) : `${split(p).dir} · récent`,
               value: { tab: null as string | null, path: p as string | null },
             })),
         ];
         const shown = new Set(items.map((i) => i.value.path && samePath(i.value.path)));
-        const folders = await openFolders(ctx);
         const more = folders.length
           ? folderFiles(ctx, folders).then((paths) =>
               paths

@@ -16,9 +16,6 @@ function fold(text: string): string[] {
 
 const SEPARATOR = /[\s\-_./\\:()[\]]/;
 
-/** How far past the first occurrence a word-start occurrence is still preferred. */
-const WORD_START_REACH = 8;
-
 function isWordStart(chars: readonly string[], i: number): boolean {
   if (i === 0) return true;
   const prev = chars[i - 1] ?? '';
@@ -26,46 +23,69 @@ function isWordStart(chars: readonly string[], i: number): boolean {
   return SEPARATOR.test(prev) || (prev === prev.toLowerCase() && cur !== cur.toLowerCase());
 }
 
-/** Whether q[from..] appears in order in t[start..]. */
-function fits(t: readonly string[], q: readonly string[], from: number, start: number): boolean {
-  let at = start;
-  for (let i = from; i < q.length; i++) {
-    at = t.indexOf(q[i] as string, at);
-    if (at === -1) return false;
-    at++;
+/** First index where `q` appears as is in `t`, preferring one that starts a word, or -1. */
+function substringAt(t: readonly string[], chars: readonly string[], q: readonly string[]): number {
+  let first = -1;
+  for (let i = 0; i + q.length <= t.length; i++) {
+    if (!q.every((c, j) => t[i + j] === c)) continue;
+    if (isWordStart(chars, i)) return i;
+    if (first === -1) first = i;
   }
-  return true;
+  return first;
+}
+
+/**
+ * Indices of `q` in `t` where each character either follows the previous one
+ * or starts a word ("sd" in "Solarized dark", "eldr" in "Elden Ring"), or null.
+ */
+function wordMatch(t: readonly string[], chars: readonly string[], q: readonly string[]) {
+  const failed = new Set<string>();
+  const solve = (qi: number, prev: number): number[] | null => {
+    if (qi === q.length) return [];
+    const key = `${qi} ${prev}`;
+    if (failed.has(key)) return null;
+    const candidates: number[] = [];
+    const next = prev >= 0 && t[prev + 1] === q[qi];
+    if (next) candidates.push(prev + 1);
+    for (let i = prev + 1; i < t.length; i++) {
+      if (next && i === prev + 1) continue;
+      if (t[i] === q[qi] && isWordStart(chars, i)) candidates.push(i);
+    }
+    for (const i of candidates) {
+      const rest = solve(qi + 1, i);
+      if (rest) return [i, ...rest];
+    }
+    failed.add(key);
+    return null;
+  };
+  return solve(0, -1);
 }
 
 export function fuzzyMatch(query: string, text: string): FuzzyMatch | null {
-  const q = fold(query.trim()).filter((c) => c !== ' ');
+  const trimmed = fold(query.trim());
+  const q = trimmed.filter((c) => c !== ' ');
   if (q.length === 0) return { score: 0, indices: [] };
   const chars = [...text];
   const t = fold(text);
-  const indices: number[] = [];
-  let score = 0;
-  let from = 0;
 
-  for (const [qi, qc] of q.entries()) {
-    const first = t.indexOf(qc, from);
-    if (first === -1) return null;
-    // Prefer an occurrence that starts a word, if one comes soon after and
-    // the rest of the query still fits after it.
-    let found = first;
-    for (let i = first; i < t.length && i <= first + WORD_START_REACH; i++) {
-      if (t[i] === qc && isWordStart(chars, i) && fits(t, q, qi + 1, i + 1)) {
-        found = i;
-        break;
-      }
-    }
-    const previous = indices[indices.length - 1];
+  // The query as is, spaces included, anywhere in the text: the best match.
+  const at = substringAt(t, chars, trimmed);
+  if (at !== -1) {
+    const indices = trimmed.map((_, j) => at + j);
+    const score = trimmed.length * 4 + (isWordStart(chars, at) ? 4 : 0) + (at === 0 ? 3 : 0);
+    return { score, indices };
+  }
+
+  const indices = wordMatch(t, chars, q);
+  if (!indices) return null;
+  let score = 0;
+  indices.forEach((found, k) => {
+    const previous = indices[k - 1];
     score += 1;
     if (previous !== undefined && found === previous + 1) score += 3;
     if (isWordStart(chars, found)) score += 4;
     if (previous !== undefined) score -= Math.min(found - previous - 1, 10) * 0.2;
-    indices.push(found);
-    from = found + 1;
-  }
+  });
   if (indices[0] === 0) score += 3;
   return { score, indices };
 }

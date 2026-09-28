@@ -10,9 +10,16 @@ async function openConfig(page: Page, name: string, text: string) {
   );
 }
 
-/** Picks a suggestion with the mouse (Enter is ignored during the first moments of the list). */
-async function pick(page: Page, label: string) {
-  await page.locator('.cm-tooltip-autocomplete li', { hasText: label }).first().click();
+/**
+ * Picks a suggestion with the mouse. CodeMirror ignores clicks and Enter during
+ * the first moments of the list, so the click is repeated until `done` holds.
+ */
+async function pick(page: Page, label: string, done: () => Promise<void>) {
+  await expect(async () => {
+    const option = page.locator('.cm-tooltip-autocomplete li', { hasText: label }).first();
+    if (await option.isVisible()) await option.click();
+    await done();
+  }).toPass();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -25,8 +32,11 @@ test('settings.json: completion of setting names and values', async ({ page }) =
   await page.keyboard.type('"editor.tabS');
   const list = page.locator('.cm-tooltip-autocomplete');
   await expect(list).toContainText('editor.tabSize');
-  await pick(page, 'editor.tabSize');
-  await expect(page.locator('.cm-line').nth(1)).toHaveText(/^\s*"editor\.tabSize": \d+$/);
+  await pick(page, 'editor.tabSize', () =>
+    expect(page.locator('.cm-line').nth(1)).toHaveText(/^\s*"editor\.tabSize": \d+$/, {
+      timeout: 500,
+    }),
+  );
 });
 
 test('settings.json: completion right before the closing brace', async ({ page }) => {
@@ -79,6 +89,9 @@ test('keybindings.json: commands are suggested, unknown ones flagged', async ({ 
   await page.keyboard.press('End');
   await page.keyboard.type(',\n{ "key": "Ctrl+Alt+K", "command": "file.sa');
   await expect(page.locator('.cm-tooltip-autocomplete')).toContainText('file.save');
-  await pick(page, 'file.save');
-  await expect(page.locator('.cm-line').nth(2)).toContainText('"command": "file.save"');
+  await pick(page, 'file.save', () =>
+    expect(page.locator('.cm-line').nth(2)).toContainText('"command": "file.save"', {
+      timeout: 500,
+    }),
+  );
 });
