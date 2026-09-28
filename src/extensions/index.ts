@@ -15,6 +15,7 @@ import viewers from './viewers';
 import quarantine from './quarantine';
 import quickOpen from './quick-open';
 import session from './session';
+import split from './split';
 import statusBar from './status-bar';
 import tabs from './tabs';
 import themes from './themes';
@@ -37,6 +38,7 @@ export const builtinExtensions: CascadesExtension[] = [
   // Before tabs, which opens an untitled tab only when nothing was restored.
   session,
   tabs,
+  split,
   palette,
   quickOpen,
   quarantine,
