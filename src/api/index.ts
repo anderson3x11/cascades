@@ -347,6 +347,8 @@ export interface ViewersApi {
   replaceFor(path: string): ViewerSpec | null;
   /** Viewer for files that are not text (hex view), or null. */
   binaryViewer(): ViewerSpec | null;
+  /** A viewer by id (the `viewer` of a tab). */
+  get(id: string): ViewerSpec | undefined;
   previewMode(tabId: string): PreviewMode;
   setPreviewMode(tabId: string, mode: PreviewMode): void;
 }

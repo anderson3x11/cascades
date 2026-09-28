@@ -491,6 +491,7 @@ export class Workbench {
         previewFor: (tab) => this.viewers.previewFor(tab),
         replaceFor: (path) => this.viewers.replaceFor(path),
         binaryViewer: () => this.viewers.binaryViewer(),
+        get: (id) => this.viewers.get(id),
         previewMode: (tabId) => this.viewers.previewMode(tabId),
         setPreviewMode: (tabId, mode) => this.viewers.setPreviewMode(tabId, mode),
       },

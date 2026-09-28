@@ -22,6 +22,12 @@ test('a binary file opens in a read-only hex view', async ({ page }) => {
   );
   await expect(first.locator('.cv-hex-text')).toHaveText('Bonjour·xxxxxxxx');
 
+  // The status bar gives the kind of view and the size, not text details.
+  const statusBar = page.getByRole('contentinfo');
+  await expect(statusBar).toContainText('Hexadécimal');
+  await expect(statusBar).toContainText('98 Ko');
+  await expect(statusBar).not.toContainText('Ln ');
+
   // Only what is on screen is read and drawn, down to the last row.
   await page.locator('.cv-hex-stage').evaluate((stage) => (stage.scrollTop = stage.scrollHeight));
   await expect(page.locator('.cv-hex-row').last().locator('.cv-hex-offset')).toHaveText('000186A0');
