@@ -15,15 +15,15 @@ pub fn config_dir(app: &AppHandle) -> Result<PathBuf, String> {
 fn portable_dir() -> Option<PathBuf> {
     let exe = std::env::current_exe().ok()?;
     let exe_dir = exe.parent()?;
-    exe_dir.join("portable").is_file().then(|| exe_dir.join("config"))
+    exe_dir
+        .join("portable")
+        .is_file()
+        .then(|| exe_dir.join("config"))
 }
 
 /// Only plain file names are accepted, so nothing outside the config folder can be read.
 pub fn config_file(dir: &Path, name: &str) -> Result<PathBuf, String> {
-    let valid = !name.is_empty()
-        && !name.contains(['/', '\\', ':'])
-        && name != "."
-        && name != "..";
+    let valid = !name.is_empty() && !name.contains(['/', '\\', ':']) && name != "." && name != "..";
     if !valid {
         return Err(format!("Invalid config file name: {name}"));
     }
@@ -37,7 +37,10 @@ mod tests {
     #[test]
     fn accepts_plain_names() {
         let dir = Path::new("cfg");
-        assert_eq!(config_file(dir, "settings.json").unwrap(), dir.join("settings.json"));
+        assert_eq!(
+            config_file(dir, "settings.json").unwrap(),
+            dir.join("settings.json")
+        );
     }
 
     #[test]

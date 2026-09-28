@@ -1,7 +1,7 @@
 //! Text file decoding and encoding: BOM, charset detection, binary detection
 //! and line endings. The frontend always works with UTF-8 text and "\n".
 
-use encoding_rs::{Encoding, UTF_16BE, UTF_16LE, UTF_8};
+use encoding_rs::{Encoding, UTF_8, UTF_16BE, UTF_16LE};
 use serde::{Deserialize, Serialize};
 
 /// How many leading bytes are scanned for NUL to flag a binary file.
