@@ -1,10 +1,11 @@
 <script lang="ts" module>
-  export type PreferencesPage = 'settings';
+  export type PreferencesPage = 'settings' | 'shortcuts';
 </script>
 
 <script lang="ts">
   import type { ExtensionContext } from '../../api';
   import SettingsPage from './SettingsPage.svelte';
+  import ShortcutsPage from './ShortcutsPage.svelte';
 
   let {
     ctx,
@@ -17,7 +18,10 @@
     runAndClose: (command: string) => void;
   } = $props();
 
-  const pages: { id: PreferencesPage; label: string }[] = [{ id: 'settings', label: 'Réglages' }];
+  const pages: { id: PreferencesPage; label: string }[] = [
+    { id: 'settings', label: 'Réglages' },
+    { id: 'shortcuts', label: 'Raccourcis' },
+  ];
 </script>
 
 <nav aria-label="Pages des préférences">
@@ -29,6 +33,8 @@
 </nav>
 {#if page === 'settings'}
   <SettingsPage {ctx} openFile={() => runAndClose('preferences.openSettingsFile')} />
+{:else}
+  <ShortcutsPage {ctx} openFile={() => runAndClose('preferences.openKeybindingsFile')} />
 {/if}
 
 <style>

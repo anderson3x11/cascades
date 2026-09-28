@@ -9,7 +9,13 @@ import { EventBus } from '../core/events/emitter';
 import { ExtensionHost } from '../core/extensions/host';
 import { checkKeybindings } from '../core/keybindings/check';
 import { parseKeybindings } from '../core/keybindings/file';
-import { chordFromEvent, formatKeySequence } from '../core/keybindings/keys';
+import {
+  chordFromEvent,
+  formatKeySequence,
+  keyNotation,
+  LEADER,
+  parseKeySequence,
+} from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
 import { checkSettings } from '../core/settings/check';
@@ -113,8 +119,38 @@ export class Workbench {
     };
   }
 
+  /** A key combination being recorded (see captureKey). */
+  private capturing: { chords: string[]; resolve: (key: string | null) => void } | null = null;
+
+  /**
+   * Records the next key combination, in keybindings.json notation. The
+   * leader key waits for the key after it ("Leader S"). Escape cancels (null).
+   */
+  private captureKey(): Promise<string | null> {
+    this.capturing?.resolve(null);
+    return new Promise((resolve) => (this.capturing = { chords: [], resolve }));
+  }
+
+  /** Feeds a key press to the capture in progress. */
+  private capture(capturing: NonNullable<typeof this.capturing>, event: KeyboardEvent): void {
+    const chord = chordFromEvent(event);
+    if (!chord) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (chord === 'escape') {
+      this.capturing = null;
+      capturing.resolve(null);
+    } else if (capturing.chords.length === 0 && chord === this.keybindings.leaderChord) {
+      capturing.chords.push(LEADER);
+    } else {
+      this.capturing = null;
+      capturing.resolve(keyNotation([...capturing.chords, chord]));
+    }
+  }
+
   private onKeyDown = (event: KeyboardEvent): void => {
     if (event.isComposing) return;
+    if (this.capturing) return this.capture(this.capturing, event);
     // A modal handles its own keys.
     if (this.modals.current) return;
     const chord = chordFromEvent(event);
@@ -163,7 +199,9 @@ export class Workbench {
       const { bindings, errors } = parseKeybindings(await fs.readConfigFile(KEYBINDINGS_FILE));
       this.userKeybindings.dispose();
       this.userKeybindings = new DisposableStore();
-      for (const binding of bindings) this.userKeybindings.add(this.keybindings.register(binding));
+      for (const binding of bindings) {
+        this.userKeybindings.add(this.keybindings.register(binding, 'user'));
+      }
       if (errors.length > 0) {
         const more = errors.length > 1 ? ` (et ${errors.length - 1} autre(s))` : '';
         problem = `${errors[0]}${more}, ignorée.`;
@@ -317,6 +355,17 @@ export class Workbench {
           const binding = this.keybindings.forCommand(command)[0];
           return binding ? formatKeySequence(binding.chords) : null;
         },
+        list: () =>
+          this.keybindings.list().map((b) => ({
+            key: b.key,
+            label: formatKeySequence(b.chords),
+            command: b.command,
+            when: b.when,
+            source: b.source,
+          })),
+        capture: () => this.captureKey(),
+        format: (key) => formatKeySequence(this.keybindings.actualChords(parseKeySequence(key))),
+        onDidChange: (listener) => track(this.keybindings.onDidChange.on(listener)),
       },
       menus: {
         registerMenu: (menu) => track(this.menus.registerMenu(menu)),

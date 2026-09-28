@@ -33,6 +33,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Raccourcis Ctrl+Alt+lettre reconnus même quand Windows les traite comme AltGr (Ctrl+Alt+N qui donnait « ñ »).
 - Aide à l'édition de `settings.json` et `keybindings.json` : complétion des réglages, valeurs et commandes, erreurs soulignées, description au survol. Un fichier encore vide reçoit un mode d'emploi en commentaire à l'ouverture.
 - Fenêtre Préférences (Ctrl+,) : tous les réglages avec recherche, un contrôle par type, portée globale ou par langage, retour à la valeur par défaut. API `ctx.modals` et `ctx.settings.inspect`.
+- Page Raccourcis des Préférences : toutes les commandes et leurs raccourcis, recherche, changement en tapant la nouvelle combinaison (Leader compris), ajout, retrait, retour aux défauts, conflits signalés ; écrit dans `keybindings.json`. API `ctx.keybindings.list`, `capture`, `format` et `onDidChange`.
 - Commentaires grisés dans les fichiers JSON, et Ctrl+/ les commente avec `//`. Ctrl+: commente aussi, pour les claviers AZERTY.
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.

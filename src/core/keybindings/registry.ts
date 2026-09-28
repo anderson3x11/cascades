@@ -1,4 +1,5 @@
 import { toDisposable, type Disposable } from '../disposable';
+import { Emitter } from '../events/emitter';
 import { parseWhen, type ContextLookup, type WhenExpr } from '../context/when';
 import { LEADER, normalizeChord, parseKeySequence } from './keys';
 
@@ -15,17 +16,25 @@ export interface KeybindingSpec {
   when?: string;
 }
 
+/** Who declared a binding: the app and its extensions, or keybindings.json. */
+export type KeybindingSource = 'default' | 'user';
+
 export interface Keybinding {
   /** Normalized chords, the leader already replaced by its actual chord. */
   chords: string[];
+  /** The key as written in the spec ("Leader S", "Ctrl+D"). */
+  key: string;
   command: string;
   args: unknown[];
   when: string | undefined;
+  source: KeybindingSource;
 }
 
 interface Entry {
   /** Chords as written, possibly containing LEADER. */
   chords: string[];
+  key: string;
+  source: KeybindingSource;
   command: string;
   args: unknown[];
   when: string | undefined;
@@ -67,11 +76,15 @@ export class KeybindingRegistry {
   private counter = 0;
   private pending: string[] = [];
   private leader = DEFAULT_LEADER;
+  /** Fired when bindings are added or removed, or the leader changes. */
+  readonly onDidChange = new Emitter<void>();
 
-  register(spec: KeybindingSpec): Disposable {
+  register(spec: KeybindingSpec, source: KeybindingSource = 'default'): Disposable {
     if (spec.command.startsWith('-')) return this.registerRemoval(spec);
     const entry: Entry = {
       chords: parseKeySequence(spec.key),
+      key: spec.key,
+      source,
       command: spec.command,
       args: spec.args ?? [],
       when: spec.when,
@@ -79,8 +92,10 @@ export class KeybindingRegistry {
       order: this.counter++,
     };
     this.entries.push(entry);
+    this.onDidChange.fire();
     return toDisposable(() => {
       this.entries = this.entries.filter((e) => e !== entry);
+      this.onDidChange.fire();
     });
   }
 
@@ -92,8 +107,10 @@ export class KeybindingRegistry {
       order: this.counter++,
     };
     this.removals.push(removal);
+    this.onDidChange.fire();
     return toDisposable(() => {
       this.removals = this.removals.filter((r) => r !== removal);
+      this.onDidChange.fire();
     });
   }
 
@@ -118,6 +135,7 @@ export class KeybindingRegistry {
     if (chord === LEADER) throw new Error('la touche leader ne peut pas être « Leader »');
     this.leader = chord;
     this.pending = [];
+    this.onDidChange.fire();
   }
 
   get leaderChord(): string {
@@ -200,6 +218,11 @@ export class KeybindingRegistry {
     return this.actualOf(entry.chords);
   }
 
+  /** Chords with "Leader" replaced by the leader key. */
+  actualChords(chords: string[]): string[] {
+    return this.actualOf(chords);
+  }
+
   private actualOf(chords: string[]): string[] {
     return chords.map((c) => (c === LEADER ? this.leader : c));
   }
@@ -207,6 +230,8 @@ export class KeybindingRegistry {
   private toBinding(entry: Entry): Keybinding {
     return {
       chords: this.actual(entry),
+      key: entry.key,
+      source: entry.source,
       command: entry.command,
       args: entry.args,
       when: entry.when,

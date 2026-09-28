@@ -47,6 +47,29 @@ export interface KeybindingsApi {
   setLeader(key: string): void;
   /** Shortcut of a command as shown to the user ("Ctrl+Espace T"), or null. */
   label(command: string): string | null;
+  /** A key written as in keybindings.json, as shown to the user ("Leader S" -> "Ctrl+Espace S"). Throws if invalid. */
+  format(key: string): string;
+  /** Shortcuts in effect (removed ones are left out), in registration order. */
+  list(): KeybindingInfo[];
+  /**
+   * Waits for the next key combination and returns it as written in
+   * keybindings.json ("Ctrl+Shift+N", "Leader S"), or null when Escape is
+   * pressed. The keys pressed meanwhile do nothing else.
+   */
+  capture(): Promise<string | null>;
+  /** Called when shortcuts are added or removed, or the leader key changes. */
+  onDidChange(listener: () => void): Disposable;
+}
+
+export interface KeybindingInfo {
+  /** As written: "Ctrl+D", "Leader S". */
+  key: string;
+  /** As shown: "Ctrl+Espace S". */
+  label: string;
+  command: string;
+  when: string | undefined;
+  /** "user" for keybindings.json, "default" for the app and its extensions. */
+  source: 'default' | 'user';
 }
 
 // Menus ---------------------------------------------------------------------

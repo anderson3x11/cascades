@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { chordFromEvent, formatKeySequence, normalizeChord, parseKeySequence } from './keys';
+import {
+  chordFromEvent,
+  formatKeySequence,
+  keyNotation,
+  normalizeChord,
+  parseKeySequence,
+} from './keys';
 
 const event = (
   key: string,
@@ -74,6 +80,12 @@ describe('chordFromEvent', () => {
     expect(chordFromEvent({ ...event('ñ'), code: 'KeyN', getModifierState: altGraph })).toBe(
       'ctrl+alt+n',
     );
+  });
+
+  it('writes chords back in the file notation', () => {
+    for (const key of ['Ctrl+Shift+N', 'Leader S', 'Alt+Up', 'Ctrl++', 'Ctrl+,']) {
+      expect(keyNotation(parseKeySequence(key))).toBe(key);
+    }
   });
 
   it('ignores lone modifiers', () => {

@@ -3,34 +3,10 @@ import { defineExtension, type Disposable, type ExtensionContext } from '../../a
 import type { ConfigFileName } from './assist';
 import { configFileAssist } from './editor-assist';
 import PreferencesView, { type PreferencesPage } from './PreferencesView.svelte';
+import { isEmpty, KEYBINDINGS_TEMPLATE, SETTINGS_TEMPLATE } from './templates';
 
 /** Path form for comparisons: Windows paths ignore case and separator style. */
 const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
-
-const SETTINGS_TEMPLATE = `// Réglages personnels : ils remplacent les valeurs par défaut.
-// Écris-les entre les accolades { }, séparés par des virgules.
-// Tape " pour voir la liste des réglages ; survole un réglage pour sa description.
-// Les lignes qui commencent par // sont des commentaires, sans effet.
-{
-  // "editor.fontSize": 16,
-  // Un bloc "[langage]" ne vaut que pour les fichiers de ce langage :
-  // "[markdown]": { "editor.wordWrap": true },
-}
-`;
-
-const KEYBINDINGS_TEMPLATE = `// Raccourcis personnels : ils s'ajoutent à ceux par défaut, ou les remplacent.
-// Écris-les entre les crochets [ ], un par ligne, séparés par des virgules.
-// Après "command": , tape " pour voir la liste des commandes.
-// Les lignes qui commencent par // sont des commentaires, sans effet.
-[
-  // { "key": "Ctrl+Shift+N", "command": "file.new" },
-  // Un "-" devant la commande retire un raccourci par défaut :
-  // { "key": "Ctrl+D", "command": "-editor.addNextOccurrence" },
-]
-`;
-
-/** Content that holds nothing yet: the file can get its template. */
-const isEmpty = (text: string | null) => text === null || /^\s*(\{\s*\}|\[\s*\])?\s*$/.test(text);
 
 /**
  * Opens a file of the config folder in a tab. A missing or still empty file
@@ -68,6 +44,10 @@ export default defineExtension({
       title: 'Préférences…',
       category: 'Préférences',
     });
+    ctx.commands.register('preferences.openShortcuts', () => open('shortcuts'), {
+      title: 'Raccourcis clavier…',
+      category: 'Préférences',
+    });
     ctx.keybindings.register({ key: 'Ctrl+,', command: 'preferences.open' });
     ctx.menus.registerItem('file', {
       command: 'preferences.open',
@@ -85,6 +65,11 @@ export default defineExtension({
       () => openConfigFile(ctx, 'keybindings.json', KEYBINDINGS_TEMPLATE),
       { title: 'Ouvrir keybindings.json', category: 'Préférences' },
     );
+    ctx.menus.registerItem('file', {
+      command: 'preferences.openShortcuts',
+      group: '8_preferences',
+      order: 0.5,
+    });
     ctx.menus.registerItem('file', {
       command: 'preferences.openSettingsFile',
       group: '8_preferences',

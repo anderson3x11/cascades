@@ -10,10 +10,9 @@ async function openConfig(page: Page, name: string, text: string) {
   );
 }
 
-/** Enter picks the suggestion; CodeMirror ignores it during the first 75 ms of the list. */
-async function acceptCompletion(page: Page) {
-  await page.waitForTimeout(100);
-  await page.keyboard.press('Enter');
+/** Picks a suggestion with the mouse (Enter is ignored during the first moments of the list). */
+async function pick(page: Page, label: string) {
+  await page.locator('.cm-tooltip-autocomplete li', { hasText: label }).first().click();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -26,7 +25,7 @@ test('settings.json: completion of setting names and values', async ({ page }) =
   await page.keyboard.type('"editor.tabS');
   const list = page.locator('.cm-tooltip-autocomplete');
   await expect(list).toContainText('editor.tabSize');
-  await acceptCompletion(page);
+  await pick(page, 'editor.tabSize');
   await expect(page.locator('.cm-line').nth(1)).toHaveText(/^\s*"editor\.tabSize": \d+$/);
 });
 
@@ -80,6 +79,6 @@ test('keybindings.json: commands are suggested, unknown ones flagged', async ({ 
   await page.keyboard.press('End');
   await page.keyboard.type(',\n{ "key": "Ctrl+Alt+K", "command": "file.sa');
   await expect(page.locator('.cm-tooltip-autocomplete')).toContainText('file.save');
-  await acceptCompletion(page);
+  await pick(page, 'file.save');
   await expect(page.locator('.cm-line').nth(2)).toContainText('"command": "file.save"');
 });

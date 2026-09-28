@@ -74,7 +74,9 @@ Le dossier de config est :
 
 ### Préférences
 
-Fichier > Préférences… (Ctrl+,) ouvre une fenêtre qui liste tous les réglages, avec une recherche. Chaque réglage se change avec un interrupteur, une liste ou un champ, pour tous les fichiers ou pour un langage seulement, et ↺ le remet par défaut. Les changements sont écrits dans `settings.json`, commentaires conservés.
+Fichier > Préférences… (Ctrl+,) ouvre une fenêtre à deux pages. La page Réglages liste tous les réglages, avec une recherche. Chaque réglage se change avec un interrupteur, une liste ou un champ, pour tous les fichiers ou pour un langage seulement, et ↺ le remet par défaut. Les changements sont écrits dans `settings.json`, commentaires conservés.
+
+La page Raccourcis (aussi dans Fichier > Raccourcis clavier…) liste toutes les commandes avec leurs raccourcis. Cliquer sur un raccourci puis taper la nouvelle combinaison le remplace (la touche leader compte : Ctrl+Espace puis S donne « Leader S ») ; + en ajoute un, × le retire, ↺ revient aux raccourcis par défaut. Une combinaison déjà prise est signalée. Tout est écrit dans `keybindings.json`.
 
 ### settings.json
 

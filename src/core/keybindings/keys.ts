@@ -87,6 +87,22 @@ export function formatKeySequence(chords: readonly string[]): string {
     .join(' ');
 }
 
+/**
+ * Normalized chords in the notation of keybindings.json, which parseKeySequence
+ * reads back: ["ctrl+shift+n"] -> "Ctrl+Shift+N", ["leader", "s"] -> "Leader S".
+ */
+export function keyNotation(chords: readonly string[]): string {
+  const word = (part: string) => part.charAt(0).toUpperCase() + part.slice(1);
+  return chords
+    .map((chord) =>
+      chord
+        .split(/\+(?!$)/)
+        .map(word)
+        .join('+'),
+    )
+    .join(' ');
+}
+
 export interface KeyEventLike {
   key: string;
   /** Physical key ("Digit0"), used for digits on layouts where they need Shift (AZERTY). */

@@ -23,12 +23,16 @@
     workbench.workspace.editorView()?.focus();
   }
 
+  // On the window: the focus may have left the modal (a clicked button that
+  // went away), Escape must still close it.
   function onKeydown(event: KeyboardEvent) {
     if (event.key !== 'Escape' || event.defaultPrevented) return;
     event.preventDefault();
     close();
   }
 </script>
+
+<svelte:window onkeydown={onKeydown} />
 
 <div class="backdrop" role="presentation" onpointerdown={close}></div>
 <div
@@ -38,7 +42,6 @@
   aria-label={modal.title}
   tabindex="-1"
   bind:this={box}
-  onkeydown={onKeydown}
 >
   <header>
     <h2>{modal.title}</h2>
