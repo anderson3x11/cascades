@@ -82,6 +82,11 @@ export interface SettingsApi {
   /** Effective value, with the per-language override when `language` is given. */
   get<T>(key: string, language?: string): T;
   onDidChange(listener: (change: { keys: string[] }) => void): Disposable;
+  /**
+   * Writes a user setting to settings.json (or to its "[language]" block).
+   * `undefined` removes it, going back to the default.
+   */
+  update(key: string, value: unknown, language?: string): Promise<void>;
 }
 
 // Context keys --------------------------------------------------------------
@@ -260,6 +265,33 @@ export interface ConfigFilesApi {
   read(name: string): Promise<string | null>;
   /** Writes a file of the config folder, atomically. */
   write(name: string, content: string): Promise<void>;
+  /** File names in a subfolder of the config folder ("themes"). Empty if it does not exist. */
+  list(folder: string): Promise<string[]>;
+  /** Calls `listener` when the file changes on disk. Does nothing outside the desktop app. */
+  watch(name: string, listener: () => void): Disposable;
+}
+
+// Themes --------------------------------------------------------------------
+
+export interface ThemeSpec {
+  /** "light", "nord"... User themes are "user.<file name>". */
+  id: string;
+  name: string;
+  /** Base palette the colors apply on. */
+  type: 'light' | 'dark';
+  /** CSS variables without "--": { "bg": "#2e3440", "syn-keyword": "#81a1c1" }. */
+  colors: Record<string, string>;
+}
+
+export interface ThemesApi {
+  /** Registering an existing id replaces that theme. */
+  register(theme: ThemeSpec): Disposable;
+  list(): ThemeSpec[];
+  current(): ThemeSpec | null;
+  /** Applies a theme now. Returns false for an unknown id. */
+  apply(id: string): boolean;
+  /** Validates a theme file; throws an Error explaining the problem. */
+  parse(id: string, json: string): ThemeSpec;
 }
 
 export interface AppApi {
@@ -300,6 +332,7 @@ export interface ExtensionContext {
   readonly editor: EditorApi;
   readonly statusBar: StatusBarApi;
   readonly banners: BannersApi;
+  readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;
   readonly dialogs: DialogsApi;

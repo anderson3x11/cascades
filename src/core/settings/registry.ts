@@ -42,6 +42,7 @@ export class SettingsRegistry {
   private schemas = new Map<string, SettingSchema>();
   private user: Values = {};
   private languages = new Map<string, Values>();
+  private raw: RawSettings = {};
   readonly onDidChange = new Emitter<SettingsChange>();
 
   registerSchema(namespace: string, properties: Record<string, SettingSchema>): Disposable {
@@ -82,8 +83,14 @@ export class SettingsRegistry {
     return schema.default as T;
   }
 
+  /** Copy of the user layer as last set, in settings.json shape. */
+  userSettings(): RawSettings {
+    return structuredClone(this.raw);
+  }
+
   /** Replaces the user layer (the parsed content of settings.json). */
   setUserSettings(raw: RawSettings): void {
+    this.raw = structuredClone(raw);
     const before = this.snapshot();
     this.user = {};
     this.languages.clear();

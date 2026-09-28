@@ -55,6 +55,11 @@ pub async fn read_config_file(app: AppHandle, name: String) -> Result<Option<Str
 }
 
 #[tauri::command]
+pub async fn list_config_folder(app: AppHandle, folder: String) -> Result<Vec<String>, String> {
+    config::list_folder(&config::config_dir(&app)?, &folder)
+}
+
+#[tauri::command]
 pub async fn write_config_file(
     app: AppHandle,
     name: String,

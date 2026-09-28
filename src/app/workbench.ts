@@ -10,17 +10,21 @@ import { ExtensionHost } from '../core/extensions/host';
 import { chordFromEvent } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
-import { SettingsRegistry } from '../core/settings/registry';
+import { withSetting } from '../core/settings/edit';
+import { SettingsRegistry, type RawSettings } from '../core/settings/registry';
+import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
 import { watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
+import { ThemeService } from './themes';
 import { Workspace } from './workspace.svelte';
 
 /** How long closing the window waits for onWillQuit handlers. */
 const WILL_QUIT_TIMEOUT_MS = 3000;
+const SETTINGS_FILE = 'settings.json';
 
 export class Workbench {
   readonly commands = new CommandRegistry();
@@ -32,6 +36,7 @@ export class Workbench {
   readonly workspace = new Workspace(this.events);
   readonly statusBar = new StatusBarModel();
   readonly banners = new BannerModel();
+  readonly themes = new ThemeService();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -48,7 +53,9 @@ export class Workbench {
 
     // User values are stored before extensions declare their schemas, so
     // extensions read them from their very first activation.
-    if (isTauri()) await this.loadUserSettings();
+    await this.loadUserSettings();
+    // Hand edits of settings.json apply right away (our own writes change nothing).
+    this.watchConfigFile(SETTINGS_FILE, () => void this.loadUserSettings());
 
     for (const extension of builtins) {
       try {
@@ -101,18 +108,55 @@ export class Workbench {
     }
   };
 
+  /** Parsed settings.json, {} when absent. Throws when the file is not a JSON object. */
+  private async readUserSettings(): Promise<RawSettings> {
+    const source = await fs.readConfigFile(SETTINGS_FILE);
+    if (source === null || source.trim() === '') return {};
+    const parsed: unknown = JSON.parse(source);
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+      throw new Error(`${SETTINGS_FILE} doit contenir un objet JSON`);
+    }
+    return parsed as RawSettings;
+  }
+
   private async loadUserSettings(): Promise<void> {
     try {
-      const source = await fs.readConfigFile('settings.json');
-      if (source === null) return;
-      const parsed: unknown = JSON.parse(source);
-      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-        throw new Error('settings.json must contain an object');
-      }
-      this.settings.setUserSettings(parsed as Record<string, unknown>);
+      this.settings.setUserSettings(await this.readUserSettings());
     } catch (err) {
-      console.error('[cascades] could not load settings.json', err);
+      console.error(`[cascades] could not load ${SETTINGS_FILE}`, err);
     }
+  }
+
+  /** Writes one user setting to settings.json, keeping everything else in the file. */
+  private async updateSetting(key: string, value: unknown, language?: string): Promise<void> {
+    // Re-read the file so that edits made by hand are not lost, and refuse to
+    // overwrite a file the user is in the middle of fixing.
+    let raw: RawSettings;
+    try {
+      raw = await this.readUserSettings();
+    } catch (err) {
+      throw new Error(`${SETTINGS_FILE} contient une erreur, corrige-la d'abord.`, { cause: err });
+    }
+    const next = withSetting(raw, key, value, language);
+    this.settings.setUserSettings(next);
+    await fs.writeConfigFile(SETTINGS_FILE, `${JSON.stringify(next, null, 2)}\n`);
+  }
+
+  /** Watches a file of the config folder (desktop app only). */
+  private watchConfigFile(name: string, listener: () => void): Disposable {
+    let watch: Disposable | null = null;
+    let disposed = false;
+    if (isTauri()) {
+      void fs.configFilePath(name).then((path) => {
+        if (!disposed) watch = watchFile(path, listener);
+      });
+    }
+    return {
+      dispose: () => {
+        disposed = true;
+        watch?.dispose();
+      },
+    };
   }
 
   private async loadUserScript(): Promise<void> {
@@ -173,6 +217,7 @@ export class Workbench {
         register: (ns, props) => track(this.settings.registerSchema(ns, props)),
         get: (key, language) => this.settings.get(key, language),
         onDidChange: (listener) => track(this.settings.onDidChange.on(listener)),
+        update: (key, value, language) => this.updateSetting(key, value, language),
       },
       context: {
         get: (key) => this.contextKeys.get(key),
@@ -203,6 +248,13 @@ export class Workbench {
       },
       statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
       banners: { show: (options) => track(this.banners.show(options)) },
+      themes: {
+        register: (theme) => track(this.themes.register(theme)),
+        list: () => this.themes.list(),
+        current: () => this.themes.current(),
+        apply: (id) => this.themes.apply(id),
+        parse: parseTheme,
+      },
       events: { on: (name, listener) => track(this.events.on(name, listener)) },
       fs: {
         readTextFile: fs.readTextFile,
@@ -215,7 +267,12 @@ export class Workbench {
         choose: dialogs.choose,
         alert: dialogs.alert,
       },
-      configFiles: { read: fs.readConfigFile, write: fs.writeConfigFile },
+      configFiles: {
+        read: fs.readConfigFile,
+        write: fs.writeConfigFile,
+        list: fs.listConfigFolder,
+        watch: (name, listener) => track(this.watchConfigFile(name, listener)),
+      },
       app: {
         onWillQuit: (handler) => {
           this.willQuit.add(handler);

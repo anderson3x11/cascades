@@ -58,6 +58,16 @@ describe('SettingsRegistry', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  it('returns a copy of the user settings as set', () => {
+    const reg = makeRegistry();
+    const raw = { 'editor.tabSize': 2, '[markdown]': { 'editor.wordWrap': true } };
+    reg.setUserSettings(raw);
+    const copy = reg.userSettings();
+    expect(copy).toEqual(raw);
+    (copy['[markdown]'] as Record<string, unknown>)['editor.wordWrap'] = false;
+    expect(reg.get('editor.wordWrap', 'markdown')).toBe(true);
+  });
+
   it('removes a schema on dispose', () => {
     const reg = new SettingsRegistry();
     const d = reg.registerSchema('x', { a: { type: 'number', default: 1 } });

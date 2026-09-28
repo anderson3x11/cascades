@@ -4,6 +4,12 @@ import { builtinExtensions } from './extensions';
 import App from './ui/App.svelte';
 import './ui/global.css';
 
+// Base palette right away, before the themes extension picks the exact theme.
+document.documentElement.dataset.themeType = window.matchMedia('(prefers-color-scheme: dark)')
+  .matches
+  ? 'dark'
+  : 'light';
+
 const target = document.getElementById('app');
 if (!target) throw new Error('Missing #app element');
 

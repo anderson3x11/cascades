@@ -40,6 +40,25 @@ export async function readConfigFile(name: string): Promise<string | null> {
   return await invoke<string | null>('read_config_file', { name });
 }
 
+/** File names in a subfolder of the config folder. */
+export async function listConfigFolder(folder: string): Promise<string[]> {
+  if (!isTauri()) {
+    const prefix = `${STORAGE_PREFIX}${folder}/`;
+    return Object.keys(localStorage)
+      .filter((key) => key.startsWith(prefix) && !key.slice(prefix.length).includes('/'))
+      .map((key) => key.slice(prefix.length))
+      .sort();
+  }
+  return await invoke<string[]>('list_config_folder', { folder });
+}
+
+/** Absolute path of a config file ("themes/nord.json"), with the OS separator. */
+export async function configFilePath(name: string): Promise<string> {
+  const dir = await configDir();
+  const sep = dir.includes('\\') ? '\\' : '/';
+  return `${dir}${sep}${name.split('/').join(sep)}`;
+}
+
 export async function writeConfigFile(name: string, content: string): Promise<void> {
   if (!isTauri()) {
     localStorage.setItem(STORAGE_PREFIX + name, content);

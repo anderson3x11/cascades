@@ -11,9 +11,11 @@ import smartLists from './smart-lists';
 import session from './session';
 import statusBar from './status-bar';
 import tabs from './tabs';
+import themes from './themes';
 
 /** Built-in extensions, in activation order. */
 export const builtinExtensions: CascadesExtension[] = [
+  themes,
   editorSettings,
   indentKeep,
   smartLists,

@@ -16,6 +16,7 @@ pub fn run() {
             commands::config_dir,
             commands::read_config_file,
             commands::write_config_file,
+            commands::list_config_folder,
             commands::cursor_unhide,
             commands::cursor_restore,
             commands::watch_file,
