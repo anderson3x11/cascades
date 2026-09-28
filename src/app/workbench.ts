@@ -19,6 +19,7 @@ import { watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { StatusBarModel } from './status-bar.svelte';
+import { QuickPickModel } from './quick-pick.svelte';
 import { ThemeService } from './themes';
 import { Workspace } from './workspace.svelte';
 
@@ -37,6 +38,7 @@ export class Workbench {
   readonly statusBar = new StatusBarModel();
   readonly banners = new BannerModel();
   readonly themes = new ThemeService();
+  readonly quickPick = new QuickPickModel();
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
@@ -248,6 +250,7 @@ export class Workbench {
       },
       statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
       banners: { show: (options) => track(this.banners.show(options)) },
+      quickPick: { show: (items, options) => this.quickPick.show(items, options) },
       themes: {
         register: (theme) => track(this.themes.register(theme)),
         list: () => this.themes.list(),

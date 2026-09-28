@@ -100,6 +100,56 @@ export default defineExtension({
       category: 'Affichage',
     });
 
+    // Picker with live preview: highlighting a theme applies it, cancelling restores.
+    ctx.commands.register(
+      'view.selectTheme',
+      async () => {
+        await scan();
+        const types = { light: 'clair', dark: 'sombre' };
+        const items = [
+          { label: 'Automatique', description: 'suit le mode du système', value: 'auto' },
+          ...ctx.themes.list().map((t) => {
+            const type = t.name.toLowerCase() === types[t.type] ? '' : types[t.type];
+            const user = t.id.startsWith('user.') ? 'perso' : '';
+            return {
+              label: t.name,
+              description: [type, user].filter(Boolean).join(', '),
+              value: t.id,
+            };
+          }),
+        ];
+        const chosen = await ctx.quickPick.show(items, {
+          placeholder: 'Choisir un thème',
+          activeValue: ctx.settings.get<string>('workbench.theme'),
+          onHighlight: (item) => {
+            if (item.value === 'auto') select();
+            else ctx.themes.apply(item.value);
+          },
+        });
+        if (chosen === undefined) {
+          select();
+          return;
+        }
+        try {
+          await ctx.settings.update('workbench.theme', chosen === 'auto' ? undefined : chosen);
+        } catch (err) {
+          select();
+          ctx.banners.show({
+            kind: 'warning',
+            message: err instanceof Error ? err.message : String(err),
+            actions: [{ label: 'OK', run: () => {} }],
+          });
+        }
+      },
+      { title: 'Thème…', category: 'Affichage' },
+    );
+    ctx.menus.registerItem('view', {
+      command: 'view.selectTheme',
+      group: '2_appearance',
+      order: 1,
+    });
+    ctx.keybindings.register({ key: 'Ctrl+K Ctrl+T', command: 'view.selectTheme' });
+
     await scan();
   },
 });

@@ -203,6 +203,28 @@ export interface StatusBarApi {
   addItem(options: StatusItemOptions): StatusItem;
 }
 
+// Quick pick ------------------------------------------------------------------
+
+export interface QuickPickItem<T> {
+  label: string;
+  /** Shown after the label, dimmed. */
+  description?: string;
+  value: T;
+}
+
+export interface QuickPickOptions<T> {
+  placeholder?: string;
+  /** Item highlighted when the list opens. */
+  activeValue?: T;
+  /** Called as the highlighted item changes (e.g. to preview a theme). */
+  onHighlight?: (item: QuickPickItem<T>) => void;
+}
+
+export interface QuickPickApi {
+  /** Floating list with fuzzy search. Resolves to the chosen value, or undefined if cancelled. */
+  show<T>(items: QuickPickItem<T>[], options?: QuickPickOptions<T>): Promise<T | undefined>;
+}
+
 // Banners -------------------------------------------------------------------
 
 export interface BannerOptions {
@@ -332,6 +354,7 @@ export interface ExtensionContext {
   readonly editor: EditorApi;
   readonly statusBar: StatusBarApi;
   readonly banners: BannersApi;
+  readonly quickPick: QuickPickApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

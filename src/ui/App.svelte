@@ -3,6 +3,7 @@
   import Banners from './Banners.svelte';
   import EditorHost from './EditorHost.svelte';
   import MenuBar from './MenuBar.svelte';
+  import QuickPick from './QuickPick.svelte';
   import StatusBar from './StatusBar.svelte';
   import TabBar from './TabBar.svelte';
 
@@ -16,6 +17,7 @@
   <EditorHost {workbench} />
   <StatusBar {workbench} />
 </div>
+<QuickPick {workbench} />
 
 <style>
   .shell {
