@@ -72,6 +72,7 @@ Un bloc `"[langage]"` surcharge les réglages pour un langage (`markdown`, `java
 export default function (ctx) {
   ctx.commands.register('user.hello', () => ctx.dialogs.alert('Bonjour'));
   ctx.keybindings.register({ key: 'Ctrl+K H', command: 'user.hello' });
+  ctx.menus.registerItem('edit', { command: 'user.hello', title: 'Dire bonjour', group: '9_user' });
 }
 ```
 

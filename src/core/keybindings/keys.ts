@@ -59,6 +59,30 @@ export function parseKeySequence(sequence: string): string[] {
   return chords.map(normalizeChord);
 }
 
+const KEY_LABELS: Record<string, string> = {
+  up: '↑',
+  down: '↓',
+  left: '←',
+  right: '→',
+  pageup: 'PageUp',
+  pagedown: 'PageDown',
+  escape: 'Échap',
+  enter: 'Entrée',
+  space: 'Espace',
+};
+
+/** Human readable form of normalized chords: ["ctrl+k", "z"] -> "Ctrl+K Z". */
+export function formatKeySequence(chords: readonly string[]): string {
+  return chords
+    .map((chord) =>
+      chord
+        .split(/\+(?!$)/)
+        .map((part) => KEY_LABELS[part] ?? part.charAt(0).toUpperCase() + part.slice(1))
+        .join('+'),
+    )
+    .join(' ');
+}
+
 export interface KeyEventLike {
   key: string;
   ctrlKey: boolean;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chordFromEvent, normalizeChord, parseKeySequence } from './keys';
+import { chordFromEvent, formatKeySequence, normalizeChord, parseKeySequence } from './keys';
 
 const event = (
   key: string,
@@ -33,6 +33,19 @@ describe('parseKeySequence', () => {
   it('splits chords on spaces', () => {
     expect(parseKeySequence('Ctrl+K Ctrl+S')).toEqual(['ctrl+k', 'ctrl+s']);
     expect(parseKeySequence('Ctrl+K Z')).toEqual(['ctrl+k', 'z']);
+  });
+});
+
+describe('formatKeySequence', () => {
+  it('capitalizes and joins chords', () => {
+    expect(formatKeySequence(parseKeySequence('Ctrl+Shift+S'))).toBe('Ctrl+Shift+S');
+    expect(formatKeySequence(parseKeySequence('Ctrl+K Z'))).toBe('Ctrl+K Z');
+  });
+
+  it('uses symbols for arrows and keeps punctuation', () => {
+    expect(formatKeySequence(parseKeySequence('Shift+Alt+Down'))).toBe('Alt+Shift+↓');
+    expect(formatKeySequence(parseKeySequence('Ctrl+/'))).toBe('Ctrl+/');
+    expect(formatKeySequence(parseKeySequence('Ctrl++'))).toBe('Ctrl++');
   });
 });
 

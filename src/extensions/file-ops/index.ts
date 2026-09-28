@@ -110,5 +110,11 @@ export default defineExtension({
       },
       { title: 'Enregistrer sous…', category: 'Fichier' },
     );
+
+    ctx.menus.registerMenu({ id: 'file', title: 'Fichier', order: 10 });
+    ctx.menus.registerItem('file', { command: 'file.new', group: '1_new', order: 1 });
+    ctx.menus.registerItem('file', { command: 'file.open', group: '1_new', order: 2 });
+    ctx.menus.registerItem('file', { command: 'file.save', group: '2_save', order: 1 });
+    ctx.menus.registerItem('file', { command: 'file.saveAs', group: '2_save', order: 2 });
   },
 });

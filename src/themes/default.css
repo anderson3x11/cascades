@@ -17,6 +17,8 @@
   --accent: #0969da;
   --menu-bg: #ffffff;
   --menu-shadow: 0 8px 24px rgb(140 149 159 / 0.3);
+  --menu-active-bg: #0969da;
+  --menu-active-fg: #ffffff;
 
   /* Editor */
   --active-line: rgb(0 0 0 / 0.035);
@@ -62,6 +64,8 @@
     --accent: #60a5fa;
     --menu-bg: #2b2d30;
     --menu-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+    --menu-active-bg: #2f5fb3;
+    --menu-active-fg: #ffffff;
 
     --active-line: rgb(255 255 255 / 0.04);
     --selection: rgb(96 165 250 / 0.3);

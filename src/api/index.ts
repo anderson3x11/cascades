@@ -42,6 +42,31 @@ export interface KeybindingsApi {
   register(bindings: KeybindingSpec | KeybindingSpec[]): Disposable;
 }
 
+// Menus ---------------------------------------------------------------------
+
+export interface MenuSpec {
+  id: string;
+  title: string;
+  /** Position in the menu bar, lower first (Fichier 10, Édition 20, Affichage 30). */
+  order?: number;
+}
+
+export interface MenuItemSpec {
+  command: string;
+  /** Defaults to the command title. */
+  title?: string;
+  /** Items are grouped by this key (sorted as strings, e.g. "1_new"), separated by a line. */
+  group?: string;
+  /** Position inside the group, lower first. */
+  order?: number;
+}
+
+export interface MenusApi {
+  registerMenu(menu: MenuSpec): Disposable;
+  /** Adds an item to a menu, which may be registered by another extension. */
+  registerItem(menuId: string, item: MenuItemSpec): Disposable;
+}
+
 // Settings ------------------------------------------------------------------
 
 export interface SettingSchema {
@@ -212,6 +237,7 @@ export interface ExtensionContext {
   readonly subscriptions: { add(disposable: Disposable): void };
   readonly commands: CommandsApi;
   readonly keybindings: KeybindingsApi;
+  readonly menus: MenusApi;
   readonly settings: SettingsApi;
   readonly context: ContextApi;
   readonly workspace: WorkspaceApi;

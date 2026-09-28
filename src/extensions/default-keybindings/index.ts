@@ -16,6 +16,11 @@ export const DEFAULT_KEYBINDINGS: KeybindingSpec[] = [
   { key: 'Ctrl+PageUp', command: 'tabs.previous' },
   { key: 'Ctrl+F', command: 'search.find' },
   { key: 'Ctrl+H', command: 'search.replace' },
+  { key: 'Ctrl+Z', command: 'editor.undo', when: EDITOR },
+  { key: 'Ctrl+Shift+Z', command: 'editor.redo', when: EDITOR },
+  // Registered last so menus show it as the main shortcut.
+  { key: 'Ctrl+Y', command: 'editor.redo', when: EDITOR },
+  { key: 'Ctrl+A', command: 'editor.selectAll', when: EDITOR },
   { key: 'Shift+Alt+Down', command: 'editor.duplicateLine', when: EDITOR },
   { key: 'Alt+Up', command: 'editor.moveLineUp', when: EDITOR },
   { key: 'Alt+Down', command: 'editor.moveLineDown', when: EDITOR },

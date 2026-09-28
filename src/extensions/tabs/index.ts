@@ -72,6 +72,12 @@ export default defineExtension({
       { title: 'Rouvrir le dernier onglet fermé', category: 'Onglets' },
     );
 
+    ctx.menus.registerItem('file', { command: 'tabs.close', group: '3_close', order: 1 });
+    ctx.menus.registerItem('file', { command: 'tabs.reopenClosed', group: '3_close', order: 2 });
+    ctx.menus.registerMenu({ id: 'view', title: 'Affichage', order: 30 });
+    ctx.menus.registerItem('view', { command: 'tabs.next', group: '1_tabs', order: 1 });
+    ctx.menus.registerItem('view', { command: 'tabs.previous', group: '1_tabs', order: 2 });
+
     if (ctx.workspace.tabs().length === 0) await ctx.commands.execute('file.new');
   },
 });

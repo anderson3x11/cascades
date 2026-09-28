@@ -8,6 +8,7 @@ import { EventBus } from '../core/events/emitter';
 import { ExtensionHost } from '../core/extensions/host';
 import { chordFromEvent } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
+import { MenuRegistry } from '../core/menus/registry';
 import { SettingsRegistry } from '../core/settings/registry';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
@@ -18,6 +19,7 @@ import { Workspace } from './workspace.svelte';
 export class Workbench {
   readonly commands = new CommandRegistry();
   readonly keybindings = new KeybindingRegistry();
+  readonly menus = new MenuRegistry();
   readonly settings = new SettingsRegistry();
   readonly contextKeys = new ContextKeys();
   readonly events = new EventBus<AppEvents>();
@@ -139,6 +141,10 @@ export class Workbench {
           }
           return track(store);
         },
+      },
+      menus: {
+        registerMenu: (menu) => track(this.menus.registerMenu(menu)),
+        registerItem: (menuId, item) => track(this.menus.registerItem(menuId, item)),
       },
       settings: {
         register: (ns, props) => track(this.settings.registerSchema(ns, props)),
