@@ -147,13 +147,27 @@ export function cascadeWindow(
   return { from: start, to: Math.min(end + 1, lineCount) };
 }
 
-/** Last line of the cascade under `line` (its deepest last descendant), or null if it has none. */
-export function cascadeEnd(node: CascadeNode): number | null {
-  let last = node.children[node.children.length - 1];
-  if (!last) return null;
-  for (let next = last.children[last.children.length - 1]; next;) {
-    last = next;
-    next = last.children[last.children.length - 1];
+/**
+ * Last line of the cascade under `line` (its deepest last descendant), or
+ * null if it has no children. Only looks forward, so it suits folding.
+ */
+export function cascadeEnd(
+  lineAt: (line: number) => SourceLine,
+  lineCount: number,
+  line: number,
+  tabSize: number,
+): number | null {
+  const own = lineAt(line);
+  const indent = own.ignored ? null : indentColumns(own.text, tabSize);
+  if (indent === null) return null;
+  let end: number | null = null;
+  for (let next = line + 1; next <= lineCount; next++) {
+    const source = lineAt(next);
+    if (source.ignored) continue;
+    const col = indentColumns(source.text, tabSize);
+    if (col === null) continue;
+    if (col <= indent) break;
+    end = next;
   }
-  return last.line;
+  return end;
 }

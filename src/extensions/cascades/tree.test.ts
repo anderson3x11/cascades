@@ -136,15 +136,24 @@ describe('cascadeWindow', () => {
 });
 
 describe('cascadeEnd', () => {
+  const endOf = (text: string, line: number) => {
+    const lines = src(text);
+    return cascadeEnd((n) => lines[n - 1] as SourceLine, lines.length, line, 4);
+  };
+
   it('returns the deepest last descendant', () => {
-    const nodes = buildCascades(src(ELDEN), 4);
-    const endOf = (line: number) => {
-      const node = nodes.get(line);
-      if (!node) throw new Error(`no node on line ${line}`);
-      return cascadeEnd(node);
-    };
-    expect(endOf(1)).toBe(5);
-    expect(endOf(2)).toBe(4);
-    expect(endOf(3)).toBeNull();
+    expect(endOf(ELDEN, 1)).toBe(5);
+    expect(endOf(ELDEN, 2)).toBe(4);
+    expect(endOf(ELDEN, 6)).toBe(7);
+  });
+
+  it('returns null for lines without children', () => {
+    expect(endOf(ELDEN, 3)).toBeNull();
+    expect(endOf(ELDEN, 5)).toBeNull();
+    expect(endOf('a\n\nb', 2)).toBeNull();
+  });
+
+  it('keeps inner blank lines but not trailing ones', () => {
+    expect(endOf('a\n\tb\n\n\tc\n\nd', 1)).toBe(4);
   });
 });
