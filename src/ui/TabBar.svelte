@@ -4,7 +4,12 @@
   let { workbench }: { workbench: Workbench } = $props();
   const ws = $derived(workbench.workspace);
 
-  let dragged: string | null = null;
+  /**
+   * Tab reordering uses pointer events: native HTML drag and drop is taken
+   * over by Tauri on Windows (to receive dropped files).
+   */
+  let drag: { id: string; startX: number; moved: boolean } | null = null;
+  const DRAG_THRESHOLD = 5;
 
   function run(command: string, ...args: unknown[]) {
     workbench.commands.execute(command, ...args).catch((err: unknown) => console.error(err));
@@ -14,10 +19,35 @@
     if (event.button === 1) run('tabs.close', id);
   }
 
-  function onDrop(event: DragEvent, index: number) {
-    event.preventDefault();
-    if (dragged) ws.move(dragged, index);
-    dragged = null;
+  function onPointerDown(event: PointerEvent, id: string) {
+    if (event.button !== 0) return;
+    drag = { id, startX: event.clientX, moved: false };
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+  }
+
+  function onPointerMove(event: PointerEvent) {
+    if (!drag) return;
+    // Released outside the tab bar (capture can be lost when the tab moves in the DOM).
+    if ((event.buttons & 1) === 0) {
+      drag = null;
+      return;
+    }
+    if (!drag.moved && Math.abs(event.clientX - drag.startX) < DRAG_THRESHOLD) return;
+    drag.moved = true;
+    const over = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>('[data-tab-id]');
+    const target = over?.dataset.tabId;
+    if (target && target !== drag.id) {
+      ws.move(
+        drag.id,
+        ws.tabs.findIndex((t) => t.id === target),
+      );
+    }
+  }
+
+  function onPointerUp() {
+    drag = null;
   }
 </script>
 
@@ -27,7 +57,7 @@
   tabindex="-1"
   ondblclick={(e) => e.target === e.currentTarget && run('file.new')}
 >
-  {#each ws.tabs as tab, index (tab.id)}
+  {#each ws.tabs as tab (tab.id)}
     <div
       class="tab"
       class:active={tab.id === ws.activeId}
@@ -35,19 +65,21 @@
       tabindex="0"
       aria-selected={tab.id === ws.activeId}
       title={tab.path ?? tab.title}
-      draggable="true"
+      data-tab-id={tab.id}
       onclick={() => ws.activate(tab.id)}
       onkeydown={(e) => e.key === 'Enter' && ws.activate(tab.id)}
       onauxclick={(e) => onAuxClick(e, tab.id)}
-      ondragstart={() => (dragged = tab.id)}
-      ondragover={(e) => e.preventDefault()}
-      ondrop={(e) => onDrop(e, index)}
+      onpointerdown={(e) => onPointerDown(e, tab.id)}
+      onpointermove={onPointerMove}
+      onpointerup={onPointerUp}
+      onpointercancel={onPointerUp}
     >
       <span class="title">{tab.title}</span>
       <button
         class="close"
         class:dirty={tab.dirty}
         aria-label="Fermer"
+        onpointerdown={(e) => e.stopPropagation()}
         onclick={(e) => {
           e.stopPropagation();
           run('tabs.close', tab.id);

@@ -60,6 +60,22 @@ test('the + button opens a new tab', async ({ page }) => {
   await expect(page.getByRole('tab', { selected: true })).toHaveText('Sans titre 2');
 });
 
+test('tabs can be reordered by dragging', async ({ page }) => {
+  await page.keyboard.press('Control+N');
+  await page.keyboard.press('Control+N');
+  const tabs = page.getByRole('tab');
+  await expect(tabs).toHaveText(['Sans titre 1', 'Sans titre 2', 'Sans titre 3']);
+
+  const first = await tabs.nth(0).boundingBox();
+  const last = await tabs.nth(2).boundingBox();
+  if (!first || !last) throw new Error('tabs not laid out');
+  await page.mouse.move(first.x + 20, first.y + 10);
+  await page.mouse.down();
+  await page.mouse.move(last.x + 20, last.y + 10, { steps: 10 });
+  await page.mouse.up();
+  await expect(tabs).toHaveText(['Sans titre 2', 'Sans titre 3', 'Sans titre 1']);
+});
+
 test('editor commands run through the command registry', async ({ page }) => {
   await page.locator('.cm-content').click();
   await page.keyboard.type('ligne');
