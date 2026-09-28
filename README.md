@@ -22,6 +22,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - Polices réglables (éditeur et interface), zoom au clavier ou avec Ctrl+molette.
 - Barre de menus, onglets et barre d'état masquables, **mode zen** plein écran.
 - Fusion des modifications externes, avec résolution des conflits dans le texte.
+- **Vues scindées** (jusqu'à 4, côte à côte ou empilées) : un fichier différent dans chacune, ou le même fichier cloné dans plusieurs vues, synchronisées, chacune avec son curseur et son historique. Clic droit sur un onglet pour cloner ou déplacer, ou glisser l'onglet vers une autre vue.
 - **Quarantaine** : mettre de côté un passage (Leader Q) pour essayer le texte sans lui. Chaque passage devient une carte dans un panneau propre au fichier, gardée entre les sessions, et se replace n'importe où (bouton ou glisser dans le texte). Ctrl+Z et Ctrl+Y suivent.
 - **Aperçus** (Ctrl+Shift+V) à côté de l'éditeur ou seuls : Markdown (tables, cases à cocher, notes de bas de page, code coloré, images locales, scroll synchronisé), HTML (isolé, scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre. Les images s'ouvrent dans un onglet avec zoom.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
@@ -49,6 +50,10 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Mode zen (Échap pour sortir)                    | Leader Z                                  |
 | Afficher / masquer les cascades                 | Leader C                                  |
 | Mettre en quarantaine / panneau de quarantaine  | Leader Q / Leader Shift+Q                 |
+| Cloner dans la vue suivante                     | Ctrl+\                                    |
+| Déplacer vers la vue suivante / précédente      | Ctrl+Alt+→ / Ctrl+Alt+←                   |
+| Aller à la vue 1 à 4                            | Ctrl+1 … Ctrl+4                           |
+| Vues côte à côte / empilées                     | Leader \                                  |
 | Masquer / afficher la cascade du bloc courant   | Leader Shift+C                            |
 | Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
 | Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |

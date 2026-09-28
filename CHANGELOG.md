@@ -31,6 +31,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.
 - API : `ctx.viewers` pour ajouter des aperçus, `ctx.editor.highlightCode`, `ctx.fs.fileUrl`, `ctx.app.openExternal`.
+- Vues scindées : jusqu'à 4 vues côte à côte ou empilées, chacune avec ses onglets. Un fichier peut être cloné dans plusieurs vues (même texte, curseur et historique propres à chaque vue). Déplacement d'onglets par menu contextuel, raccourcis ou glisser-déposer entre vues ; la session retient les vues et les clones.
+- API : `TabInfo.groupId` / `documentId`, `workspace.groups`, `clone`, `moveToGroup`, `focusGroup`, orientation.
 - Cascades bloc par bloc : un bouton au survol de chaque ligne racine (ou Leader Shift+C) masque ou réaffiche la cascade de ce bloc, mémorisé par fichier ; réglage `cascades.ignoreLists` pour ne jamais en dessiner vers les listes.
 - Quarantaine : mettre de côté des passages d'un fichier (Leader Q) dans un panneau latéral propre au fichier, gardé entre les sessions (jamais écrit dans le fichier). Chaque passage est une carte, à réinsérer au curseur ou à glisser n'importe où dans le texte ; Ctrl+Z et Ctrl+Y gardent fichier et quarantaine synchronisés.
 - API : `ctx.panels` pour les panneaux latéraux.

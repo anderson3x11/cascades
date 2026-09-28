@@ -1,56 +1,79 @@
 import { describe, expect, it } from 'vitest';
 import { parseSession } from './session';
 
+const tab = (path: string | null, extra: object = {}) => ({
+  path,
+  selection: { anchor: 0, head: 0 },
+  scrollTop: 0,
+  ...extra,
+});
+
 describe('parseSession', () => {
-  it('reads a valid session', () => {
+  it('reads groups, clones and orientation', () => {
+    const session = parseSession(
+      JSON.stringify({
+        version: 2,
+        activeGroup: 1,
+        orientation: 'column',
+        groups: [
+          { active: 0, tabs: [tab('C:/notes.txt', { doc: 'd1' })] },
+          {
+            active: 1,
+            tabs: [tab('C:/notes.txt', { doc: 'd1' }), tab(null, { content: 'brouillon' })],
+          },
+        ],
+      }),
+    );
+    expect(session?.activeGroup).toBe(1);
+    expect(session?.orientation).toBe('column');
+    expect(session?.groups.map((g) => g.tabs.map((t) => t.doc ?? t.content))).toEqual([
+      ['d1'],
+      ['d1', 'brouillon'],
+    ]);
+  });
+
+  it('reads the version 1 format as a single group', () => {
     const session = parseSession(
       JSON.stringify({
         version: 1,
         active: 1,
         tabs: [
-          { path: 'C:/notes.txt', selection: { anchor: 3, head: 5 }, scrollTop: 120 },
-          {
-            path: null,
-            content: 'brouillon',
-            lineEnding: 'crlf',
-            selection: { anchor: 0, head: 0 },
-          },
+          tab('C:/a.txt', { scrollTop: 120 }),
+          tab(null, { content: 'x', lineEnding: 'crlf' }),
         ],
       }),
     );
     expect(session).toEqual({
-      version: 1,
-      active: 1,
-      tabs: [
-        { path: 'C:/notes.txt', selection: { anchor: 3, head: 5 }, scrollTop: 120 },
+      version: 2,
+      activeGroup: 0,
+      orientation: 'row',
+      groups: [
         {
-          path: null,
-          content: 'brouillon',
-          lineEnding: 'crlf',
-          selection: { anchor: 0, head: 0 },
-          scrollTop: 0,
+          active: 1,
+          tabs: [
+            tab('C:/a.txt', { scrollTop: 120 }),
+            tab(null, { content: 'x', lineEnding: 'crlf' }),
+          ],
         },
       ],
     });
   });
 
-  it('drops invalid tabs and fixes the active index', () => {
+  it('drops invalid tabs and empty groups, and fixes indexes', () => {
     const session = parseSession(
       JSON.stringify({
-        version: 1,
-        active: 5,
-        tabs: [{ path: null }, { path: 42 }, 'x', { path: 'C:/a.txt', selection: 'bad' }],
+        version: 2,
+        activeGroup: 7,
+        groups: [{ tabs: [{ path: null }, 'x'] }, { active: 9, tabs: [tab('C:/a.txt')] }],
       }),
     );
-    expect(session?.tabs).toEqual([
-      { path: 'C:/a.txt', selection: { anchor: 0, head: 0 }, scrollTop: 0 },
-    ]);
-    expect(session?.active).toBe(0);
+    expect(session?.groups).toEqual([{ active: 0, tabs: [tab('C:/a.txt')] }]);
+    expect(session?.activeGroup).toBe(0);
   });
 
   it('rejects unusable files', () => {
     expect(parseSession('not json')).toBeNull();
-    expect(parseSession('{"version": 2, "tabs": []}')).toBeNull();
+    expect(parseSession('{"version": 3, "groups": []}')).toBeNull();
     expect(parseSession('[]')).toBeNull();
   });
 });
