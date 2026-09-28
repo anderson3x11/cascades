@@ -23,6 +23,9 @@ tauri-plugin-dialog = "2"
 encoding_rs = "0.8"
 chardetng = "0.1"
 
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_UI_WindowsAndMessaging"] }
+
 [profile.release]
 codegen-units = 1
 lto = true

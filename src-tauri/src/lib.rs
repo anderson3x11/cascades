@@ -1,5 +1,6 @@
 mod commands;
 mod config;
+mod cursor;
 mod fs;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -11,6 +12,8 @@ pub fn run() {
             commands::write_text_file,
             commands::config_dir,
             commands::read_config_file,
+            commands::cursor_unhide,
+            commands::cursor_restore,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

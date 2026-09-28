@@ -21,6 +21,17 @@ pub async fn config_dir(app: AppHandle) -> Result<String, String> {
     Ok(config::config_dir(&app)?.to_string_lossy().into_owned())
 }
 
+// Not async: synchronous commands run on the main thread, where dialogs are shown.
+#[tauri::command]
+pub fn cursor_unhide() -> u32 {
+    crate::cursor::unhide()
+}
+
+#[tauri::command]
+pub fn cursor_restore(raised: u32) {
+    crate::cursor::restore(raised);
+}
+
 /// Returns None when the file does not exist.
 #[tauri::command]
 pub async fn read_config_file(app: AppHandle, name: String) -> Result<Option<String>, String> {
