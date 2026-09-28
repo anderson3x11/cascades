@@ -29,6 +29,13 @@
   main.zen :global(.cm-gutters) {
     display: none;
   }
+  /* No scrollbar in zen; the wheel and keyboard still scroll. */
+  main.zen :global(.cm-scroller) {
+    scrollbar-width: none;
+  }
+  main.zen :global(.cm-scroller::-webkit-scrollbar) {
+    display: none;
+  }
   main.zen :global(.cm-content) {
     box-sizing: border-box;
     max-width: var(--zen-width, 80ch);
