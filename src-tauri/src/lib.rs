@@ -3,17 +3,25 @@ mod config;
 mod cursor;
 mod folder;
 mod fs;
+mod launch;
 #[cfg(target_os = "macos")]
 mod menu;
 mod search;
 mod spell;
 mod watcher;
 
+use std::path::Path;
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let builder = tauri::Builder::default();
+    // First, so that a second launch hands its files over before anything starts.
+    let builder =
+        tauri::Builder::default().plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
+            let files = launch::files_from_args(args.get(1..).unwrap_or(&[]), Path::new(&cwd));
+            launch::open(app, files);
+            launch::focus(app);
+        }));
     #[cfg(target_os = "macos")]
     let builder = builder.menu(menu::mac_menu);
     builder
@@ -50,6 +58,7 @@ pub fn run() {
             commands::create_dir,
             commands::rename_path,
             commands::trash_path,
+            launch::take_pending_files,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {
@@ -62,8 +71,24 @@ pub fn run() {
             app.manage(watcher::FileWatcher::new(app.handle().clone())?);
             app.manage(commands::Searches::default());
             app.manage(spell::Speller::default());
+            app.manage(launch::Pending::default());
+            let args: Vec<String> = std::env::args().skip(1).collect();
+            let cwd = std::env::current_dir().unwrap_or_default();
+            launch::open(app.handle(), launch::files_from_args(&args, &cwd));
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|_app, _event| {
+            // Files opened from the Finder, including the one that started the app.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Opened { urls } = _event {
+                let files = urls
+                    .into_iter()
+                    .filter_map(|url| url.to_file_path().ok())
+                    .map(|path| path.to_string_lossy().into_owned())
+                    .collect();
+                launch::open(_app, files);
+            }
+        });
 }

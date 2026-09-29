@@ -30,6 +30,7 @@ import * as fs from '../platform/fs';
 import * as search from '../platform/search';
 import * as spell from '../platform/spell';
 import { watchDir, watchFile } from '../platform/watch';
+import { onOpenFiles } from '../platform/launch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { PLUGINS_SETTING, PluginService } from './plugins';
@@ -148,6 +149,8 @@ export class Workbench {
           this.events.emit('app.didDropFiles', event.payload.paths);
       });
       await this.loadUserScript();
+      // Last, so that these files open after the restored session.
+      await onOpenFiles((paths) => this.events.emit('app.didDropFiles', paths));
     }
   }
 

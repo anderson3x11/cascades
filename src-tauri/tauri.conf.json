@@ -20,18 +20,81 @@
     ],
     "security": {
       "csp": "default-src 'self' ipc: http://ipc.localhost; script-src 'self' blob:; style-src 'self' 'unsafe-inline' asset: http://asset.localhost; img-src 'self' data: blob: asset: http://asset.localhost",
-      "assetProtocol": { "enable": true, "scope": [] }
+      "assetProtocol": {
+        "enable": true,
+        "scope": []
+      }
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "app", "dmg", "appimage", "deb", "rpm"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "publisher": "Cascades",
+    "copyright": "© 2026 Cascades contributors, MIT License",
+    "license": "MIT",
+    "category": "Productivity",
+    "shortDescription": "A light text editor for taking notes",
+    "longDescription": "A light text editor for taking notes, that still opens any text or code file. Indented lines are linked by drawn cascades.",
+    "homepage": "https://github.com/anderson3x11/cascades",
+    "fileAssociations": [
+      {
+        "ext": ["txt", "text", "log"],
+        "name": "Text document",
+        "description": "Text document",
+        "role": "Editor",
+        "mimeType": "text/plain"
+      },
+      {
+        "ext": ["md", "markdown"],
+        "name": "Markdown document",
+        "description": "Markdown document",
+        "role": "Editor",
+        "mimeType": "text/markdown"
+      },
+      {
+        "ext": ["json", "jsonc"],
+        "name": "JSON file",
+        "description": "JSON file",
+        "role": "Editor",
+        "mimeType": "application/json"
+      },
+      {
+        "ext": ["csv", "tsv"],
+        "name": "Table",
+        "description": "Comma or tab separated values",
+        "role": "Editor",
+        "mimeType": "text/csv"
+      },
+      {
+        "ext": ["ini", "cfg", "conf", "toml", "yaml", "yml", "env"],
+        "name": "Configuration file",
+        "description": "Configuration file",
+        "role": "Editor"
+      },
+      {
+        "ext": ["xml"],
+        "name": "XML file",
+        "description": "XML file",
+        "role": "Editor",
+        "mimeType": "application/xml"
+      }
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["English", "French"],
+        "displayLanguageSelector": false
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    }
   }
 }

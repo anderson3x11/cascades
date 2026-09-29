@@ -1,0 +1,68 @@
+name: Release
+
+# Pushing a tag like v0.2.0 builds the installers of the three systems and puts
+# them in a draft release, to check and publish by hand.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  installers:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            args: --bundles nsis
+          - os: macos-latest
+            args: --target universal-apple-darwin --bundles app,dmg
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - os: ubuntu-22.04
+            args: --bundles appimage,deb,rpm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check that the tag matches the app version
+        shell: bash
+        run: |
+          version=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME but tauri.conf.json says $version" >&2
+            exit 1
+          fi
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Cascades ${{ github.ref_name }}
+          releaseBody: |
+            What changed: see [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md).
+
+            - Windows: `Cascades_*_x64-setup.exe`
+            - macOS (Intel and Apple Silicon): `Cascades_*_universal.dmg`
+            - Linux: `.AppImage`, `.deb` or `.rpm`
+
+            The installers are not signed yet: Windows may show "Windows protected your PC" (More info, then Run anyway), and macOS asks to allow the app in System Settings > Privacy & Security.
+          releaseDraft: true
+          args: ${{ matrix.args }}
