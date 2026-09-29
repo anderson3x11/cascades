@@ -1,3 +1,5 @@
+<img src="docs/logo/cascades.svg" alt="" width="96">
+
 # cascades
 
 **A light text editor for taking notes, that still opens any text or code file.**

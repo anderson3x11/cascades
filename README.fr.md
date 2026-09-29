@@ -1,3 +1,5 @@
+<img src="docs/logo/cascades.svg" alt="" width="96">
+
 # cascades
 
 **Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'ouvrir n'importe quel fichier texte ou code.**
