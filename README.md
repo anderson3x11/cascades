@@ -34,6 +34,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Lignes modifiées** : une barre dans la marge montre ce qui a changé depuis le dernier enregistrement (vert ajouté, orange modifié, rouge supprimé).
 - **Page d'accueil** quand aucun fichier n'est ouvert : tape pour commencer une note, ou ouvre un fichier récent.
 - **Encodage et fins de ligne** : clique sur l'encodage ou sur LF / CRLF dans la barre d'état pour rouvrir un fichier mal lu ou le convertir.
+- **Langage** : clique sur le langage dans la barre d'état pour en choisir un autre ; un script sans extension est reconnu à sa première ligne (`#!/bin/bash`).
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 

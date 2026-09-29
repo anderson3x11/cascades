@@ -419,6 +419,8 @@ export class Workbench {
         markSaved: (id) => ws.markSaved(id),
         viewState: (id) => ws.viewState(id),
         savedText: (id) => ws.savedText(id),
+        setLanguage: (id, language) => ws.setLanguage(id, language),
+        availableLanguages: () => ws.availableLanguages(),
         setSavedText: (id, text) => ws.setSavedText(id, text),
         reload: (id, text) => ws.reload(id, text),
       },
@@ -515,6 +517,7 @@ export class Workbench {
         check: spell.checkSpelling,
         suggest: spell.suggestSpelling,
         add: spell.addToDictionary,
+        languages: spell.spellingLanguages,
       },
       contextMenu: {
         show: (position, items) => this.contextMenu.show(position, items),

@@ -23,6 +23,7 @@ enum Request {
     ),
     Suggest(String, String, Sender<Result<Vec<String>, String>>),
     Add(String, String, Sender<Result<(), String>>),
+    Languages(Sender<Result<Vec<String>, String>>),
 }
 
 /// Handle to the spell checking thread, started on first use.
@@ -60,6 +61,11 @@ impl Speller {
         self.send(|reply| Request::Suggest(language, word, reply))
     }
 
+    /// Language tags with a dictionary installed ("fr-FR", "en-US").
+    pub fn languages(&self) -> Result<Vec<String>, String> {
+        self.send(Request::Languages)
+    }
+
     /// Adds a word to the user's dictionary (kept by the system).
     pub fn add(&self, language: String, word: String) -> Result<(), String> {
         self.send(|reply| Request::Add(language, word, reply))
@@ -80,6 +86,9 @@ fn start() -> Sender<Request> {
                 }
                 Request::Add(language, word, reply) => {
                     let _ = reply.send(backend.add(&language, &word));
+                }
+                Request::Languages(reply) => {
+                    let _ = reply.send(backend.languages());
                 }
             }
         }
@@ -210,6 +219,11 @@ mod system {
             let checker = self.checker(language)?;
             unsafe { checker.Add(&HSTRING::from(word)) }.map_err(text)
         }
+
+        pub fn languages(&mut self) -> Result<Vec<String>, String> {
+            let factory = self.factory.as_ref().map_err(Clone::clone)?;
+            Ok(unsafe { strings(&factory.SupportedLanguages().map_err(text)?) })
+        }
     }
 }
 
@@ -233,6 +247,9 @@ mod system {
             Err(UNAVAILABLE.into())
         }
         pub fn add(&mut self, _: &str, _: &str) -> Result<(), String> {
+            Err(UNAVAILABLE.into())
+        }
+        pub fn languages(&mut self) -> Result<Vec<String>, String> {
             Err(UNAVAILABLE.into())
         }
     }

@@ -190,6 +190,11 @@ pub async fn spell_suggest(
 }
 
 #[tauri::command]
+pub async fn spell_languages(speller: State<'_, Speller>) -> Result<Vec<String>, String> {
+    speller.languages()
+}
+
+#[tauri::command]
 pub async fn spell_add(
     speller: State<'_, Speller>,
     language: String,

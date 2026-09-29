@@ -45,10 +45,10 @@ export default defineExtension({
       id: 'spellcheck',
       alignment: 'right',
       priority: 40,
-      command: 'editor.toggleSpellcheck',
+      command: 'editor.chooseSpellLanguage',
     });
     status.text = 'Orthographe';
-    status.tooltip = 'Correcteur orthographique actif (F7 pour le désactiver)';
+    status.tooltip = 'Correcteur orthographique actif : changer de langue ou le désactiver';
     const show = () => (status.visible = enabled());
     show();
 
@@ -68,6 +68,40 @@ export default defineExtension({
       { title: 'Activer ou désactiver le correcteur orthographique', category: 'Texte' },
     );
     ctx.keybindings.register({ key: 'F7', command: 'editor.toggleSpellcheck' });
+
+    ctx.commands.register(
+      'editor.chooseSpellLanguage',
+      async () => {
+        const tags = await ctx.spelling.languages().catch(() => [] as string[]);
+        const names = new Intl.DisplayNames(['fr'], { type: 'language' });
+        const current = ctx.settings.get<string>('spellcheck.language').toLowerCase();
+        const isCurrent = (tag: string) =>
+          tag.toLowerCase() === current || tag.toLowerCase().startsWith(`${current}-`);
+        const choice = await ctx.quickPick.show<string | null>(
+          [
+            { label: 'Désactiver le correcteur', description: 'F7', value: null },
+            ...tags.map((tag) => ({
+              label: names.of(tag) ?? tag,
+              description: isCurrent(tag) ? `${tag} · actuelle` : tag,
+              value: tag,
+            })),
+          ],
+          { placeholder: 'Langue du correcteur orthographique' },
+        );
+        if (choice === undefined) return;
+        if (choice === null) await ctx.settings.update('spellcheck.enabled', undefined);
+        else {
+          await ctx.settings.update('spellcheck.language', choice);
+          if (!enabled()) await ctx.settings.update('spellcheck.enabled', true);
+        }
+      },
+      { title: 'Langue du correcteur orthographique…', category: 'Texte' },
+    );
+    ctx.menus.registerItem('text', {
+      command: 'editor.chooseSpellLanguage',
+      group: '3_spelling',
+      order: 1,
+    });
     ctx.menus.registerItem('text', {
       command: 'editor.toggleSpellcheck',
       group: '3_spelling',

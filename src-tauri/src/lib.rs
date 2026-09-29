@@ -35,6 +35,7 @@ pub fn run() {
             commands::spell_check,
             commands::spell_suggest,
             commands::spell_add,
+            commands::spell_languages,
             commands::search_files,
             commands::cancel_search,
             commands::replace_in_files,

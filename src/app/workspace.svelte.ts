@@ -24,7 +24,7 @@ import type {
 } from '../api';
 import type { EventBus } from '../core/events/emitter';
 import { baseExtensions } from './editor-base';
-import { findLanguage, languageId, loadLanguage } from './languages';
+import { languageId, languageNames, loadLanguage, resolveLanguage } from './languages';
 import { Doc, Group, Tab } from './tab.svelte';
 
 /** Most groups side by side; beyond that panes get too narrow to write in. */
@@ -150,7 +150,7 @@ export class Workspace {
     doc.encoding = options.encoding ?? 'utf-8';
     doc.bom = options.bom ?? false;
     doc.lineEnding = options.lineEnding ?? 'lf';
-    doc.language = languageId(findLanguage(options.path));
+    doc.language = languageId(resolveLanguage(options.path, options.text, null));
     doc.viewer = options.viewer ?? null;
 
     const tab = new Tab(`tab-${this.nextTab++}`, doc, group, EditorState.create());
@@ -511,8 +511,22 @@ export class Workspace {
     }
   }
 
+  /** Chooses the language of a tab's document by name, or null to detect it again. */
+  setLanguage(id: string, language: string | null): void {
+    const { doc } = this.get(id);
+    doc.chosenLanguage = language;
+    void this.loadLanguage(doc);
+  }
+
+  /** Names of the languages that can be chosen. */
+  availableLanguages(): string[] {
+    return languageNames();
+  }
+
   private async loadLanguage(doc: Doc): Promise<void> {
-    const description = findLanguage(doc.path);
+    const shown = this.tabs.find((t) => t.doc === doc);
+    const start = shown ? this.stateOf(shown).doc.sliceString(0, 1000) : '';
+    const description = resolveLanguage(doc.path, start, doc.chosenLanguage);
     const id = languageId(description);
     const changed = id !== doc.language;
     doc.language = id;

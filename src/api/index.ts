@@ -241,6 +241,13 @@ export interface WorkspaceApi {
   viewState(id: string): ViewState;
   /** Text as last saved (or loaded), which `dirty` compares against. */
   savedText(id: string): string;
+  /**
+   * Chooses the language of a tab's document by name ("Python", "plaintext"
+   * for plain text), or null to detect it from the file name and content.
+   */
+  setLanguage(id: string, language: string | null): void;
+  /** Names of the languages that can be chosen ("Markdown", "Python"…). */
+  availableLanguages(): string[];
   /** Changes the saved reference without touching the document (updates `dirty`). */
   setSavedText(id: string, text: string): void;
   /** Replaces the document with `text` (undoable) and marks it saved, e.g. after an external change. */
@@ -399,6 +406,8 @@ export interface SpellingApi {
   suggest(language: string, word: string): Promise<string[]>;
   /** Adds a word to the user's dictionary, kept by the system. */
   add(language: string, word: string): Promise<void>;
+  /** Language tags with a dictionary installed ("fr-FR", "en-US"). */
+  languages(): Promise<string[]>;
 }
 
 // Context menu ----------------------------------------------------------------

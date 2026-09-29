@@ -17,6 +17,8 @@ export class Doc {
   bom = $state(false);
   lineEnding = $state<LineEnding>('lf');
   language = $state('plaintext');
+  /** Language chosen by hand ("Python", or "plaintext"), or null to detect it. */
+  chosenLanguage: string | null = null;
   dirty = $state(false);
   /** Viewer shown instead of the editor (images), or null for a text document. */
   viewer = $state<string | null>(null);

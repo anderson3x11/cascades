@@ -32,6 +32,12 @@ export async function suggestSpelling(language: string, word: string): Promise<s
   return await invoke<string[]>('spell_suggest', { language, word });
 }
 
+/** Language tags with a dictionary installed ("fr-FR", "en-US"). */
+export async function spellingLanguages(): Promise<string[]> {
+  if (!isTauri()) return ['fr-FR', 'en-US'];
+  return await invoke<string[]>('spell_languages');
+}
+
 /** Adds a word to the user's dictionary, kept by the system. */
 export async function addToDictionary(language: string, word: string): Promise<void> {
   if (!isTauri()) {

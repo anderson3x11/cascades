@@ -24,7 +24,13 @@ export default defineExtension({
   activate(ctx) {
     const position = ctx.statusBar.addItem({ id: 'position', alignment: 'left', priority: 100 });
     const counts = ctx.statusBar.addItem({ id: 'counts', alignment: 'left', priority: 90 });
-    const language = ctx.statusBar.addItem({ id: 'language', alignment: 'right', priority: 30 });
+    const language = ctx.statusBar.addItem({
+      id: 'language',
+      alignment: 'right',
+      priority: 30,
+      command: 'editor.changeLanguage',
+    });
+    language.tooltip = 'Changer le langage';
     const encoding = ctx.statusBar.addItem({
       id: 'encoding',
       alignment: 'right',
@@ -109,5 +115,29 @@ export default defineExtension({
       if (tab.id === ctx.workspace.active()?.id) updateFile();
     });
     updateAll();
+
+    ctx.commands.register(
+      'editor.changeLanguage',
+      async () => {
+        const tab = ctx.workspace.active();
+        if (!tab || tab.viewer) return;
+        const names = ctx.workspace.availableLanguages();
+        const current = names.find((n) => n.toLowerCase() === tab.language) ?? null;
+        const choice = await ctx.quickPick.show<{ name: string | null }>(
+          [
+            {
+              label: 'Détection automatique',
+              description: 'd’après le nom et le début du fichier',
+              value: { name: null },
+            },
+            { label: 'Texte brut', description: 'sans coloration', value: { name: 'plaintext' } },
+            ...names.map((name) => ({ label: name, value: { name } })),
+          ],
+          { placeholder: `Langage actuel : ${current ?? 'texte brut'}` },
+        );
+        if (choice) ctx.workspace.setLanguage(tab.id, choice.name);
+      },
+      { title: 'Changer le langage…', category: 'Affichage' },
+    );
   },
 });
