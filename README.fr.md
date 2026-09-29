@@ -5,7 +5,7 @@
 **Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'ouvrir n'importe quel fichier texte ou code.**
 La simplicité de Notepad++, la personnalisation de Vim, une interface moderne.
 
-[English](README.md)
+[Site](https://anderson3x11.github.io/cascades-site/) · [English](README.md)
 
 ![Cascades : des notes avec cascades](docs/images/editor.png)
 

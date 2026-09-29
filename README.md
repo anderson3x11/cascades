@@ -5,7 +5,7 @@
 **A light text editor for taking notes, that still opens any text or code file.**
 The simplicity of Notepad++, the customization of Vim, a modern interface.
 
-[Français](README.fr.md)
+[Website](https://anderson3x11.github.io/cascades-site/) · [Français](README.fr.md)
 
 ![Cascades: notes with cascades](docs/images/editor.png)
 
