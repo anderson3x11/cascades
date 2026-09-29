@@ -205,6 +205,15 @@ src-tauri/       Backend Rust : fichiers, encodages, config
 
 Chaque fonctionnalité est une extension qui s'active avec `activate(ctx)`. Tout ce qu'elle enregistre via `ctx` est retiré à sa désactivation. Une règle ESLint interdit aux extensions d'importer autre chose que `src/api`.
 
+## Performances
+
+Mesures du 30/09/2026, version Windows 0.1.0 :
+
+- Installeur : 2,8 Mo (NSIS) ou 3,5 Mo (MSI) ; programme installé : 6 Mo (objectif du brief : moins de 20 Mo).
+- Démarrage de l'interface jusqu'à l'éditeur prêt : environ 120 ms la première fois, 35 ms ensuite (hors lancement de la fenêtre par Windows). Objectif : moins d'une seconde.
+- Frappe fluide dans un fichier de 10 000 lignes avec cascades (test automatique). Au-delà de 50 Mo, mode allégé ; au-delà de 512 Mo, lecture seule.
+- Le lecteur PDF, le rendu Markdown et les langages ne sont chargés qu'à leur première utilisation.
+
 ## Développement
 
 Prérequis : Node 20+, Rust stable, et sous Windows les Visual Studio Build Tools (charge de travail C++). Voir les [prérequis Tauri](https://v2.tauri.app/start/prerequisites/).
