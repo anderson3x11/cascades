@@ -5,11 +5,11 @@
 **Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'ouvrir n'importe quel fichier texte ou code.**
 La simplicité de Notepad++, la personnalisation de Vim, une interface moderne.
 
-[Site](https://anderson3x11.github.io/cascades-site/) · [English](README.md)
+[Site](https://anderson3x11.dev/cascades-site/) · [English](README.md)
 
 ![Cascades : des notes avec cascades](docs/images/editor.png)
 
-> Version 1.0, pour Windows, macOS et Linux. Raccourcis et réglages : [documentation](https://anderson3x11.github.io/cascades-site/docs.html).
+> Version 1.0, pour Windows, macOS et Linux. Raccourcis et réglages : [documentation](https://anderson3x11.dev/cascades-site/docs.html).
 
 ## Télécharger
 

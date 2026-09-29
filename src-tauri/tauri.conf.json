@@ -42,7 +42,7 @@
     "category": "Productivity",
     "shortDescription": "A light text editor for taking notes",
     "longDescription": "A light text editor for taking notes, that still opens any text or code file. Indented lines are linked by drawn cascades.",
-    "homepage": "https://anderson3x11.github.io/cascades-site/",
+    "homepage": "https://anderson3x11.dev/cascades-site/",
     "fileAssociations": [
       {
         "ext": ["txt", "text", "log"],
