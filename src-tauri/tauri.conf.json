@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "cascades",
+  "productName": "Cascades",
   "version": "0.1.0",
   "identifier": "dev.cascades.app",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "cascades",
+        "title": "Cascades",
         "width": 1100,
         "height": 750,
         "resizable": true

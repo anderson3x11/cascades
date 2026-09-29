@@ -38,7 +38,7 @@ export async function pickSavePath(
   return await withCursor(() => save({ defaultPath, filters }));
 }
 
-export async function alert(text: string, title = 'cascades'): Promise<void> {
+export async function alert(text: string, title = 'Cascades'): Promise<void> {
   if (!isTauri()) return window.alert(text);
   await withCursor(() => message(text, { title, kind: 'info' }));
 }
@@ -59,7 +59,7 @@ export async function choose<T extends string>(
   if (!isTauri()) return window.confirm(text) ? yes : (cancel ?? no);
   const buttons = cancel ? { yes, no, cancel } : { ok: yes, cancel: no };
   const result = await withCursor(() =>
-    message(text, { title: options.title ?? 'cascades', kind: 'warning', buttons }),
+    message(text, { title: options.title ?? 'Cascades', kind: 'warning', buttons }),
   );
   return (result === 'Cancel' ? (cancel ?? no) : result) as T;
 }

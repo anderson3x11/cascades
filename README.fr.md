@@ -1,19 +1,19 @@
 <img src="docs/logo/cascades.svg" alt="" width="96">
 
-# cascades
+# Cascades
 
 **Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'ouvrir n'importe quel fichier texte ou code.**
 La simplicité de Notepad++, la personnalisation de Vim, une interface moderne.
 
 [English](README.md)
 
-![cascades : des notes avec cascades, l'explorateur à gauche](docs/images/cascades.png)
+![Cascades : des notes avec cascades, l'explorateur à gauche](docs/images/cascades.png)
 
 > En cours de développement (jalon 0.5). Windows d'abord, puis macOS et Linux. Voir [la feuille de route](docs/ROADMAP.md).
 
 ## Les cascades
 
-On écrit ses notes ligne par ligne, et on indente avec Tab une ligne qui découle de celle du dessus. cascades dessine les liens :
+On écrit ses notes ligne par ligne, et on indente avec Tab une ligne qui découle de celle du dessus. Cascades dessine les liens :
 
 ```
 Elden Ring

@@ -67,7 +67,7 @@
 >
   <div class="inner">
     <header>
-      <h1>cascades</h1>
+      <h1>Cascades</h1>
       <p>{t('Type to start a note.')}</p>
     </header>
 
