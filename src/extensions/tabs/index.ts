@@ -45,8 +45,12 @@ export default defineExtension({
         closed.push(tab.path);
         if (closed.length > MAX_CLOSED) closed.shift();
       }
-      // Like Notepad++, there is always at least one tab.
-      if (ctx.workspace.tabs().length === 0) void ctx.commands.execute('file.new');
+      // Never an empty window: the welcome page, or a new note when the
+      // welcome page itself was closed (or is not there).
+      if (ctx.workspace.tabs().length === 0) {
+        const next = tab.viewer === 'welcome' ? 'file.new' : 'workbench.welcome';
+        void ctx.commands.execute(next).catch(() => ctx.commands.execute('file.new'));
+      }
     });
 
     ctx.commands.register('tabs.next', () => step(1), {

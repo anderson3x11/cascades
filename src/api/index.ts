@@ -180,6 +180,8 @@ export interface OpenOptions {
   text: string;
   /** Opens a view-only tab shown by this "replace" viewer (the text is ignored). */
   viewer?: string;
+  /** Name of a tab without a file ("Accueil"); otherwise "Sans titre N". */
+  title?: string;
   encoding?: string;
   bom?: boolean;
   lineEnding?: LineEnding;

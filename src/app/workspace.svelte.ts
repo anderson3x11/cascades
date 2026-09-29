@@ -144,7 +144,7 @@ export class Workspace {
   open(options: OpenOptions, target?: GroupTarget): TabInfo {
     const active = this.activeGroupObject();
     const group = (target ? this.resolveTarget(active, target) : null) ?? active;
-    const untitled = options.path ? '' : `Sans titre ${this.nextUntitled++}`;
+    const untitled = options.path ? '' : (options.title ?? `Sans titre ${this.nextUntitled++}`);
     const doc = new Doc(`doc-${this.nextDoc++}`, Text.empty, untitled);
     doc.path = options.path;
     doc.encoding = options.encoding ?? 'utf-8';

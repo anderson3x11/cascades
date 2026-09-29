@@ -63,6 +63,11 @@ export default defineExtension({
     ctx.events.on('workspace.didOpen', (tab) => remember(tab.path));
     ctx.events.on('workspace.didChangeActive', (tab) => remember(tab?.path ?? null));
     ctx.events.on('workspace.didChangeTab', (tab) => remember(tab.path));
+    // For other extensions (the welcome page).
+    ctx.commands.register('quickOpen.recentFiles', () => [...recent], {
+      title: 'Fichiers récents',
+      hidden: true,
+    });
 
     ctx.commands.register(
       'workbench.quickOpen',

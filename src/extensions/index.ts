@@ -31,6 +31,7 @@ import statusBar from './status-bar';
 import tabs from './tabs';
 import textTools from './text-tools';
 import themes from './themes';
+import welcome from './welcome';
 
 /** Built-in extensions, in activation order. */
 export const builtinExtensions: CascadesExtension[] = [
@@ -46,6 +47,7 @@ export const builtinExtensions: CascadesExtension[] = [
   navigation,
   changeMarkers,
   spellcheck,
+  welcome,
   jsonComments,
   smartLists,
   cascades,

@@ -361,8 +361,14 @@ export class Workbench {
           this.keyHint.clear();
         },
         label: (command) => {
-          const binding = this.keybindings.forCommand(command)[0];
-          return binding ? formatKeySequence(binding.chords) : null;
+          // The shortest shortcut is the one to show ("Ctrl+P" over "Ctrl+Espace O");
+          // among equals, the most recent (forCommand's order).
+          const bindings = this.keybindings.forCommand(command);
+          const shortest = bindings.reduce<(typeof bindings)[number] | undefined>(
+            (best, b) => (!best || b.chords.length < best.chords.length ? b : best),
+            undefined,
+          );
+          return shortest ? formatKeySequence(shortest.chords) : null;
         },
         list: () =>
           this.keybindings.list().map((b) => ({

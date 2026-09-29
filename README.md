@@ -32,6 +32,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Tableaux Markdown** : Tab et Shift+Tab passent d'une cellule à l'autre en alignant les colonnes ; Tab après la dernière cellule ajoute une ligne. Édition > Insérer un tableau en pose un prêt à remplir.
 - **Menu Texte** : changer la casse (sélection ou mot sous le curseur), trier les lignes, supprimer les doublons ou les espaces en fin de ligne, joindre des lignes.
 - **Lignes modifiées** : une barre dans la marge montre ce qui a changé depuis le dernier enregistrement (vert ajouté, orange modifié, rouge supprimé).
+- **Page d'accueil** quand aucun fichier n'est ouvert : tape pour commencer une note, ou ouvre un fichier récent.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 
