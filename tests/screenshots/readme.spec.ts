@@ -144,7 +144,8 @@ test('typing a cascade, animated', async ({ page }) => {
   const { applyPalette, GIFEncoder, quantize } = gifenc;
   // One palette for every frame, taken from the last one: the colors do not flicker.
   const images = frames.map(({ png, delay }) => ({ image: PNG.sync.read(png), delay }));
-  const last = images[images.length - 1]!.image;
+  const last = images.at(-1)?.image;
+  if (!last) throw new Error('no frame');
   const palette = quantize(last.data, 128);
   const gif = GIFEncoder();
   for (const { image, delay } of images) {
