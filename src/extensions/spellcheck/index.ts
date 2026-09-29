@@ -1,5 +1,6 @@
 import { defineExtension } from '../../api';
 import { spellChecker, SpellState } from './checker';
+import { languageChoices } from './languages';
 
 /**
  * Spell checking with the system's dictionaries (on Windows, those of Word
@@ -72,17 +73,17 @@ export default defineExtension({
     ctx.commands.register(
       'editor.chooseSpellLanguage',
       async () => {
-        const tags = await ctx.spelling.languages().catch(() => [] as string[]);
-        const names = new Intl.DisplayNames(['fr'], { type: 'language' });
-        const current = ctx.settings.get<string>('spellcheck.language').toLowerCase();
-        const isCurrent = (tag: string) =>
-          tag.toLowerCase() === current || tag.toLowerCase().startsWith(`${current}-`);
+        const installed = await ctx.spelling.languages().catch(() => [] as string[]);
+        const current = ctx.settings
+          .get<string>('spellcheck.language')
+          .split('-')[0]
+          ?.toLowerCase();
         const choice = await ctx.quickPick.show<string | null>(
           [
             { label: 'Désactiver le correcteur', description: 'F7', value: null },
-            ...tags.map((tag) => ({
-              label: names.of(tag) ?? tag,
-              description: isCurrent(tag) ? `${tag} · actuelle` : tag,
+            ...languageChoices(installed).map(({ tag, label }) => ({
+              label,
+              description: tag === current ? 'actuelle' : '',
               value: tag,
             })),
           ],

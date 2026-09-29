@@ -26,14 +26,14 @@ test('a click on Orthographe chooses the language of the spell checker', async (
   await page.locator('.cm-content').click();
   await page.keyboard.press('F7');
   await page.getByRole('contentinfo').getByText('Orthographe').click();
-  await page.getByRole('option', { name: /anglais/ }).click();
+  await page.getByRole('option', { name: /Anglais/ }).click();
   await expect
     .poll(() =>
       page.evaluate(() =>
         (window as unknown as DevWindow).__cascades.settings.get('spellcheck.language'),
       ),
     )
-    .toBe('en-US');
+    .toBe('en');
 
   await page.getByRole('contentinfo').getByText('Orthographe').click();
   await page.getByRole('option', { name: /Désactiver le correcteur/ }).click();

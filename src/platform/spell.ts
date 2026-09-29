@@ -34,7 +34,8 @@ export async function suggestSpelling(language: string, word: string): Promise<s
 
 /** Language tags with a dictionary installed ("fr-FR", "en-US"). */
 export async function spellingLanguages(): Promise<string[]> {
-  if (!isTauri()) return ['fr-FR', 'en-US'];
+  // As Windows answers, technical tag included.
+  if (!isTauri()) return ['fr-FR', 'fr-BE', 'en-US', 'zh-Latn-CN-x-ext'];
   return await invoke<string[]>('spell_languages');
 }
 

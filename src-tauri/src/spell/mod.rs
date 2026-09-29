@@ -72,6 +72,29 @@ impl Speller {
     }
 }
 
+/// The installed dictionary to use for a language ("fr"): its main variant
+/// ("fr-FR", "en-US" for English) when installed, else the first one.
+fn pick_variant(language: &str, tags: &[String]) -> Option<String> {
+    let wanted = language.to_lowercase();
+    let main = if wanted == "en" {
+        "en-us".to_owned()
+    } else {
+        format!("{wanted}-{wanted}")
+    };
+    let variants: Vec<&String> = tags
+        .iter()
+        .filter(|tag| {
+            let tag = tag.to_lowercase();
+            tag == wanted || tag.starts_with(&format!("{wanted}-"))
+        })
+        .collect();
+    variants
+        .iter()
+        .find(|tag| tag.to_lowercase() == main)
+        .or(variants.first())
+        .map(|tag| (*tag).clone())
+}
+
 fn start() -> Sender<Request> {
     let (tx, rx) = mpsc::channel::<Request>();
     std::thread::spawn(move || {
@@ -163,15 +186,10 @@ mod system {
                     {
                         language.to_owned()
                     } else {
-                        let wanted = language.to_lowercase();
-                        strings(&factory.SupportedLanguages().map_err(text)?)
-                            .into_iter()
-                            .find(|tag| tag.to_lowercase().starts_with(&wanted))
-                            .ok_or_else(|| {
-                                format!(
-                                    "aucun dictionnaire « {language} » n'est installé dans Windows"
-                                )
-                            })?
+                        let tags = strings(&factory.SupportedLanguages().map_err(text)?);
+                        super::pick_variant(language, &tags).ok_or_else(|| {
+                            format!("aucun dictionnaire « {language} » n'est installé dans Windows")
+                        })?
                     }
                 };
                 let checker =
@@ -283,5 +301,28 @@ mod tests {
             suggestions.iter().any(|s| s == "chocolat"),
             "{suggestions:?}"
         );
+        let languages = speller.languages().unwrap();
+        eprintln!("languages: {languages:?}");
+        assert!(
+            languages.iter().any(|l| l.starts_with("fr")),
+            "{languages:?}"
+        );
+    }
+}
+
+#[cfg(test)]
+mod variant_tests {
+    use super::pick_variant;
+
+    #[test]
+    fn prefers_the_main_variant() {
+        let tags: Vec<String> = ["fr-015", "fr-BE", "fr-FR", "en-GB", "en-US"]
+            .iter()
+            .map(|t| t.to_string())
+            .collect();
+        assert_eq!(pick_variant("fr", &tags).as_deref(), Some("fr-FR"));
+        assert_eq!(pick_variant("en", &tags).as_deref(), Some("en-US"));
+        assert_eq!(pick_variant("fr-BE", &tags).as_deref(), Some("fr-BE"));
+        assert_eq!(pick_variant("de", &tags), None);
     }
 }
