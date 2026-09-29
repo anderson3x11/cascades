@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Cascades",
-  "version": "0.6.1",
+  "version": "1.0.0",
   "identifier": "dev.cascades.app",
   "build": {
     "frontendDist": "../dist",

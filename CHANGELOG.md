@@ -4,6 +4,15 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-29
+
+Première version stable.
+
+### Ajouté
+
+- Site : https://anderson3x11.github.io/cascades-site/, avec téléchargement pour chaque système et une documentation des commandes, raccourcis et réglages générée depuis l'application (`npm run docs` écrit `docs/reference.json`).
+- Guide de contribution (`CONTRIBUTING.md`) et formulaires d'issue.
+
 ## [0.6.1] - 2026-09-29
 
 ### Ajouté
