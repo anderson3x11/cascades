@@ -49,6 +49,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Sélection rapide : Ctrl+L sélectionne la ligne puis ajoute la suivante à chaque appui, Ctrl+Shift+L retire la dernière, Leader L sélectionne la cascade (puis le paragraphe).
 - Menu Aller : aller à la ligne (Ctrl+G), début et fin du fichier (Ctrl+Début, Ctrl+Fin), signets (Ctrl+F2 pour poser ou retirer, F2 et Shift+F2 pour passer de l'un à l'autre, liste des signets), marqués d'un point dans la marge.
 - Recherche dans le fichier (Ctrl+F) : panneau en haut de l'éditeur, en français, avec un compteur « 3 sur 12 ». Les textes propres à CodeMirror (aller à la ligne, repli…) sont aussi traduits.
+- Lignes modifiées depuis le dernier enregistrement, marquées dans la marge comme dans Notepad++ : vert pour une ligne ajoutée, orange pour une ligne modifiée, rouge là où des lignes ont été supprimées ; les marques disparaissent à l'enregistrement. Couleurs de thème `change-added`, `change-modified`, `change-deleted`. Réglage `changeMarkers.enabled`.
 - Commentaires grisés dans les fichiers JSON, et Ctrl+/ les commente avec `//`. Ctrl+: commente aussi, pour les claviers AZERTY.
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.

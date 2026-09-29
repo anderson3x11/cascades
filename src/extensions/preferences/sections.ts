@@ -10,6 +10,7 @@ const SECTION_TITLES: Record<string, string> = {
   links: 'Liens',
   insertDate: 'Date',
   markdownTables: 'Tableaux Markdown',
+  changeMarkers: 'Lignes modifiées',
   files: 'Fichiers',
   session: 'Session',
   workbench: 'Interface',

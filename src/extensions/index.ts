@@ -1,6 +1,7 @@
 import type { CascadesExtension } from '../api';
 import autoPairs from './auto-pairs';
 import cascades from './cascades';
+import changeMarkers from './change-markers';
 import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
 import editorCommands from './editor-commands';
@@ -42,6 +43,7 @@ export const builtinExtensions: CascadesExtension[] = [
   markdownTables,
   textTools,
   navigation,
+  changeMarkers,
   jsonComments,
   smartLists,
   cascades,

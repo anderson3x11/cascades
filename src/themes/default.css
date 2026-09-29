@@ -28,6 +28,10 @@
   --selection: rgb(9 105 218 / 0.2);
   --match: rgb(255 223 93 / 0.5);
   --match-selected: rgb(255 170 50 / 0.6);
+  /* Lines changed since the last save, in the margin. */
+  --change-added: #2da44e;
+  --change-modified: #d4a72c;
+  --change-deleted: #cf222e;
   --bracket-match: rgb(9 105 218 / 0.15);
   --conflict-marker-bg: rgb(140 149 159 / 0.15);
   --conflict-mine-bg: rgb(26 127 55 / 0.12);
@@ -89,6 +93,9 @@
   --selection: rgb(96 165 250 / 0.3);
   --match: rgb(187 128 9 / 0.4);
   --match-selected: rgb(255 170 50 / 0.45);
+  --change-added: #3fb950;
+  --change-modified: #d29922;
+  --change-deleted: #f85149;
   --bracket-match: rgb(96 165 250 / 0.25);
   --conflict-marker-bg: rgb(139 148 158 / 0.15);
   --conflict-mine-bg: rgb(63 185 80 / 0.15);
