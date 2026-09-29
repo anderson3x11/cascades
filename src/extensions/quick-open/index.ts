@@ -1,4 +1,4 @@
-import { defineExtension, t, type ExtensionContext } from '../../api';
+import { defineExtension, samePath, t, type ExtensionContext } from '../../api';
 
 const RECENT_FILE = 'recent.json';
 const MAX_RECENT = 50;
@@ -10,8 +10,6 @@ function split(path: string): { name: string; dir: string } {
 
 /** Past this many files, the folders are not listed completely. */
 const MAX_FOLDER_FILES = 50_000;
-
-const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
 
 /** The folders open in the explorer, if it is there. */
 async function openFolders(ctx: ExtensionContext): Promise<string[]> {
@@ -119,7 +117,7 @@ export default defineExtension({
       { title: t('Quick open…'), category: t('File') },
     );
     ctx.keybindings.register([
-      { key: 'Ctrl+P', command: 'workbench.quickOpen' },
+      { key: 'Mod+P', command: 'workbench.quickOpen' },
       { key: 'Leader O', command: 'workbench.quickOpen' },
     ]);
     ctx.menus.registerItem('file', { command: 'workbench.quickOpen', group: '1_new', order: 3 });

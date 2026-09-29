@@ -69,7 +69,7 @@
 
   /* Fonts */
   --font-ui: system-ui, 'Segoe UI', sans-serif;
-  --font-editor: 'Cascadia Code', Consolas, monospace;
+  --font-editor: 'Cascadia Code', Consolas, 'SF Mono', Menlo, 'DejaVu Sans Mono', monospace;
 }
 
 :root[data-theme-type='dark'] {

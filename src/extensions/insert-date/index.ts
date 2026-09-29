@@ -38,7 +38,7 @@ export default defineExtension({
       },
       { title: t('Insert the date'), category: t('Edit') },
     );
-    ctx.keybindings.register({ key: 'Ctrl+;', command: 'editor.insertDate', when: 'editorFocus' });
+    ctx.keybindings.register({ key: 'Mod+;', command: 'editor.insertDate', when: 'editorFocus' });
     ctx.menus.registerItem('edit', { command: 'editor.insertDate', group: '3_lines', order: 30 });
   },
 });

@@ -54,7 +54,7 @@ export default defineExtension({
       },
       { title: t('Search in files…'), category: t('Edit') },
     );
-    ctx.keybindings.register({ key: 'Ctrl+Shift+F', command: 'search.inFiles' });
+    ctx.keybindings.register({ key: 'Mod+Shift+F', command: 'search.inFiles' });
     ctx.menus.registerItem('edit', { command: 'search.inFiles', group: '2_find', order: 10 });
   },
 });

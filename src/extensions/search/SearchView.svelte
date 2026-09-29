@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { t, type ExtensionContext, type FileMatches, type SearchOptions } from '../../api';
+  import {
+    samePath,
+    t,
+    type ExtensionContext,
+    type FileMatches,
+    type SearchOptions,
+  } from '../../api';
   import { MAX_MATCHES, type SearchModel } from './model.svelte';
 
   let { ctx, model }: { ctx: ExtensionContext; model: SearchModel } = $props();
@@ -12,7 +18,6 @@
 
   const lastSeparator = (path: string) => Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
   const nameOf = (path: string) => path.slice(lastSeparator(path) + 1);
-  const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
 
   /** The folder of a file, from the name of the open folder it is in. */
   function placeOf(path: string): string {

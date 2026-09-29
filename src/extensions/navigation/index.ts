@@ -58,7 +58,7 @@ export default defineExtension({
         title: t('Select line'),
         menu: 'edit',
         group: '4_select',
-        keys: ['Ctrl+L'],
+        keys: ['Mod+L'],
         run: select((v) => selectLine(v.state)),
       },
       {
@@ -66,7 +66,7 @@ export default defineExtension({
         title: t('Remove the last selected line'),
         menu: 'edit',
         group: '4_select',
-        keys: ['Ctrl+Shift+L'],
+        keys: ['Mod+Shift+L'],
         run: select((v) => deselectLine(v.state)),
       },
       {
@@ -82,7 +82,7 @@ export default defineExtension({
         title: t('Go to line…'),
         menu: 'go',
         group: '1_place',
-        keys: ['Ctrl+G'],
+        keys: ['Mod+G'],
         run: (v) => void gotoLine(v),
       },
       {
@@ -90,7 +90,7 @@ export default defineExtension({
         title: t('Start of the file'),
         menu: 'go',
         group: '1_place',
-        keys: ['Ctrl+Home'],
+        keys: ['Mod+Home'],
         run: (v) => void cursorDocStart(v),
       },
       {
@@ -98,7 +98,7 @@ export default defineExtension({
         title: t('End of the file'),
         menu: 'go',
         group: '1_place',
-        keys: ['Ctrl+End'],
+        keys: ['Mod+End'],
         run: (v) => void cursorDocEnd(v),
       },
       {
@@ -106,7 +106,7 @@ export default defineExtension({
         title: t('Set or remove a bookmark'),
         menu: 'go',
         group: '2_bookmarks',
-        keys: ['Ctrl+F2'],
+        keys: ['Mod+F2'],
         run: toggleBookmarks,
       },
       {

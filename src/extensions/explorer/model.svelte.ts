@@ -264,18 +264,29 @@ export class ExplorerModel {
     this.onStateChange();
   }
 
-  /** Sends to the recycle bin after asking. */
+  /** "Move to the recycle bin" on Windows, "Move to the Trash" elsewhere. */
+  trashLabel(): string {
+    return this.ctx.app.platform() === 'windows'
+      ? t('Move to the recycle bin')
+      : t('Move to the Trash');
+  }
+
+  /** Sends to the recycle bin (the Trash on macOS and Linux) after asking. */
   async trash(path: string): Promise<void> {
     if (this.isRoot(path)) return;
     const node = this.find(path);
     if (!node) return;
+    const bin = this.ctx.app.platform() === 'windows';
     const question = node.isDir
-      ? t('Move the folder "{name}" to the recycle bin?', { name: node.name })
-      : t('Move the file "{name}" to the recycle bin?', { name: node.name });
-    const answer = await this.ctx.dialogs.choose(question, {
-      buttons: [t('Move to the recycle bin'), t('Cancel')],
-    });
-    if (answer !== t('Move to the recycle bin')) return;
+      ? bin
+        ? t('Move the folder "{name}" to the recycle bin?', { name: node.name })
+        : t('Move the folder "{name}" to the Trash?', { name: node.name })
+      : bin
+        ? t('Move the file "{name}" to the recycle bin?', { name: node.name })
+        : t('Move the file "{name}" to the Trash?', { name: node.name });
+    const yes = this.trashLabel();
+    const answer = await this.ctx.dialogs.choose(question, { buttons: [yes, t('Cancel')] });
+    if (answer !== yes) return;
     try {
       await this.ctx.fs.trash(path);
       await this.load(parentOf(path));

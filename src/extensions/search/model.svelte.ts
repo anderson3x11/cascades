@@ -1,12 +1,10 @@
 import { SvelteSet } from 'svelte/reactivity';
 import type { ExtensionContext, FileMatches, SearchOptions, SearchRun } from '../../api';
-import { t } from '../../api';
+import { samePath, t } from '../../api';
 
 /** Past this many matches the search stops: the list must stay readable. */
 export const MAX_MATCHES = 2000;
 const DELAY_MS = 250;
-
-const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
 
 /** Search and replace in the files of the open folders. */
 export class SearchModel {

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
+import { setPlatform } from '../platform';
 import {
   chordFromEvent,
   formatKeySequence,
@@ -96,5 +97,23 @@ describe('chordFromEvent', () => {
     expect(chordFromEvent(event('Tab', { ctrl: true, shift: true }))).toBe(
       normalizeChord('Ctrl+Shift+Tab'),
     );
+  });
+});
+
+describe('Mod and macOS', () => {
+  afterEach(() => setPlatform('windows'));
+
+  it('reads Mod as Ctrl, or as Cmd on macOS', () => {
+    expect(normalizeChord('Mod+Shift+P')).toBe('ctrl+shift+p');
+    setPlatform('macos');
+    expect(normalizeChord('Mod+Shift+P')).toBe('shift+meta+p');
+    expect(normalizeChord('Ctrl+Tab')).toBe('ctrl+tab');
+  });
+
+  it('shows macOS shortcuts with symbols and writes Cmd', () => {
+    setPlatform('macos');
+    expect(formatKeySequence(['shift+meta+p'])).toBe('⇧⌘P');
+    expect(formatKeySequence(['ctrl+space', 'z'])).toBe('⌃Space Z');
+    expect(keyNotation(['meta+s'])).toBe('Cmd+S');
   });
 });

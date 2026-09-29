@@ -74,6 +74,8 @@ impl Speller {
 
 /// The installed dictionary to use for a language ("fr"): its main variant
 /// ("fr-FR", "en-US" for English) when installed, else the first one.
+// Only the Windows backend has dictionaries to choose from yet.
+#[cfg_attr(not(windows), allow(dead_code))]
 fn pick_variant(language: &str, tags: &[String]) -> Option<String> {
     let wanted = language.to_lowercase();
     let main = if wanted == "en" {

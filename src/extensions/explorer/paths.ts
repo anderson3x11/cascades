@@ -1,5 +1,5 @@
 /** Path helpers for the explorer. Paths keep the separator of the opened folder. */
-import { t } from '../../api';
+import { samePath, t } from '../../api';
 
 export const separatorOf = (path: string) => (path.includes('\\') ? '\\' : '/');
 
@@ -15,7 +15,7 @@ export const parentOf = (path: string) => path.slice(0, Math.max(lastSeparator(p
 export const baseName = (path: string) => path.slice(lastSeparator(path) + 1) || path;
 
 /** Comparison form: Windows paths ignore case and separator style. */
-export const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
+export { samePath };
 
 /** Whether `path` is `dir` itself or inside it. */
 export function isWithin(path: string, dir: string): boolean {

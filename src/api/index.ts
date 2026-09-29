@@ -540,6 +540,12 @@ export interface I18nApi {
  */
 export { t } from '../core/i18n/i18n';
 
+/**
+ * A path in a form that compares equal for the same file: forward slashes,
+ * and lower case except on Linux, whose file names are case-sensitive.
+ */
+export { samePath } from '../core/platform';
+
 // Files and dialogs ----------------------------------------------------------
 
 export interface TextFile {
@@ -721,6 +727,8 @@ export interface AppApi {
   onWillQuit(handler: () => void | Promise<void>): Disposable;
   /** Opens a web link in the default browser. */
   openExternal(url: string): Promise<void>;
+  /** The system Cascades runs on. */
+  platform(): 'windows' | 'macos' | 'linux';
 }
 
 // Events --------------------------------------------------------------------

@@ -85,8 +85,8 @@ export default defineExtension({
       category: t('View'),
     });
     ctx.keybindings.register([
-      { key: 'Ctrl+Shift+O', command: 'explorer.addFolder' },
-      { key: 'Ctrl+B', command: 'view.toggleSidebar' },
+      { key: 'Mod+Shift+O', command: 'explorer.addFolder' },
+      { key: 'Mod+B', command: 'view.toggleSidebar' },
     ]);
     ctx.menus.registerItem('file', { command: 'explorer.addFolder', group: '1_new', order: 2.5 });
     ctx.menus.registerItem('file', {

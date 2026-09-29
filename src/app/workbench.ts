@@ -19,6 +19,7 @@ import {
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
 import * as i18n from '../core/i18n/i18n';
+import { platform } from '../core/platform';
 import fr from '../locales/fr.json';
 import { checkSettings } from '../core/settings/check';
 import { editSettings, parseSettings, type ConfigProblem } from '../core/settings/file';
@@ -610,6 +611,7 @@ export class Workbench {
           return track({ dispose: () => void this.willQuit.delete(handler) });
         },
         openExternal,
+        platform,
       },
       viewers: {
         register: (viewer) => track(this.viewers.register(viewer)),

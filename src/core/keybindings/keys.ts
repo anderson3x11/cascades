@@ -4,6 +4,7 @@
  * Everything is normalized to lower case with a fixed modifier order.
  */
 import { t } from '../i18n/i18n';
+import { platform } from '../platform';
 
 const MODIFIER_ORDER = ['ctrl', 'alt', 'shift', 'meta'] as const;
 type Modifier = (typeof MODIFIER_ORDER)[number];
@@ -50,7 +51,10 @@ export function normalizeChord(chord: string): string {
   if (!key) throw new Error(t('invalid key: "{key}"', { key: chord }));
   const mods = new Set<Modifier>();
   for (const part of parts) {
-    const mod = MODIFIER_ALIASES[part.toLowerCase()];
+    const name = part.toLowerCase();
+    // "Mod" is the usual modifier of the system: Cmd on macOS, Ctrl elsewhere.
+    const mod =
+      name === 'mod' ? (platform() === 'macos' ? 'meta' : 'ctrl') : MODIFIER_ALIASES[name];
     if (!mod)
       throw new Error(
         t('unknown modifier "{modifier}" in "{key}"', { modifier: part, key: chord }),
@@ -83,20 +87,26 @@ const KEY_NAMES: Record<string, string> = {
   space: 'Space',
 };
 
-/** Human readable form of normalized chords: ["ctrl+k", "z"] -> "Ctrl+K Z". */
+/** Modifiers as macOS writes them, before the key and without "+": "⌘⇧P". */
+const MAC_MODIFIERS: Record<string, string> = { ctrl: '⌃', alt: '⌥', shift: '⇧', meta: '⌘' };
+
+/**
+ * Human readable form of normalized chords: ["ctrl+k", "z"] -> "Ctrl+K Z",
+ * and on macOS ["meta+shift+p"] -> "⌘⇧P".
+ */
 export function formatKeySequence(chords: readonly string[]): string {
+  const mac = platform() === 'macos';
+  const label = (part: string) =>
+    KEY_LABELS[part] ??
+    (part in KEY_NAMES ? t(KEY_NAMES[part] ?? part) : null) ??
+    part.charAt(0).toUpperCase() + part.slice(1);
   return chords
-    .map((chord) =>
-      chord
-        .split(/\+(?!$)/)
-        .map(
-          (part) =>
-            KEY_LABELS[part] ??
-            (part in KEY_NAMES ? t(KEY_NAMES[part] ?? part) : null) ??
-            part.charAt(0).toUpperCase() + part.slice(1),
-        )
-        .join('+'),
-    )
+    .map((chord) => {
+      const parts = chord.split(/\+(?!$)/);
+      if (!mac) return parts.map(label).join('+');
+      const key = parts.pop() ?? '';
+      return parts.map((m) => MAC_MODIFIERS[m] ?? label(m)).join('') + label(key);
+    })
     .join(' ');
 }
 
@@ -105,7 +115,9 @@ export function formatKeySequence(chords: readonly string[]): string {
  * reads back: ["ctrl+shift+n"] -> "Ctrl+Shift+N", ["leader", "s"] -> "Leader S".
  */
 export function keyNotation(chords: readonly string[]): string {
-  const word = (part: string) => part.charAt(0).toUpperCase() + part.slice(1);
+  const mac = platform() === 'macos';
+  const word = (part: string) =>
+    mac && part === 'meta' ? 'Cmd' : part.charAt(0).toUpperCase() + part.slice(1);
   return chords
     .map((chord) =>
       chord

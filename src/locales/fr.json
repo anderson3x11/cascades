@@ -499,5 +499,8 @@
   "Open the plugins folder": "Ouvrir le dossier des plugins",
   "Reload": "Recharger",
   "Extensions": "Extensions",
-  "Extensions…": "Extensions…"
+  "Extensions…": "Extensions…",
+  "Move to the Trash": "Mettre à la corbeille",
+  "Move the folder \"{name}\" to the Trash?": "Mettre le dossier « {name} » à la corbeille ?",
+  "Move the file \"{name}\" to the Trash?": "Mettre le fichier « {name} » à la corbeille ?"
 }

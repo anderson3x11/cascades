@@ -104,6 +104,8 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 **Leader** est la touche leader, **Ctrl+Espace** par défaut (réglage `keyboard.leader`) : on l'appuie, puis la touche suivante. Une barre en bas de la fenêtre affiche alors les touches possibles.
 
+Sur macOS, Cmd remplace Ctrl, sauf pour Ctrl+Tab et la touche leader. Dans `keybindings.json`, `Mod` veut dire Cmd sur macOS et Ctrl ailleurs.
+
 ## Configuration
 
 Le dossier de config est :

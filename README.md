@@ -104,6 +104,8 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 
 **Leader** is the leader key, **Ctrl+Space** by default (setting `keyboard.leader`): press it, then the next key. A bar at the bottom of the window shows the keys that can follow.
 
+On macOS, Cmd takes the place of Ctrl, except for Ctrl+Tab and the leader key. In `keybindings.json`, `Mod` means Cmd on macOS and Ctrl elsewhere.
+
 ## Configuration
 
 The config folder is:

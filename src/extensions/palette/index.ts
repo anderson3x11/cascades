@@ -22,7 +22,7 @@ export default defineExtension({
       { title: t('Command palette…'), category: t('View') },
     );
     ctx.keybindings.register([
-      { key: 'Ctrl+Shift+P', command: 'workbench.commandPalette' },
+      { key: 'Mod+Shift+P', command: 'workbench.commandPalette' },
       { key: 'Leader P', command: 'workbench.commandPalette' },
     ]);
     ctx.menus.registerItem('view', {

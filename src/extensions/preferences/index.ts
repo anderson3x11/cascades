@@ -1,12 +1,11 @@
 import { mount, unmount } from 'svelte';
-import { defineExtension, t, type Disposable, type ExtensionContext } from '../../api';
+import { defineExtension, samePath, t, type Disposable, type ExtensionContext } from '../../api';
 import type { ConfigFileName } from './assist';
 import { configFileAssist } from './editor-assist';
 import PreferencesView, { type PreferencesPage } from './PreferencesView.svelte';
 import { isEmpty, keybindingsTemplate, settingsTemplate } from './templates';
 
 /** Path form for comparisons: Windows paths ignore case and separator style. */
-const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
 
 /**
  * Opens a file of the config folder in a tab. A missing or still empty file
@@ -52,7 +51,7 @@ export default defineExtension({
       title: t('Extensions…'),
       category: t('Preferences'),
     });
-    ctx.keybindings.register({ key: 'Ctrl+,', command: 'preferences.open' });
+    ctx.keybindings.register({ key: 'Mod+,', command: 'preferences.open' });
     ctx.menus.registerItem('file', {
       command: 'preferences.open',
       group: '8_preferences',

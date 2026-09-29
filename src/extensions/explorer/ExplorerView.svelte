@@ -32,7 +32,7 @@
   });
 
   const visibleRows = $derived(items.flatMap((i) => (i.kind === 'row' ? [i.row] : [])));
-  const idOf = (path: string) => `explorer-${samePath(path).replace(/[^a-z0-9]/g, '-')}`;
+  const idOf = (path: string) => `explorer-${samePath(path).replace(/[^a-zA-Z0-9]/g, '-')}`;
   const renaming = (row: Row) =>
     model.editing?.kind === 'rename' && model.editing.path === row.path;
 
@@ -89,6 +89,11 @@
       case 'Delete':
         if (row) void model.trash(row.path);
         break;
+      case 'Backspace':
+        // Cmd+Backspace, as in the Finder: Macs have no Delete key.
+        if (!event.metaKey) return;
+        if (row) void model.trash(row.path);
+        break;
       default:
         return;
     }
@@ -121,8 +126,8 @@
       : [
           { label: t('Rename'), shortcut: 'F2', run: () => model.startRename(row.path) },
           {
-            label: t('Move to the recycle bin'),
-            shortcut: t('Del'),
+            label: model.trashLabel(),
+            shortcut: ctx.app.platform() === 'macos' ? '⌘⌫' : t('Del'),
             run: () => void model.trash(row.path),
           },
         ];

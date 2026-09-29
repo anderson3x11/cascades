@@ -113,7 +113,7 @@ export default defineExtension({
       fontSize: { type: 'number', default: 14, description: t('Font size of the editor (px).') },
       fontFamily: {
         type: 'string',
-        default: "'Cascadia Code', Consolas, monospace",
+        default: "'Cascadia Code', Consolas, 'SF Mono', Menlo, 'DejaVu Sans Mono', monospace",
         description: t('Font of the editor (a CSS list, the first installed one is used).'),
       },
       lineHeight: {

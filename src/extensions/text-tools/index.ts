@@ -76,14 +76,14 @@ const tools = (): Tool[] => [
     id: 'text.upperCase',
     title: t('UPPERCASE'),
     group: '1_case',
-    keys: ['Ctrl+Shift+U'],
+    keys: ['Mod+Shift+U'],
     run: (s) => changeCase(s, upperCase),
   },
   {
     id: 'text.lowerCase',
     title: t('lowercase'),
     group: '1_case',
-    keys: ['Ctrl+U'],
+    keys: ['Mod+U'],
     run: (s) => changeCase(s, lowerCase),
   },
   {

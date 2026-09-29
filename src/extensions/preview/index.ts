@@ -35,7 +35,7 @@ export default defineExtension({
       category: t('View'),
     });
     ctx.keybindings.register([
-      { key: 'Ctrl+Shift+V', command: 'view.togglePreview' },
+      { key: 'Mod+Shift+V', command: 'view.togglePreview' },
       { key: 'Leader V', command: 'view.togglePreview' },
       { key: 'Leader Shift+V', command: 'view.togglePreviewFull' },
     ]);

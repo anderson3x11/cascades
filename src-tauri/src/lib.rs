@@ -3,6 +3,8 @@ mod config;
 mod cursor;
 mod folder;
 mod fs;
+#[cfg(target_os = "macos")]
+mod menu;
 mod search;
 mod spell;
 mod watcher;
@@ -11,7 +13,10 @@ use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    #[cfg(target_os = "macos")]
+    let builder = builder.menu(menu::mac_menu);
+    builder
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
