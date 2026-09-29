@@ -114,7 +114,7 @@ export default defineExtension({
       },
     });
     const handle = ctx.editor.addExtension((tab) =>
-      ctx.settings.get<boolean>('changeMarkers.enabled', tab.language) && !tab.viewer
+      ctx.settings.get<boolean>('changeMarkers.enabled', tab.language) && !tab.viewer && !tab.large
         ? changeMarkers(ctx, tab)
         : [],
     );

@@ -150,7 +150,11 @@ export class Workspace {
     doc.encoding = options.encoding ?? 'utf-8';
     doc.bom = options.bom ?? false;
     doc.lineEnding = options.lineEnding ?? 'lf';
-    doc.language = languageId(resolveLanguage(options.path, options.text, null));
+    doc.large = options.large ?? false;
+    // A big file is plain text unless a language is chosen by hand.
+    doc.language = doc.large
+      ? 'plaintext'
+      : languageId(resolveLanguage(options.path, options.text, null));
     doc.viewer = options.viewer ?? null;
 
     const tab = new Tab(`tab-${this.nextTab++}`, doc, group, EditorState.create());
@@ -526,7 +530,10 @@ export class Workspace {
   private async loadLanguage(doc: Doc): Promise<void> {
     const shown = this.tabs.find((t) => t.doc === doc);
     const start = shown ? this.stateOf(shown).doc.sliceString(0, 1000) : '';
-    const description = resolveLanguage(doc.path, start, doc.chosenLanguage);
+    const description =
+      doc.large && !doc.chosenLanguage
+        ? null
+        : resolveLanguage(doc.path, start, doc.chosenLanguage);
     const id = languageId(description);
     const changed = id !== doc.language;
     doc.language = id;

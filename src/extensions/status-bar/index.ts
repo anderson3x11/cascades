@@ -67,7 +67,7 @@ export default defineExtension({
       clearTimeout(timer);
       timer = setTimeout(() => {
         const state = ctx.editor.state();
-        if (!state) return;
+        if (!state || ctx.workspace.active()?.large) return;
         const text = state.doc.toString();
         counts.text = `${countWords(text)} mots, ${countChars(text)} caractères`;
       }, COUNT_DELAY_MS);
@@ -80,6 +80,8 @@ export default defineExtension({
       if (!tab) return;
       const viewer = tab.viewer ? ctx.viewers.get(tab.viewer) : undefined;
       for (const item of textItems) item.visible = !viewer;
+      // Counting a big file's words at each change would slow typing down.
+      counts.visible = !viewer && !tab.large;
       size.visible = !!viewer;
       if (viewer) {
         language.text = viewer.title;

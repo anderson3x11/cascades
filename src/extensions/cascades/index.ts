@@ -115,7 +115,12 @@ export default defineExtension({
 
     const handle = ctx.editor.addExtension((tab) => {
       const get = <T>(key: string) => ctx.settings.get<T>(`cascades.${key}`, tab.language);
-      if (!get<boolean>('enabled') || !get<string[]>('languages').includes(tab.language)) {
+      // Big files in light mode: no cascades.
+      if (
+        tab.large ||
+        !get<boolean>('enabled') ||
+        !get<string[]>('languages').includes(tab.language)
+      ) {
         return [];
       }
       return cascades({

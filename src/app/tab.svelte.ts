@@ -19,6 +19,8 @@ export class Doc {
   language = $state('plaintext');
   /** Language chosen by hand ("Python", or "plaintext"), or null to detect it. */
   chosenLanguage: string | null = null;
+  /** A big file, in light mode. */
+  large = false;
   dirty = $state(false);
   /** Viewer shown instead of the editor (images), or null for a text document. */
   viewer = $state<string | null>(null);
@@ -85,6 +87,10 @@ export class Tab implements TabInfo {
   }
   get viewer(): string | null {
     return this.doc.viewer;
+  }
+
+  get large(): boolean {
+    return this.doc.large;
   }
 }
 

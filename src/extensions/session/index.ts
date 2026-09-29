@@ -22,7 +22,8 @@ async function restoreTab(ctx: ExtensionContext, tab: SessionTab): Promise<OpenO
       const binary = ctx.viewers.binaryViewer();
       return binary && tab.path ? { path: tab.path, text: '', viewer: binary.id } : null;
     }
-    return { path: tab.path, ...disk, ...view };
+    const large = disk.text.length > ctx.settings.get<number>('files.largeFileSize') * 1024 * 1024;
+    return { path: tab.path, ...disk, ...view, large };
   }
   // Unsaved changes: the session text on top of the file as saved (if any).
   return {

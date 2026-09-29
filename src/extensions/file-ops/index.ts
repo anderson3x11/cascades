@@ -1,5 +1,10 @@
 import { defineExtension, type ExtensionContext, type TabInfo } from '../../api';
 
+/** Past this size, a file is not edited: it opens in the hex view, which reads only what it shows. */
+const EDIT_LIMIT = 512 * 1024 * 1024;
+
+const megabytes = (bytes: number) => `${Math.round(bytes / (1024 * 1024))} Mo`;
+
 async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | null> {
   const existing = ctx.workspace.findByPath(path);
   if (existing) {
@@ -9,20 +14,43 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
   // Images and other files shown by a viewer are not read as text.
   const viewer = ctx.viewers.replaceFor(path);
   if (viewer) return ctx.workspace.open({ path, text: '', viewer: viewer.id });
+
+  const size = await ctx.fs.fileSize(path).catch(() => 0);
+  const binary = ctx.viewers.binaryViewer();
+  if (size > EDIT_LIMIT && binary) {
+    const tab = ctx.workspace.open({ path, text: '', viewer: binary.id });
+    ctx.banners.show({
+      kind: 'info',
+      tabId: tab.id,
+      message: `Fichier trop gros pour être modifié (${megabytes(size)}) : il est affiché en lecture seule.`,
+    });
+    return tab;
+  }
+  const large = size > ctx.settings.get<number>('files.largeFileSize') * 1024 * 1024;
+
   const file = await ctx.fs.readTextFile(path);
   if (file.binary) {
-    const binary = ctx.viewers.binaryViewer();
     if (binary) return ctx.workspace.open({ path, text: '', viewer: binary.id });
     await ctx.dialogs.alert(`${path}\n\nCe fichier n'est pas du texte et ne peut pas être ouvert.`);
     return null;
   }
-  return ctx.workspace.open({
+  const tab = ctx.workspace.open({
     path,
     text: file.text,
     encoding: file.encoding,
     bom: file.bom,
     lineEnding: file.lineEnding,
+    large,
   });
+  if (large) {
+    ctx.banners.show({
+      kind: 'info',
+      tabId: tab.id,
+      message: `Gros fichier (${megabytes(size)}) : coloration, cascades et comptage des mots sont coupés pour rester fluide.`,
+      actions: [{ label: 'OK', run: () => {} }],
+    });
+  }
+  return tab;
 }
 
 function target(ctx: ExtensionContext, id: unknown): TabInfo | null {
@@ -61,6 +89,12 @@ export default defineExtension({
     };
 
     ctx.settings.register('files', {
+      largeFileSize: {
+        type: 'number',
+        default: 50,
+        description:
+          'Taille (en Mo) à partir de laquelle un fichier s’ouvre en mode allégé : sans coloration, cascades ni comptage des mots.',
+      },
       defaultExtension: {
         type: 'string',
         default: 'txt',

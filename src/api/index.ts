@@ -157,6 +157,8 @@ export interface TabInfo {
   readonly dirty: boolean;
   /** Id of the viewer shown instead of the editor (images), or null for a text tab. */
   readonly viewer: string | null;
+  /** A big file opened in light mode: extensions leave out their costly work (colors, cascades, counts). */
+  readonly large: boolean;
   /** Group (split pane) the tab is in. */
   readonly groupId: string;
   /** Tabs showing the same document (clones in other groups) share this id. */
@@ -182,6 +184,8 @@ export interface OpenOptions {
   viewer?: string;
   /** Name of a tab without a file ("Accueil"); otherwise "Sans titre N". */
   title?: string;
+  /** A big file: light mode, without syntax colors (see TabInfo.large). */
+  large?: boolean;
   encoding?: string;
   bom?: boolean;
   lineEnding?: LineEnding;
