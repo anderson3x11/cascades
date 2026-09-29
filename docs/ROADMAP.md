@@ -1,6 +1,6 @@
 # Feuille de route après la 0.3
 
-Proposition du 29/09/2026, à valider. Elle regroupe ce qui reste du brief, les notes prises pendant les tests de la 0.3 et quelques idées en plus. Comme pour les jalons précédents, chaque jalon est découpé en étapes testables une par une, et rien n'est codé avant validation du plan détaillé.
+Proposition du 29/09/2026, validée (réponses aux questions en fin de fichier). Elle regroupe ce qui reste du brief, les notes prises pendant les tests de la 0.3 et quelques idées en plus. Comme pour les jalons précédents, chaque jalon est découpé en étapes testables une par une, et rien n'est codé avant validation du plan détaillé.
 
 ## 0.4a : édition de texte
 
@@ -42,9 +42,8 @@ Les outils du quotidien d'un bloc-notes, dans l'esprit de Notepad++. Tout passe 
 
 **Écriture**
 
-- Correcteur orthographique : fautes soulignées, suggestions au clic droit, langue réglable, désactivable par langage (actif en texte et Markdown, inactif dans le code).
+- Correcteur orthographique en interrupteur : F7 l'active ou le désactive (désactivé par défaut, choix retenu) ; fautes soulignées, suggestions au clic droit.
 - Page d'accueil quand aucun fichier n'est ouvert : fichiers récents, dossiers, raccourcis de base, « Nouveau fichier ».
-- Objectif de mots et temps d'écriture dans la barre d'état (optionnel, réglage).
 
 ## 0.4b : fichiers et performances (fin du brief)
 
@@ -53,7 +52,6 @@ Les outils du quotidien d'un bloc-notes, dans l'esprit de Notepad++. Tout passe 
 - **Langage** : détection par le contenu quand l'extension ne dit rien (`#!/bin/bash`, `<?xml`, `<!doctype html>`), et choix manuel en cliquant sur le langage dans la barre d'état.
 - **Gros fichiers** (plus de 50 Mo) : mode allégé sans coloration ni cascades, lecture progressive, bandeau qui l'explique.
 - **Mesures** : temps de démarrage (objectif moins d'une seconde) et taille installée (objectif moins de 20 Mo), puis optimisations si besoin.
-- **Comparer deux fichiers** côte à côte, différences surlignées (peut glisser en 0.5 si le jalon est trop chargé).
 - Minimap : non prévue, sauf demande (peu utile pour des notes).
 
 ## 0.5 : langues et identité
@@ -87,10 +85,10 @@ Les outils du quotidien d'un bloc-notes, dans l'esprit de Notepad++. Tout passe 
   - guide des cascades, de la configuration (`settings.json`, `keybindings.json`, thèmes) et des plugins ;
   - notes de version.
 
-## Questions à trancher avant la 0.4
+## Décisions (30/09/2026)
 
-1. Les raccourcis de casse et de sélection proposés (Ctrl+U, Ctrl+Shift+U, Ctrl+L, Ctrl+Shift+L) te conviennent ?
-2. Le correcteur orthographique : dès la 0.4a, ou plus tard ?
-3. Objectif de mots et comparaison de fichiers : à garder, à repousser ou à abandonner ?
-4. L'ordre 0.4a puis 0.4b te va, ou tu préfères commencer par les finitions du brief ?
-5. Le logo : je propose des pistes, ou tu préfères le faire faire ou le dessiner ?
+1. Raccourcis de casse et de sélection : validés tels quels.
+2. Correcteur orthographique : en interrupteur avec un raccourci (F7), dès la 0.4a.
+3. Objectif de mots et comparaison de fichiers : abandonnés.
+4. Ordre : 0.4a puis 0.4b.
+5. Logo : à voir en 0.5.
