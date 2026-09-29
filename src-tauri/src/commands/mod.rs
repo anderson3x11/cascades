@@ -4,6 +4,7 @@ use crate::config;
 use crate::folder::{self, DirEntry, FileList};
 use crate::fs::{self, Decoded, TextInfo};
 use crate::search;
+use crate::spell::{Misspelling, Speller};
 use crate::watcher::FileWatcher;
 use serde::Serialize;
 use std::path::Path;
@@ -168,6 +169,33 @@ pub async fn replace_in_files(
     })
     .await
     .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn spell_check(
+    speller: State<'_, Speller>,
+    language: String,
+    lines: Vec<String>,
+) -> Result<Vec<Vec<Misspelling>>, String> {
+    speller.check(language, lines)
+}
+
+#[tauri::command]
+pub async fn spell_suggest(
+    speller: State<'_, Speller>,
+    language: String,
+    word: String,
+) -> Result<Vec<String>, String> {
+    speller.suggest(language, word)
+}
+
+#[tauri::command]
+pub async fn spell_add(
+    speller: State<'_, Speller>,
+    language: String,
+    word: String,
+) -> Result<(), String> {
+    speller.add(language, word)
 }
 
 #[tauri::command]

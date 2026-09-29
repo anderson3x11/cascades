@@ -25,6 +25,7 @@ import { parseTheme } from '../core/themes/theme';
 import * as dialogs from '../platform/dialogs';
 import * as fs from '../platform/fs';
 import * as search from '../platform/search';
+import * as spell from '../platform/spell';
 import { watchDir, watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
@@ -509,6 +510,11 @@ export class Workbench {
         toggle: (id) => this.panels.toggle(id),
         isVisible: (id) => this.panels.isVisible(id),
         toggleSide: (side) => this.panels.toggleSide(side),
+      },
+      spelling: {
+        check: spell.checkSpelling,
+        suggest: spell.suggestSpelling,
+        add: spell.addToDictionary,
       },
       contextMenu: {
         show: (position, items) => this.contextMenu.show(position, items),

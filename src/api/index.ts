@@ -388,6 +388,19 @@ export interface PanelsApi {
   toggleSide(side: PanelSide): void;
 }
 
+// Spelling --------------------------------------------------------------------
+
+export interface SpellingApi {
+  /**
+   * Misspelled words of each line ({ start, length } in string units), with
+   * the system's dictionary for a language tag ("fr", "en-US").
+   */
+  check(language: string, lines: string[]): Promise<{ start: number; length: number }[][]>;
+  suggest(language: string, word: string): Promise<string[]>;
+  /** Adds a word to the user's dictionary, kept by the system. */
+  add(language: string, word: string): Promise<void>;
+}
+
 // Context menu ----------------------------------------------------------------
 
 export type ContextMenuItem =
@@ -676,6 +689,7 @@ export interface ExtensionContext {
   readonly panels: PanelsApi;
   readonly modals: ModalsApi;
   readonly contextMenu: ContextMenuApi;
+  readonly spelling: SpellingApi;
   readonly themes: ThemesApi;
   readonly events: EventsApi;
   readonly fs: FsApi;

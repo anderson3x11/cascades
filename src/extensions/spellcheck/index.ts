@@ -1,10 +1,10 @@
-import { EditorView } from '@codemirror/view';
 import { defineExtension } from '../../api';
+import { spellChecker, SpellState } from './checker';
 
 /**
- * Spell checking by the system (the webview's checker, which uses Windows'
- * dictionaries): mistakes underlined, suggestions on right-click. Off by
- * default; F7 turns it on and off, and the choice is kept.
+ * Spell checking with the system's dictionaries (on Windows, those of Word
+ * and Edge): mistakes underlined, corrections on right-click. Off by default;
+ * F7 turns it on and off, and the choice is kept.
  */
 export default defineExtension({
   id: 'cascades.spellcheck',
@@ -24,13 +24,21 @@ export default defineExtension({
     });
 
     const enabled = () => ctx.settings.get<boolean>('spellcheck.enabled');
+    const shared = new SpellState();
     const handle = ctx.editor.addExtension((tab) =>
       enabled() && !tab.viewer
-        ? EditorView.contentAttributes.of({
-            spellcheck: 'true',
-            lang: ctx.settings.get<string>('spellcheck.language', tab.language),
-          })
-        : EditorView.contentAttributes.of({ spellcheck: 'false' }),
+        ? spellChecker(
+            ctx,
+            shared,
+            () => ctx.settings.get<string>('spellcheck.language', tab.language),
+            (message) =>
+              ctx.banners.show({
+                kind: 'warning',
+                message: `Correcteur orthographique indisponible : ${message}.`,
+                actions: [{ label: 'OK', run: () => {} }],
+              }),
+          )
+        : [],
     );
 
     const status = ctx.statusBar.addItem({
@@ -46,6 +54,9 @@ export default defineExtension({
 
     ctx.settings.onDidChange(({ keys }) => {
       if (keys.some((k) => k.startsWith('spellcheck.'))) {
+        // Turning it on again, or another language, is a new try.
+        shared.failure = null;
+        shared.forget();
         handle.refresh();
         show();
       }

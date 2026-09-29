@@ -29,6 +29,7 @@ ignore = "0.4.33"
 regex = "1.13.1"
 
 [target.'cfg(windows)'.dependencies]
+windows = { version = "0.62.2", features = ["Win32_Globalization", "Win32_System_Com", "Win32_Foundation"] }
 windows-sys = { version = "0.61", features = ["Win32_UI_WindowsAndMessaging"] }
 
 [profile.release]

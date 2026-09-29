@@ -4,6 +4,7 @@ mod cursor;
 mod folder;
 mod fs;
 mod search;
+mod spell;
 mod watcher;
 
 use tauri::Manager;
@@ -31,6 +32,9 @@ pub fn run() {
             commands::unwatch_dir,
             commands::list_dir,
             commands::list_files,
+            commands::spell_check,
+            commands::spell_suggest,
+            commands::spell_add,
             commands::search_files,
             commands::cancel_search,
             commands::replace_in_files,
@@ -49,6 +53,7 @@ pub fn run() {
             }
             app.manage(watcher::FileWatcher::new(app.handle().clone())?);
             app.manage(commands::Searches::default());
+            app.manage(spell::Speller::default());
             Ok(())
         })
         .run(tauri::generate_context!())
