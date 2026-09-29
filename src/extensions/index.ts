@@ -25,6 +25,7 @@ import quarantine from './quarantine';
 import quickOpen from './quick-open';
 import search from './search';
 import session from './session';
+import spellcheck from './spellcheck';
 import split from './split';
 import statusBar from './status-bar';
 import tabs from './tabs';
@@ -44,6 +45,7 @@ export const builtinExtensions: CascadesExtension[] = [
   textTools,
   navigation,
   changeMarkers,
+  spellcheck,
   jsonComments,
   smartLists,
   cascades,

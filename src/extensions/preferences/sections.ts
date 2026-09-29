@@ -11,6 +11,7 @@ const SECTION_TITLES: Record<string, string> = {
   insertDate: 'Date',
   markdownTables: 'Tableaux Markdown',
   changeMarkers: 'Lignes modifiées',
+  spellcheck: 'Orthographe',
   files: 'Fichiers',
   session: 'Session',
   workbench: 'Interface',
