@@ -479,7 +479,8 @@ export interface TextFile {
 }
 
 export interface FsApi {
-  readTextFile(path: string): Promise<TextFile>;
+  /** Detects the encoding, unless one is given ("windows-1252") to read the file with. */
+  readTextFile(path: string, encoding?: string): Promise<TextFile>;
   writeTextFile(
     path: string,
     text: string,

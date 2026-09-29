@@ -16,14 +16,21 @@ export interface ReadResult extends TextFileInfo {
   binary: boolean;
 }
 
-export async function readTextFile(path: string): Promise<ReadResult> {
+/** Reads a text file, detecting its encoding unless one is given ("windows-1252"). */
+export async function readTextFile(path: string, encoding?: string): Promise<ReadResult> {
   if (!isTauri()) {
     const text = fakeFs.read(path);
     // Like the backend: a NUL byte means binary.
     const binary = text.includes('\0');
-    return { text: binary ? '' : text, binary, encoding: 'utf-8', bom: false, lineEnding: 'lf' };
+    return {
+      text: binary ? '' : text,
+      binary,
+      encoding: encoding ?? 'utf-8',
+      bom: false,
+      lineEnding: 'lf',
+    };
   }
-  return await invoke<ReadResult>('read_text_file', { path });
+  return await invoke<ReadResult>('read_text_file', { path, encoding: encoding ?? null });
 }
 
 /** `text` uses "\n"; it is converted to `info.lineEnding` and encoded by the backend. */

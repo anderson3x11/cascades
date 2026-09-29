@@ -6,6 +6,7 @@ import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
 import editorCommands from './editor-commands';
 import editorSettings from './editor-settings';
+import encoding from './encoding';
 import explorer from './explorer';
 import fileOps from './file-ops';
 import fileWatcher from './file-watcher';
@@ -54,6 +55,7 @@ export const builtinExtensions: CascadesExtension[] = [
   conflicts,
   editorCommands,
   fileOps,
+  encoding,
   fileWatcher,
   // Before the session, which reopens images with their viewer.
   viewers,

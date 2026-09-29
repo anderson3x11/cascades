@@ -249,9 +249,13 @@ pub async fn read_binary(
 }
 
 #[tauri::command]
-pub async fn read_text_file(path: String) -> Result<Decoded, String> {
+pub async fn read_text_file(path: String, encoding: Option<String>) -> Result<Decoded, String> {
     let bytes = std::fs::read(&path).map_err(|e| format!("{path}: {e}"))?;
-    Ok(fs::decode(&bytes))
+    match encoding {
+        // A chosen encoding ("Rouvrir avec un autre encodage").
+        Some(label) => fs::decode_as(&bytes, &label),
+        None => Ok(fs::decode(&bytes)),
+    }
 }
 
 #[tauri::command]

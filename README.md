@@ -33,6 +33,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Menu Texte** : changer la casse (sélection ou mot sous le curseur), trier les lignes, supprimer les doublons ou les espaces en fin de ligne, joindre des lignes.
 - **Lignes modifiées** : une barre dans la marge montre ce qui a changé depuis le dernier enregistrement (vert ajouté, orange modifié, rouge supprimé).
 - **Page d'accueil** quand aucun fichier n'est ouvert : tape pour commencer une note, ou ouvre un fichier récent.
+- **Encodage et fins de ligne** : clique sur l'encodage ou sur LF / CRLF dans la barre d'état pour rouvrir un fichier mal lu ou le convertir.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 

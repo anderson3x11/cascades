@@ -89,13 +89,32 @@ pub fn decode(bytes: &[u8]) -> Decoded {
     }
 }
 
+/// Decodes with a chosen encoding instead of the detected one ("Rouvrir avec
+/// un autre encodage"). A BOM of that encoding is kept track of and removed.
+pub fn decode_as(bytes: &[u8], label: &str) -> Result<Decoded, String> {
+    let encoding = Encoding::for_label(label.as_bytes())
+        .ok_or_else(|| format!("encodage inconnu : {label}"))?;
+    let bom = Encoding::for_bom(bytes).is_some_and(|(found, _)| found == encoding);
+    let (text, _) = encoding.decode_with_bom_removal(bytes);
+    let line_ending = detect_line_ending(&text);
+    Ok(Decoded {
+        text: text.replace("\r\n", "\n"),
+        binary: false,
+        info: TextInfo {
+            encoding: encoding_name(encoding),
+            bom,
+            line_ending,
+        },
+    })
+}
+
 pub fn encode(text: &str, info: &TextInfo) -> Result<Vec<u8>, String> {
     let text = match info.line_ending {
         LineEnding::Lf => text.to_owned(),
         LineEnding::Crlf => text.replace('\n', "\r\n"),
     };
     let encoding = Encoding::for_label(info.encoding.as_bytes())
-        .ok_or_else(|| format!("Unknown encoding: {}", info.encoding))?;
+        .ok_or_else(|| format!("encodage inconnu : {}", info.encoding))?;
 
     let mut out = Vec::with_capacity(text.len() + 3);
     if encoding == UTF_16LE || encoding == UTF_16BE {
@@ -120,7 +139,7 @@ pub fn encode(text: &str, info: &TextInfo) -> Result<Vec<u8>, String> {
     let (bytes, _, unmappable) = encoding.encode(&text);
     if unmappable {
         return Err(format!(
-            "Some characters cannot be saved as {}. Convert the file to UTF-8.",
+            "certains caractères n'existent pas en {} : enregistre plutôt le fichier en UTF-8",
             encoding.name()
         ));
     }
@@ -219,5 +238,20 @@ mod tests {
             line_ending: LineEnding::Crlf,
         };
         assert_eq!(encode("a\nb", &info).unwrap(), b"a\r\nb");
+    }
+
+    #[test]
+    fn decodes_with_a_chosen_encoding() {
+        // "été" in Windows-1252, read as if it were Latin-1 by mistake or not.
+        let bytes = b"\xe9t\xe9\r\n";
+        let decoded = decode_as(bytes, "windows-1252").unwrap();
+        assert_eq!(decoded.text, "été\n");
+        assert_eq!(decoded.info.line_ending, LineEnding::Crlf);
+        assert!(!decoded.info.bom);
+
+        // A BOM of the chosen encoding is removed and remembered.
+        let decoded = decode_as(b"\xef\xbb\xbfabc", "utf-8").unwrap();
+        assert_eq!((decoded.text.as_str(), decoded.info.bom), ("abc", true));
+        assert!(decode_as(b"x", "klingon").is_err());
     }
 }

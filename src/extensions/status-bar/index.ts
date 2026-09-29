@@ -25,8 +25,20 @@ export default defineExtension({
     const position = ctx.statusBar.addItem({ id: 'position', alignment: 'left', priority: 100 });
     const counts = ctx.statusBar.addItem({ id: 'counts', alignment: 'left', priority: 90 });
     const language = ctx.statusBar.addItem({ id: 'language', alignment: 'right', priority: 30 });
-    const encoding = ctx.statusBar.addItem({ id: 'encoding', alignment: 'right', priority: 20 });
-    const eol = ctx.statusBar.addItem({ id: 'eol', alignment: 'right', priority: 10 });
+    const encoding = ctx.statusBar.addItem({
+      id: 'encoding',
+      alignment: 'right',
+      priority: 20,
+      command: 'file.changeEncoding',
+    });
+    encoding.tooltip = 'Changer l’encodage';
+    const eol = ctx.statusBar.addItem({
+      id: 'eol',
+      alignment: 'right',
+      priority: 10,
+      command: 'file.changeLineEnding',
+    });
+    eol.tooltip = 'Changer les fins de ligne';
     /** Size of a file shown by a viewer (PDF, image, hex), instead of the text details. */
     const size = ctx.statusBar.addItem({ id: 'size', alignment: 'left', priority: 100 });
     const textItems = [position, counts, encoding, eol];
