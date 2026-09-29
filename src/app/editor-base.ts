@@ -8,7 +8,8 @@ import {
 } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap, indentLess, insertTab } from '@codemirror/commands';
 import { bracketMatching, foldKeymap, indentOnInput } from '@codemirror/language';
-import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { highlightSelectionMatches, search, searchKeymap } from '@codemirror/search';
+import { FRENCH_PHRASES } from './editor-phrases';
 import { editorTheme } from './editor-theme';
 import { hangingIndent } from './hanging-indent';
 
@@ -22,6 +23,9 @@ export function baseExtensions(): Extension {
     drawSelection(),
     dropCursor(),
     EditorState.allowMultipleSelections.of(true),
+    EditorState.phrases.of(FRENCH_PHRASES),
+    // The search panel above the text, where the eye already is.
+    search({ top: true }),
     indentOnInput(),
     bracketMatching(),
     rectangularSelection(),

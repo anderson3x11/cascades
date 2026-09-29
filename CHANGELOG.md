@@ -48,6 +48,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Menu Texte : MAJUSCULES (Ctrl+Shift+U), minuscules (Ctrl+U), Majuscule À Chaque Mot (Leader U), Majuscule en début de phrase (Leader Shift+U), sur la sélection ou le mot sous le curseur ; trier les lignes (A à Z, Z à A, accents et casse ignorés), supprimer les lignes en double (les lignes vides restent), supprimer les espaces en fin de ligne, joindre les lignes.
 - Sélection rapide : Ctrl+L sélectionne la ligne puis ajoute la suivante à chaque appui, Ctrl+Shift+L retire la dernière, Leader L sélectionne la cascade (puis le paragraphe).
 - Menu Aller : aller à la ligne (Ctrl+G), début et fin du fichier (Ctrl+Début, Ctrl+Fin), signets (Ctrl+F2 pour poser ou retirer, F2 et Shift+F2 pour passer de l'un à l'autre, liste des signets), marqués d'un point dans la marge.
+- Recherche dans le fichier (Ctrl+F) : panneau en haut de l'éditeur, en français, avec un compteur « 3 sur 12 ». Les textes propres à CodeMirror (aller à la ligne, repli…) sont aussi traduits.
 - Commentaires grisés dans les fichiers JSON, et Ctrl+/ les commente avec `//`. Ctrl+: commente aussi, pour les claviers AZERTY.
 - Aperçus (Ctrl+Shift+V), à côté de l'éditeur ou seuls, chargés à la demande : Markdown (tables, cases à cocher, notes, code coloré aux couleurs du thème, images locales, liens ouverts dans le navigateur, scroll synchronisé), HTML dans une iframe isolée (scripts bloqués par défaut), SVG, CSV/TSV en tableau triable, JSON en arbre repliable.
 - Visionneuse d'images avec zoom, dans un onglet dédié.

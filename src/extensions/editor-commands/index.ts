@@ -10,6 +10,7 @@ import {
 } from '@codemirror/commands';
 import { openSearchPanel, selectNextOccurrence } from '@codemirror/search';
 import { defineExtension, type EditorView } from '../../api';
+import { findCount } from './find-count';
 
 type EditorCommand = (view: EditorView) => boolean;
 
@@ -35,6 +36,7 @@ export default defineExtension({
   id: 'cascades.editor-commands',
   activate(ctx) {
     ctx.menus.registerMenu({ id: 'edit', title: 'Édition', order: 20 });
+    ctx.editor.addExtension(() => findCount);
     for (const [order, [id, title, run, group]] of COMMANDS.entries()) {
       ctx.menus.registerItem('edit', { command: id, group, order });
       ctx.commands.register(
