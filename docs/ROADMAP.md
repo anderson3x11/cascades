@@ -80,8 +80,8 @@ Les outils du quotidien d'un bloc-notes, dans l'esprit de Notepad++. Tout passe 
 
 **Open source et site**
 
-- Dépôt `cascades` public sur GitHub : licence MIT, CONTRIBUTING, modèles d'issues, étiquettes « bon premier ticket ».
-- Dépôt séparé `cascades-site`, hébergé gratuitement sur GitHub Pages :
+- Les deux dépôts (app et site) sont créés sur GitHub. Reste pour l'app : licence MIT, CONTRIBUTING, modèles d'issues, étiquettes « bon premier ticket ».
+- Le dépôt du site, hébergé gratuitement sur GitHub Pages :
   - page d'accueil avec présentation, captures et bouton de téléchargement (le bon installeur selon le système) ;
   - wiki des raccourcis, commandes et réglages, **généré depuis l'app** pour rester toujours à jour ;
   - guide des cascades, de la configuration (`settings.json`, `keybindings.json`, thèmes) et des plugins ;
