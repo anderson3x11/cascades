@@ -30,6 +30,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Paires automatiques** : parenthèses, crochets, accolades et guillemets se ferment seuls ; en Markdown, `**` et `` ` `` aussi. Sélectionne un mot et tape `*`, `(` ou `` ` `` pour l'entourer.
 - **Liens** : Ctrl+clic ouvre une adresse web dans le navigateur, ou un lien Markdown vers un fichier dans un onglet. En Markdown, colle une adresse sur du texte sélectionné pour en faire un lien.
 - **Tableaux Markdown** : Tab et Shift+Tab passent d'une cellule à l'autre en alignant les colonnes ; Tab après la dernière cellule ajoute une ligne. Édition > Insérer un tableau en pose un prêt à remplir.
+- **Menu Texte** : changer la casse (sélection ou mot sous le curseur), trier les lignes, supprimer les doublons ou les espaces en fin de ligne, joindre des lignes.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 
@@ -51,6 +52,8 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
 | Préférences                                     | Ctrl+,                                    |
 | Insérer la date                                 | Ctrl+;                                    |
+| MAJUSCULES / minuscules                         | Ctrl+Shift+U / Ctrl+U                     |
+| Majuscule À Chaque Mot / en début de phrase     | Leader U / Leader Shift+U                 |
 | Ajouter un dossier / Panneau de gauche          | Ctrl+Shift+O / Ctrl+B                     |
 | Rechercher dans les fichiers                    | Ctrl+Shift+F                              |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |

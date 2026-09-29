@@ -26,6 +26,7 @@ import session from './session';
 import split from './split';
 import statusBar from './status-bar';
 import tabs from './tabs';
+import textTools from './text-tools';
 import themes from './themes';
 
 /** Built-in extensions, in activation order. */
@@ -38,6 +39,7 @@ export const builtinExtensions: CascadesExtension[] = [
   links,
   insertDate,
   markdownTables,
+  textTools,
   jsonComments,
   smartLists,
   cascades,
