@@ -226,6 +226,8 @@ Mesures du 30/09/2026, version Windows 0.1.0 :
 
 ## Développement
 
+Les contributions sont les bienvenues : voir [CONTRIBUTING.md](CONTRIBUTING.md) (en anglais).
+
 Prérequis : Node 20+, Rust stable, et sous Windows les Visual Studio Build Tools (charge de travail C++). Voir les [prérequis Tauri](https://v2.tauri.app/start/prerequisites/).
 
 ```sh

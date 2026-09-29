@@ -226,6 +226,8 @@ Measured on 30/09/2026, Windows build 0.1.0:
 
 ## Development
 
+Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 Requirements: Node 20+, stable Rust, and on Windows the Visual Studio Build Tools (C++ workload). See the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 ```sh
