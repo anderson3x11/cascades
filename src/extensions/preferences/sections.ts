@@ -19,6 +19,7 @@ const sectionTitles = (): Record<string, string> => ({
   preview: t('Previews'),
   keyboard: t('Keyboard'),
   plugins: t('Plugins'),
+  updates: t('Updates'),
 });
 
 export type Setting = SettingSchema & { key: string };

@@ -1,7 +1,7 @@
 import { isTauri } from '@tauri-apps/api/core';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import type { AppEvents, CascadesExtension, ExtensionContext } from '../api';
+import type { AppEvents, CascadesExtension, ExtensionContext, UpdateInfo } from '../api';
 import { CommandRegistry } from '../core/commands/registry';
 import { ContextKeys } from '../core/context/context-keys';
 import { DisposableStore, type Disposable } from '../core/disposable';
@@ -31,6 +31,7 @@ import * as search from '../platform/search';
 import * as spell from '../platform/spell';
 import { watchDir, watchFile } from '../platform/watch';
 import { onOpenFiles } from '../platform/launch';
+import * as updater from '../platform/updater';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { PLUGINS_SETTING, PluginService } from './plugins';
@@ -253,6 +254,34 @@ export class Workbench {
         ],
       });
     });
+  }
+
+  /** The update found by the last check, ready to install. */
+  private update: Awaited<ReturnType<typeof updater.checkForUpdate>> = null;
+
+  private async checkForUpdate(): Promise<UpdateInfo | null> {
+    this.update = await updater.checkForUpdate();
+    if (!this.update) return null;
+    const { version, currentVersion, body } = this.update;
+    return { version, currentVersion, notes: body };
+  }
+
+  private async installUpdate(
+    onProgress?: (downloaded: number, total: number | undefined) => void,
+  ): Promise<void> {
+    const update = this.update;
+    if (!update) throw new Error('No update to install: call checkForUpdate first.');
+    let downloaded = 0;
+    let total: number | undefined;
+    await update.download((event) => {
+      if (event.event === 'Started') total = event.data.contentLength;
+      if (event.event === 'Progress') downloaded += event.data.chunkLength;
+      onProgress?.(downloaded, total);
+    });
+    // Nothing is lost: the installer closes the app on Windows.
+    await this.runWillQuit();
+    await update.install();
+    await updater.relaunch();
   }
 
   /** Reloads the window, keeping the session like a close would. */
@@ -615,6 +644,9 @@ export class Workbench {
         },
         openExternal,
         platform,
+        version: updater.appVersion,
+        checkForUpdate: () => this.checkForUpdate(),
+        installUpdate: (onProgress) => this.installUpdate(onProgress),
       },
       viewers: {
         register: (viewer) => track(this.viewers.register(viewer)),

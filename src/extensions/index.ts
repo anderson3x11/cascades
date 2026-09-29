@@ -20,6 +20,7 @@ import navigation from './navigation';
 import smartLists from './smart-lists';
 import palette from './palette';
 import preferences from './preferences';
+import updates from './updates';
 import preview from './preview';
 import viewers from './viewers';
 import quarantine from './quarantine';
@@ -72,5 +73,6 @@ export const builtinExtensions: CascadesExtension[] = [
   quarantine,
   statusBar,
   preferences,
+  updates,
   defaultKeybindings,
 ];

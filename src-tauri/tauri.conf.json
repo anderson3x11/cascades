@@ -95,6 +95,18 @@
     },
     "macOS": {
       "minimumSystemVersion": "10.15"
+    },
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "PUBLIC_KEY",
+      "endpoints": [
+        "https://github.com/anderson3x11/cascades/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

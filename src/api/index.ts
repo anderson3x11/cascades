@@ -729,6 +729,24 @@ export interface AppApi {
   openExternal(url: string): Promise<void>;
   /** The system Cascades runs on. */
   platform(): 'windows' | 'macos' | 'linux';
+  /** Version of Cascades ("0.5.0"). */
+  version(): Promise<string>;
+  /** Looks for a newer release of Cascades. Null when this one is the latest. */
+  checkForUpdate(): Promise<UpdateInfo | null>;
+  /**
+   * Downloads and installs the update found by checkForUpdate, then restarts
+   * Cascades. The session is saved first, as when the window closes.
+   */
+  installUpdate(
+    onProgress?: (downloaded: number, total: number | undefined) => void,
+  ): Promise<void>;
+}
+
+export interface UpdateInfo {
+  version: string;
+  currentVersion: string;
+  /** Release notes. */
+  notes?: string;
 }
 
 // Events --------------------------------------------------------------------

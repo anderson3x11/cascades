@@ -502,5 +502,15 @@
   "Extensions…": "Extensions…",
   "Move to the Trash": "Mettre à la corbeille",
   "Move the folder \"{name}\" to the Trash?": "Mettre le dossier « {name} » à la corbeille ?",
-  "Move the file \"{name}\" to the Trash?": "Mettre le fichier « {name} » à la corbeille ?"
+  "Move the file \"{name}\" to the Trash?": "Mettre le fichier « {name} » à la corbeille ?",
+  "Look for a new version of Cascades at start.": "Rechercher une nouvelle version de Cascades au démarrage.",
+  "Downloading the update…": "Téléchargement de la mise à jour…",
+  "Downloading the update… {percent} %": "Téléchargement de la mise à jour… {percent} %",
+  "The update failed: {problem}": "La mise à jour a échoué : {problem}",
+  "Cascades {version} is available (you have {current}).": "Cascades {version} est disponible (tu as la {current}).",
+  "Update and restart": "Mettre à jour et redémarrer",
+  "Could not look for updates: {problem}": "Impossible de rechercher les mises à jour : {problem}",
+  "Cascades {version} is the latest version.": "Cascades {version} est la dernière version.",
+  "Check for updates…": "Rechercher des mises à jour…",
+  "Updates": "Mises à jour"
 }
