@@ -4,6 +4,13 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-09-29
+
+### Ajouté
+
+- Mises à jour intégrées : au démarrage (réglage `updates.check`) ou par Fichier > Rechercher des mises à jour…, Cascades propose la nouvelle version publiée sur GitHub, la télécharge, vérifie sa signature, enregistre la session et redémarre.
+- Plugins : `ctx.app.version()`, `ctx.app.checkForUpdate()`, `ctx.app.installUpdate()`.
+
 ## [0.5.0] - 2026-09-29
 
 ### Ajouté
