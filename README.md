@@ -244,7 +244,7 @@ npm run test:e2e       # Playwright tests in a browser (frontend only)
 cd src-tauri && cargo test && cargo clippy && cargo fmt --check
 ```
 
-`npm run dev` runs the frontend alone in a browser, on an in-memory disk. `npm run screenshots` takes the pictures of this README.
+`npm run dev` runs the frontend alone in a browser, on an in-memory disk. `npm run screenshots` takes the pictures of this README. `npm run docs` writes `docs/reference.json`, the list of commands, shortcuts and settings that the website shows.
 
 ## License
 

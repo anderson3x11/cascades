@@ -20,4 +20,16 @@ mount(App, { target, props: { workbench } });
 void workbench.start(builtinExtensions);
 
 // Handle for e2e tests and debugging in the dev build only.
-if (import.meta.env.DEV) Object.assign(window, { __cascades: workbench, __cascadesFs: fakeFs });
+if (import.meta.env.DEV) {
+  Object.assign(window, {
+    __cascades: workbench,
+    __cascadesFs: fakeFs,
+    // For npm run docs.
+    __cascadesReference: async () =>
+      (await import('./app/reference')).buildReference(
+        workbench.commands,
+        workbench.keybindings,
+        workbench.settings,
+      ),
+  });
+}

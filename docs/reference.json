@@ -1,0 +1,1863 @@
+{
+  "version": "0.6.1",
+  "en": {
+    "commands": [
+      {
+        "id": "markdown.alignTable",
+        "title": "Align the table",
+        "category": "Edit",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "markdown.insertTable",
+        "title": "Insert a table",
+        "category": "Edit",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.insertDate",
+        "title": "Insert the date",
+        "category": "Edit",
+        "keys": ["Ctrl+;"],
+        "keysMac": ["⌘;"]
+      },
+      {
+        "id": "quarantine.add",
+        "title": "Put in quarantine",
+        "category": "Edit",
+        "keys": ["Leader Q"],
+        "keysMac": ["Leader Q"]
+      },
+      {
+        "id": "navigation.deselectLine",
+        "title": "Remove the last selected line",
+        "category": "Edit",
+        "keys": ["Ctrl+Shift+L"],
+        "keysMac": ["⇧⌘L"]
+      },
+      {
+        "id": "search.inFiles",
+        "title": "Search in files…",
+        "category": "Edit",
+        "keys": ["Ctrl+Shift+F"],
+        "keysMac": ["⇧⌘F"]
+      },
+      {
+        "id": "navigation.selectLine",
+        "title": "Select line",
+        "category": "Edit",
+        "keys": ["Ctrl+L"],
+        "keysMac": ["⌘L"]
+      },
+      {
+        "id": "navigation.selectParagraph",
+        "title": "Select the paragraph or cascade",
+        "category": "Edit",
+        "keys": ["Leader L"],
+        "keysMac": ["Leader L"]
+      },
+      {
+        "id": "editor.addNextOccurrence",
+        "title": "Add next occurrence",
+        "category": "Editor",
+        "keys": ["Ctrl+D"],
+        "keysMac": ["⌘D"]
+      },
+      {
+        "id": "editor.toggleTask",
+        "title": "Check / uncheck the task",
+        "category": "Editor",
+        "keys": ["Ctrl+Enter"],
+        "keysMac": ["⌘Enter"]
+      },
+      {
+        "id": "editor.toggleComment",
+        "title": "Comment / uncomment",
+        "category": "Editor",
+        "keys": ["Ctrl+:", "Ctrl+/"],
+        "keysMac": ["⌘:", "⌘/"]
+      },
+      {
+        "id": "editor.deleteLine",
+        "title": "Delete line",
+        "category": "Editor",
+        "keys": ["Ctrl+Shift+K"],
+        "keysMac": ["⇧⌘K"]
+      },
+      {
+        "id": "editor.duplicateLine",
+        "title": "Duplicate line",
+        "category": "Editor",
+        "keys": ["Alt+Shift+↓"],
+        "keysMac": ["⌥⇧↓"]
+      },
+      {
+        "id": "search.find",
+        "title": "Find",
+        "category": "Editor",
+        "keys": ["Ctrl+F"],
+        "keysMac": ["⌘F"]
+      },
+      {
+        "id": "editor.moveLineDown",
+        "title": "Move line down",
+        "category": "Editor",
+        "keys": ["Alt+↓"],
+        "keysMac": ["⌥↓"]
+      },
+      {
+        "id": "editor.moveLineUp",
+        "title": "Move line up",
+        "category": "Editor",
+        "keys": ["Alt+↑"],
+        "keysMac": ["⌥↑"]
+      },
+      {
+        "id": "editor.redo",
+        "title": "Redo",
+        "category": "Editor",
+        "keys": ["Ctrl+Shift+Z", "Ctrl+Y"],
+        "keysMac": ["⇧⌘Z", "⌘Y"]
+      },
+      {
+        "id": "search.replace",
+        "title": "Replace",
+        "category": "Editor",
+        "keys": ["Ctrl+H", "Ctrl+Alt+F"],
+        "keysMac": ["⌘H", "⌥⌘F"]
+      },
+      {
+        "id": "editor.selectAll",
+        "title": "Select all",
+        "category": "Editor",
+        "keys": ["Ctrl+A"],
+        "keysMac": ["⌘A"]
+      },
+      {
+        "id": "editor.undo",
+        "title": "Undo",
+        "category": "Editor",
+        "keys": ["Ctrl+Z"],
+        "keysMac": ["⌘Z"]
+      },
+      {
+        "id": "explorer.addFolder",
+        "title": "Add folder…",
+        "category": "File",
+        "keys": ["Ctrl+Shift+O"],
+        "keysMac": ["⇧⌘O"]
+      },
+      {
+        "id": "file.changeEncoding",
+        "title": "Change the encoding…",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.changeLineEnding",
+        "title": "Change the line endings…",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "app.checkForUpdates",
+        "title": "Check for updates…",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "explorer.removeAllFolders",
+        "title": "Close all folders",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.new",
+        "title": "New file",
+        "category": "File",
+        "keys": ["Ctrl+N"],
+        "keysMac": ["⌘N"]
+      },
+      {
+        "id": "file.open",
+        "title": "Open file…",
+        "category": "File",
+        "keys": ["Ctrl+O"],
+        "keysMac": ["⌘O"]
+      },
+      {
+        "id": "workbench.quickOpen",
+        "title": "Quick open…",
+        "category": "File",
+        "keys": ["Ctrl+P", "Leader O"],
+        "keysMac": ["⌘P", "Leader O"]
+      },
+      {
+        "id": "file.reopenWithEncoding",
+        "title": "Reopen with another encoding…",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.save",
+        "title": "Save",
+        "category": "File",
+        "keys": ["Ctrl+S"],
+        "keysMac": ["⌘S"]
+      },
+      {
+        "id": "file.saveAs",
+        "title": "Save as…",
+        "category": "File",
+        "keys": ["Ctrl+Shift+S"],
+        "keysMac": ["⇧⌘S"]
+      },
+      {
+        "id": "file.saveWithEncoding",
+        "title": "Save with another encoding…",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "workbench.welcome",
+        "title": "Welcome",
+        "category": "File",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "navigation.listBookmarks",
+        "title": "Bookmarks…",
+        "category": "Go",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "navigation.goToBottom",
+        "title": "End of the file",
+        "category": "Go",
+        "keys": ["Ctrl+End"],
+        "keysMac": ["⌘End"]
+      },
+      {
+        "id": "navigation.goToLine",
+        "title": "Go to line…",
+        "category": "Go",
+        "keys": ["Ctrl+G"],
+        "keysMac": ["⌘G"]
+      },
+      {
+        "id": "navigation.nextBookmark",
+        "title": "Next bookmark",
+        "category": "Go",
+        "keys": ["F2"],
+        "keysMac": ["F2"]
+      },
+      {
+        "id": "navigation.previousBookmark",
+        "title": "Previous bookmark",
+        "category": "Go",
+        "keys": ["Shift+F2"],
+        "keysMac": ["⇧F2"]
+      },
+      {
+        "id": "navigation.toggleBookmark",
+        "title": "Set or remove a bookmark",
+        "category": "Go",
+        "keys": ["Ctrl+F2"],
+        "keysMac": ["⌘F2"]
+      },
+      {
+        "id": "navigation.goToTop",
+        "title": "Start of the file",
+        "category": "Go",
+        "keys": ["Ctrl+Home"],
+        "keysMac": ["⌘Home"]
+      },
+      {
+        "id": "preferences.openExtensions",
+        "title": "Extensions…",
+        "category": "Preferences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.openShortcuts",
+        "title": "Keyboard shortcuts…",
+        "category": "Preferences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.openKeybindingsFile",
+        "title": "Open keybindings.json",
+        "category": "Preferences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.openSettingsFile",
+        "title": "Open settings.json",
+        "category": "Preferences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.open",
+        "title": "Preferences…",
+        "category": "Preferences",
+        "keys": ["Ctrl+,"],
+        "keysMac": ["⌘,"]
+      },
+      {
+        "id": "tabs.close",
+        "title": "Close the tab",
+        "category": "Tabs",
+        "keys": ["Ctrl+W"],
+        "keysMac": ["⌘W"]
+      },
+      {
+        "id": "tabs.next",
+        "title": "Next tab",
+        "category": "Tabs",
+        "keys": ["Ctrl+Tab", "Ctrl+PageDown"],
+        "keysMac": ["⌃Tab", "⌘PageDown"]
+      },
+      {
+        "id": "tabs.previous",
+        "title": "Previous tab",
+        "category": "Tabs",
+        "keys": ["Ctrl+Shift+Tab", "Ctrl+PageUp"],
+        "keysMac": ["⌃⇧Tab", "⌘PageUp"]
+      },
+      {
+        "id": "tabs.reopenClosed",
+        "title": "Reopen the last closed tab",
+        "category": "Tabs",
+        "keys": ["Ctrl+Shift+T"],
+        "keysMac": ["⇧⌘T"]
+      },
+      {
+        "id": "text.joinLines",
+        "title": "Join lines",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.chooseSpellLanguage",
+        "title": "Language of the spell checker…",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.lowerCase",
+        "title": "lowercase",
+        "category": "Text",
+        "keys": ["Ctrl+U"],
+        "keysMac": ["⌘U"]
+      },
+      {
+        "id": "text.removeDuplicateLines",
+        "title": "Remove duplicate lines",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.sentenceCase",
+        "title": "Sentence case",
+        "category": "Text",
+        "keys": ["Leader Shift+U"],
+        "keysMac": ["Leader ⇧U"]
+      },
+      {
+        "id": "text.sortLines",
+        "title": "Sort lines (A to Z)",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.sortLinesDescending",
+        "title": "Sort lines (Z to A)",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.titleCase",
+        "title": "Title Case",
+        "category": "Text",
+        "keys": ["Leader U"],
+        "keysMac": ["Leader U"]
+      },
+      {
+        "id": "text.trimTrailingWhitespace",
+        "title": "Trim trailing spaces",
+        "category": "Text",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.toggleSpellcheck",
+        "title": "Turn the spell checker on or off",
+        "category": "Text",
+        "keys": ["F7"],
+        "keysMac": ["F7"]
+      },
+      {
+        "id": "text.upperCase",
+        "title": "UPPERCASE",
+        "category": "Text",
+        "keys": ["Ctrl+Shift+U"],
+        "keysMac": ["⇧⌘U"]
+      },
+      {
+        "id": "cascades.selectStyle",
+        "title": "Cascade style…",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.changeLanguage",
+        "title": "Change the language…",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.cloneToNextGroup",
+        "title": "Clone to the next view",
+        "category": "View",
+        "keys": ["Ctrl+\\", "Leader S"],
+        "keysMac": ["⌘\\", "Leader S"]
+      },
+      {
+        "id": "workbench.commandPalette",
+        "title": "Command palette…",
+        "category": "View",
+        "keys": ["Ctrl+Shift+P", "Leader P"],
+        "keysMac": ["⇧⌘P", "Leader P"]
+      },
+      {
+        "id": "view.focusGroup1",
+        "title": "Go to view 1",
+        "category": "View",
+        "keys": ["Ctrl+1"],
+        "keysMac": ["⌘1"]
+      },
+      {
+        "id": "view.focusGroup2",
+        "title": "Go to view 2",
+        "category": "View",
+        "keys": ["Ctrl+2"],
+        "keysMac": ["⌘2"]
+      },
+      {
+        "id": "view.focusGroup3",
+        "title": "Go to view 3",
+        "category": "View",
+        "keys": ["Ctrl+3"],
+        "keysMac": ["⌘3"]
+      },
+      {
+        "id": "view.focusGroup4",
+        "title": "Go to view 4",
+        "category": "View",
+        "keys": ["Ctrl+4"],
+        "keysMac": ["⌘4"]
+      },
+      {
+        "id": "view.joinGroups",
+        "title": "Join all views",
+        "category": "View",
+        "keys": ["Leader J"],
+        "keysMac": ["Leader J"]
+      },
+      {
+        "id": "view.moveToNextGroup",
+        "title": "Move to the next view",
+        "category": "View",
+        "keys": ["Ctrl+Alt+→"],
+        "keysMac": ["⌥⌘→"]
+      },
+      {
+        "id": "view.moveToPreviousGroup",
+        "title": "Move to the previous view",
+        "category": "View",
+        "keys": ["Ctrl+Alt+←"],
+        "keysMac": ["⌥⌘←"]
+      },
+      {
+        "id": "view.togglePreviewFull",
+        "title": "Preview alone",
+        "category": "View",
+        "keys": ["Leader Shift+V"],
+        "keysMac": ["Leader ⇧V"]
+      },
+      {
+        "id": "view.togglePreview",
+        "title": "Preview to the side",
+        "category": "View",
+        "keys": ["Ctrl+Shift+V", "Leader V"],
+        "keysMac": ["⇧⌘V", "Leader V"]
+      },
+      {
+        "id": "quarantine.togglePanel",
+        "title": "Quarantine panel",
+        "category": "View",
+        "keys": ["Leader Shift+Q"],
+        "keysMac": ["Leader ⇧Q"]
+      },
+      {
+        "id": "themes.reload",
+        "title": "Reload the themes",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.zoomReset",
+        "title": "Reset zoom",
+        "category": "View",
+        "keys": ["Ctrl+0"],
+        "keysMac": ["⌘0"]
+      },
+      {
+        "id": "cascades.toggle",
+        "title": "Show or hide cascades",
+        "category": "View",
+        "keys": ["Leader C"],
+        "keysMac": ["Leader C"]
+      },
+      {
+        "id": "cascades.toggleBlock",
+        "title": "Show or hide the cascade of this block",
+        "category": "View",
+        "keys": ["Leader Shift+C"],
+        "keysMac": ["Leader ⇧C"]
+      },
+      {
+        "id": "view.toggleSidebar",
+        "title": "Show or hide the left panel",
+        "category": "View",
+        "keys": ["Ctrl+B"],
+        "keysMac": ["⌘B"]
+      },
+      {
+        "id": "view.toggleMenuBar",
+        "title": "Show or hide the menu bar",
+        "category": "View",
+        "keys": ["Leader M"],
+        "keysMac": ["Leader M"]
+      },
+      {
+        "id": "view.toggleStatusBar",
+        "title": "Show or hide the status bar",
+        "category": "View",
+        "keys": ["Leader B"],
+        "keysMac": ["Leader B"]
+      },
+      {
+        "id": "view.toggleTabs",
+        "title": "Show or hide the tabs",
+        "category": "View",
+        "keys": ["Leader Tab"],
+        "keysMac": ["Leader Tab"]
+      },
+      {
+        "id": "view.selectTheme",
+        "title": "Theme…",
+        "category": "View",
+        "keys": ["Leader T"],
+        "keysMac": ["Leader T"]
+      },
+      {
+        "id": "view.toggleSplitOrientation",
+        "title": "Views side by side / stacked",
+        "category": "View",
+        "keys": ["Leader Shift+S", "Leader \\"],
+        "keysMac": ["Leader ⇧S", "Leader \\"]
+      },
+      {
+        "id": "view.toggleZen",
+        "title": "Zen mode",
+        "category": "View",
+        "keys": ["Leader Z"],
+        "keysMac": ["Leader Z"]
+      },
+      {
+        "id": "view.zoomIn",
+        "title": "Zoom in",
+        "category": "View",
+        "keys": ["Ctrl+=", "Ctrl++"],
+        "keysMac": ["⌘=", "⌘+"]
+      },
+      {
+        "id": "view.zoomOut",
+        "title": "Zoom out",
+        "category": "View",
+        "keys": ["Ctrl+-"],
+        "keysMac": ["⌘-"]
+      }
+    ],
+    "settings": [
+      {
+        "key": "autoPairs.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Close ( [ { \" ' by themselves and, in Markdown, ** and `. Typing one of them, or * _ ` ~, over a selection wraps it."
+      },
+      {
+        "key": "cascades.colorByDepth",
+        "type": "boolean",
+        "default": true,
+        "description": "A different color for each depth."
+      },
+      {
+        "key": "cascades.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Draw the cascade connectors."
+      },
+      {
+        "key": "cascades.highlight",
+        "type": "boolean",
+        "default": true,
+        "description": "Highlight the branch and parent of the current or hovered line."
+      },
+      {
+        "key": "cascades.ignoreLists",
+        "type": "boolean",
+        "default": false,
+        "description": "Draw no cascade to list items (- item, 1. item…)."
+      },
+      {
+        "key": "cascades.languages",
+        "type": "array",
+        "default": ["plaintext", "markdown"],
+        "description": "Languages where cascades are drawn (plaintext covers .txt and files without extension)."
+      },
+      {
+        "key": "cascades.lineWidth",
+        "type": "number",
+        "default": 1.2,
+        "description": "Width of the lines (px)."
+      },
+      {
+        "key": "cascades.style",
+        "type": "string",
+        "default": "arrow",
+        "description": "Style of the connectors: arrow, rounded, curved, bullet, line, dashed, dotted, guides.",
+        "values": ["arrow", "rounded", "curved", "bullet", "line", "dashed", "dotted", "guides"]
+      },
+      {
+        "key": "changeMarkers.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Mark the lines changed since the last save in the margin: green added, orange changed, red deleted."
+      },
+      {
+        "key": "editor.folding",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the folding margin."
+      },
+      {
+        "key": "editor.fontFamily",
+        "type": "string",
+        "default": "'Cascadia Code', Consolas, 'SF Mono', Menlo, 'DejaVu Sans Mono', monospace",
+        "description": "Font of the editor (a CSS list, the first installed one is used)."
+      },
+      {
+        "key": "editor.fontLigatures",
+        "type": "boolean",
+        "default": false,
+        "description": "Use the ligatures of the font (=> becomes ⇒ with Cascadia Code…)."
+      },
+      {
+        "key": "editor.fontSize",
+        "type": "number",
+        "default": 14,
+        "description": "Font size of the editor (px)."
+      },
+      {
+        "key": "editor.highlightActiveLine",
+        "type": "boolean",
+        "default": true,
+        "description": "Highlight the line of the cursor."
+      },
+      {
+        "key": "editor.insertSpaces",
+        "type": "boolean",
+        "default": false,
+        "description": "Indent with spaces instead of tabs."
+      },
+      {
+        "key": "editor.lineHeight",
+        "type": "number",
+        "default": 1.6,
+        "description": "Line height, as a multiple of the font size."
+      },
+      {
+        "key": "editor.lineNumbers",
+        "type": "boolean",
+        "default": true,
+        "description": "Show line numbers."
+      },
+      {
+        "key": "editor.tabSize",
+        "type": "number",
+        "default": 4,
+        "description": "Width of a tab."
+      },
+      {
+        "key": "editor.wordWrap",
+        "type": "boolean",
+        "default": false,
+        "description": "Wrap long lines."
+      },
+      {
+        "key": "explorer.exclude",
+        "type": "array",
+        "default": [".git", "node_modules"],
+        "description": "Names hidden in the explorer (* for any text: \"*.log\")."
+      },
+      {
+        "key": "files.autoSave",
+        "type": "string",
+        "default": "off",
+        "description": "Save changed files by themselves (not untitled tabs).",
+        "values": ["off", "afterDelay"]
+      },
+      {
+        "key": "files.autoSaveDelay",
+        "type": "number",
+        "default": 1000,
+        "description": "Delay in milliseconds before saving by itself."
+      },
+      {
+        "key": "files.defaultExtension",
+        "type": "string",
+        "default": "txt",
+        "description": "Extension offered for a new file (\"\" for none)."
+      },
+      {
+        "key": "files.largeFileSize",
+        "type": "number",
+        "default": 50,
+        "description": "Size (in MB) from which a file opens in light mode: no colors, cascades or word count."
+      },
+      {
+        "key": "indentKeep.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Enter keeps the exact indentation of the current line."
+      },
+      {
+        "key": "insertDate.format",
+        "type": "string",
+        "default": "DD/MM/YYYY",
+        "description": "Format of the inserted date: YYYY year, MM month, MMMM month name, DD day, dddd day name, HH:mm time, [text] as is. Example: \"dddd D MMMM YYYY\"."
+      },
+      {
+        "key": "keyboard.leader",
+        "type": "string",
+        "default": "Ctrl+Space",
+        "description": "Leader key: \"Leader X\" shortcuts are this key, then X (as in Vim)."
+      },
+      {
+        "key": "links.ctrlClick",
+        "type": "boolean",
+        "default": true,
+        "description": "Ctrl+click opens a link: a web address in the browser, a file in a tab."
+      },
+      {
+        "key": "links.pasteAsMarkdown",
+        "type": "boolean",
+        "default": true,
+        "description": "In Markdown, pasting a web address over selected text makes it a link [text](address)."
+      },
+      {
+        "key": "markdownTables.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "In a Markdown table, Tab and Shift+Tab move between cells and align the columns."
+      },
+      {
+        "key": "plugins.enabled",
+        "type": "array",
+        "default": [],
+        "description": "Plugins turned on, by id (Preferences > Extensions)."
+      },
+      {
+        "key": "preview.fontFamily",
+        "type": "string",
+        "default": "system-ui, 'Segoe UI', sans-serif",
+        "description": "Font of the previews (Markdown, HTML)."
+      },
+      {
+        "key": "preview.fontSize",
+        "type": "number",
+        "default": 15,
+        "description": "Font size of the previews (px)."
+      },
+      {
+        "key": "preview.htmlScripts",
+        "type": "boolean",
+        "default": false,
+        "description": "Run the scripts of previewed HTML pages (always kept apart from the app)."
+      },
+      {
+        "key": "session.restore",
+        "type": "boolean",
+        "default": true,
+        "description": "Reopen the tabs on start, unsaved ones included."
+      },
+      {
+        "key": "smartLists.continue",
+        "type": "boolean",
+        "default": true,
+        "description": "Enter continues the list, or leaves it on an empty bullet."
+      },
+      {
+        "key": "smartLists.languages",
+        "type": "array",
+        "default": ["plaintext", "markdown"],
+        "description": "Languages where smart lists are on."
+      },
+      {
+        "key": "smartLists.renumber",
+        "type": "boolean",
+        "default": true,
+        "description": "Renumber numbered lists after each change."
+      },
+      {
+        "key": "smartLists.tabIndents",
+        "type": "boolean",
+        "default": true,
+        "description": "Tab and Shift+Tab change the level of a list line."
+      },
+      {
+        "key": "spellcheck.enabled",
+        "type": "boolean",
+        "default": false,
+        "description": "Underline spelling mistakes (F7 to turn on or off)."
+      },
+      {
+        "key": "spellcheck.language",
+        "type": "string",
+        "default": "fr",
+        "description": "Language of the spell checker: \"fr\", \"en\", \"es\"… (dictionaries installed in Windows)."
+      },
+      {
+        "key": "updates.check",
+        "type": "boolean",
+        "default": true,
+        "description": "Look for a new version of Cascades at start."
+      },
+      {
+        "key": "workbench.fontFamily",
+        "type": "string",
+        "default": "system-ui, 'Segoe UI', sans-serif",
+        "description": "Font of the interface (menus, tabs, status bar)."
+      },
+      {
+        "key": "workbench.fontSize",
+        "type": "number",
+        "default": 13,
+        "description": "Font size of the interface (px)."
+      },
+      {
+        "key": "workbench.language",
+        "type": "string",
+        "default": "auto",
+        "description": "Language of the interface: \"auto\" follows the system, \"en\" English, \"fr\" French.",
+        "values": ["auto", "en", "fr"]
+      },
+      {
+        "key": "workbench.showMenuBar",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the menu bar."
+      },
+      {
+        "key": "workbench.showStatusBar",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the status bar."
+      },
+      {
+        "key": "workbench.showTabs",
+        "type": "boolean",
+        "default": true,
+        "description": "Show the tabs."
+      },
+      {
+        "key": "workbench.theme",
+        "type": "string",
+        "default": "auto",
+        "description": "Theme: \"auto\" follows the light or dark mode of the system, or else a theme id."
+      },
+      {
+        "key": "workbench.themeDark",
+        "type": "string",
+        "default": "dark",
+        "description": "Theme used in auto mode when the system is dark."
+      },
+      {
+        "key": "workbench.themeLight",
+        "type": "string",
+        "default": "light",
+        "description": "Theme used in auto mode when the system is light."
+      },
+      {
+        "key": "zen.width",
+        "type": "number",
+        "default": 80,
+        "description": "Width of the text column in zen mode, in characters."
+      }
+    ]
+  },
+  "fr": {
+    "commands": [
+      {
+        "id": "view.toggleStatusBar",
+        "title": "Afficher ou masquer la barre d’état",
+        "category": "Affichage",
+        "keys": ["Leader B"],
+        "keysMac": ["Leader B"]
+      },
+      {
+        "id": "view.toggleMenuBar",
+        "title": "Afficher ou masquer la barre de menus",
+        "category": "Affichage",
+        "keys": ["Leader M"],
+        "keysMac": ["Leader M"]
+      },
+      {
+        "id": "cascades.toggleBlock",
+        "title": "Afficher ou masquer la cascade de ce bloc",
+        "category": "Affichage",
+        "keys": ["Leader Shift+C"],
+        "keysMac": ["Leader ⇧C"]
+      },
+      {
+        "id": "view.toggleSidebar",
+        "title": "Afficher ou masquer le panneau de gauche",
+        "category": "Affichage",
+        "keys": ["Ctrl+B"],
+        "keysMac": ["⌘B"]
+      },
+      {
+        "id": "cascades.toggle",
+        "title": "Afficher ou masquer les cascades",
+        "category": "Affichage",
+        "keys": ["Leader C"],
+        "keysMac": ["Leader C"]
+      },
+      {
+        "id": "view.toggleTabs",
+        "title": "Afficher ou masquer les onglets",
+        "category": "Affichage",
+        "keys": ["Leader Tab"],
+        "keysMac": ["Leader Tab"]
+      },
+      {
+        "id": "view.zoomIn",
+        "title": "Agrandir le texte",
+        "category": "Affichage",
+        "keys": ["Ctrl+=", "Ctrl++"],
+        "keysMac": ["⌘=", "⌘+"]
+      },
+      {
+        "id": "view.focusGroup1",
+        "title": "Aller à la vue 1",
+        "category": "Affichage",
+        "keys": ["Ctrl+1"],
+        "keysMac": ["⌘1"]
+      },
+      {
+        "id": "view.focusGroup2",
+        "title": "Aller à la vue 2",
+        "category": "Affichage",
+        "keys": ["Ctrl+2"],
+        "keysMac": ["⌘2"]
+      },
+      {
+        "id": "view.focusGroup3",
+        "title": "Aller à la vue 3",
+        "category": "Affichage",
+        "keys": ["Ctrl+3"],
+        "keysMac": ["⌘3"]
+      },
+      {
+        "id": "view.focusGroup4",
+        "title": "Aller à la vue 4",
+        "category": "Affichage",
+        "keys": ["Ctrl+4"],
+        "keysMac": ["⌘4"]
+      },
+      {
+        "id": "view.togglePreview",
+        "title": "Aperçu à côté",
+        "category": "Affichage",
+        "keys": ["Ctrl+Shift+V", "Leader V"],
+        "keysMac": ["⇧⌘V", "Leader V"]
+      },
+      {
+        "id": "view.togglePreviewFull",
+        "title": "Aperçu seul",
+        "category": "Affichage",
+        "keys": ["Leader Shift+V"],
+        "keysMac": ["Leader ⇧V"]
+      },
+      {
+        "id": "editor.changeLanguage",
+        "title": "Changer le langage…",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.cloneToNextGroup",
+        "title": "Cloner dans la vue suivante",
+        "category": "Affichage",
+        "keys": ["Ctrl+\\", "Leader S"],
+        "keysMac": ["⌘\\", "Leader S"]
+      },
+      {
+        "id": "view.moveToPreviousGroup",
+        "title": "Déplacer vers la vue précédente",
+        "category": "Affichage",
+        "keys": ["Ctrl+Alt+←"],
+        "keysMac": ["⌥⌘←"]
+      },
+      {
+        "id": "view.moveToNextGroup",
+        "title": "Déplacer vers la vue suivante",
+        "category": "Affichage",
+        "keys": ["Ctrl+Alt+→"],
+        "keysMac": ["⌥⌘→"]
+      },
+      {
+        "id": "view.toggleZen",
+        "title": "Mode zen",
+        "category": "Affichage",
+        "keys": ["Leader Z"],
+        "keysMac": ["Leader Z"]
+      },
+      {
+        "id": "workbench.commandPalette",
+        "title": "Palette de commandes…",
+        "category": "Affichage",
+        "keys": ["Ctrl+Shift+P", "Leader P"],
+        "keysMac": ["⇧⌘P", "Leader P"]
+      },
+      {
+        "id": "quarantine.togglePanel",
+        "title": "Panneau de quarantaine",
+        "category": "Affichage",
+        "keys": ["Leader Shift+Q"],
+        "keysMac": ["Leader ⇧Q"]
+      },
+      {
+        "id": "themes.reload",
+        "title": "Recharger les thèmes",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.zoomOut",
+        "title": "Réduire le texte",
+        "category": "Affichage",
+        "keys": ["Ctrl+-"],
+        "keysMac": ["⌘-"]
+      },
+      {
+        "id": "view.joinGroups",
+        "title": "Réunir toutes les vues",
+        "category": "Affichage",
+        "keys": ["Leader J"],
+        "keysMac": ["Leader J"]
+      },
+      {
+        "id": "cascades.selectStyle",
+        "title": "Style des cascades…",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.zoomReset",
+        "title": "Taille de texte normale",
+        "category": "Affichage",
+        "keys": ["Ctrl+0"],
+        "keysMac": ["⌘0"]
+      },
+      {
+        "id": "view.selectTheme",
+        "title": "Thème…",
+        "category": "Affichage",
+        "keys": ["Leader T"],
+        "keysMac": ["Leader T"]
+      },
+      {
+        "id": "view.toggleSplitOrientation",
+        "title": "Vues côte à côte / empilées",
+        "category": "Affichage",
+        "keys": ["Leader Shift+S", "Leader \\"],
+        "keysMac": ["Leader ⇧S", "Leader \\"]
+      },
+      {
+        "id": "navigation.goToLine",
+        "title": "Aller à la ligne…",
+        "category": "Aller",
+        "keys": ["Ctrl+G"],
+        "keysMac": ["⌘G"]
+      },
+      {
+        "id": "navigation.goToTop",
+        "title": "Début du fichier",
+        "category": "Aller",
+        "keys": ["Ctrl+Home"],
+        "keysMac": ["⌘Home"]
+      },
+      {
+        "id": "navigation.goToBottom",
+        "title": "Fin du fichier",
+        "category": "Aller",
+        "keys": ["Ctrl+End"],
+        "keysMac": ["⌘End"]
+      },
+      {
+        "id": "navigation.toggleBookmark",
+        "title": "Poser ou retirer un signet",
+        "category": "Aller",
+        "keys": ["Ctrl+F2"],
+        "keysMac": ["⌘F2"]
+      },
+      {
+        "id": "navigation.previousBookmark",
+        "title": "Signet précédent",
+        "category": "Aller",
+        "keys": ["Shift+F2"],
+        "keysMac": ["⇧F2"]
+      },
+      {
+        "id": "navigation.nextBookmark",
+        "title": "Signet suivant",
+        "category": "Aller",
+        "keys": ["F2"],
+        "keysMac": ["F2"]
+      },
+      {
+        "id": "navigation.listBookmarks",
+        "title": "Signets…",
+        "category": "Aller",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.addNextOccurrence",
+        "title": "Ajouter l’occurrence suivante",
+        "category": "Éditeur",
+        "keys": ["Ctrl+D"],
+        "keysMac": ["⌘D"]
+      },
+      {
+        "id": "editor.undo",
+        "title": "Annuler",
+        "category": "Éditeur",
+        "keys": ["Ctrl+Z"],
+        "keysMac": ["⌘Z"]
+      },
+      {
+        "id": "editor.toggleTask",
+        "title": "Cocher / décocher la tâche",
+        "category": "Éditeur",
+        "keys": ["Ctrl+Entrée"],
+        "keysMac": ["⌘Entrée"]
+      },
+      {
+        "id": "editor.toggleComment",
+        "title": "Commenter / décommenter",
+        "category": "Éditeur",
+        "keys": ["Ctrl+:", "Ctrl+/"],
+        "keysMac": ["⌘:", "⌘/"]
+      },
+      {
+        "id": "editor.moveLineDown",
+        "title": "Déplacer la ligne vers le bas",
+        "category": "Éditeur",
+        "keys": ["Alt+↓"],
+        "keysMac": ["⌥↓"]
+      },
+      {
+        "id": "editor.moveLineUp",
+        "title": "Déplacer la ligne vers le haut",
+        "category": "Éditeur",
+        "keys": ["Alt+↑"],
+        "keysMac": ["⌥↑"]
+      },
+      {
+        "id": "editor.duplicateLine",
+        "title": "Dupliquer la ligne",
+        "category": "Éditeur",
+        "keys": ["Alt+Shift+↓"],
+        "keysMac": ["⌥⇧↓"]
+      },
+      {
+        "id": "search.find",
+        "title": "Rechercher",
+        "category": "Éditeur",
+        "keys": ["Ctrl+F"],
+        "keysMac": ["⌘F"]
+      },
+      {
+        "id": "search.replace",
+        "title": "Remplacer",
+        "category": "Éditeur",
+        "keys": ["Ctrl+H", "Ctrl+Alt+F"],
+        "keysMac": ["⌘H", "⌥⌘F"]
+      },
+      {
+        "id": "editor.redo",
+        "title": "Rétablir",
+        "category": "Éditeur",
+        "keys": ["Ctrl+Shift+Z", "Ctrl+Y"],
+        "keysMac": ["⇧⌘Z", "⌘Y"]
+      },
+      {
+        "id": "editor.deleteLine",
+        "title": "Supprimer la ligne",
+        "category": "Éditeur",
+        "keys": ["Ctrl+Shift+K"],
+        "keysMac": ["⇧⌘K"]
+      },
+      {
+        "id": "editor.selectAll",
+        "title": "Tout sélectionner",
+        "category": "Éditeur",
+        "keys": ["Ctrl+A"],
+        "keysMac": ["⌘A"]
+      },
+      {
+        "id": "markdown.alignTable",
+        "title": "Aligner le tableau",
+        "category": "Édition",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.insertDate",
+        "title": "Insérer la date",
+        "category": "Édition",
+        "keys": ["Ctrl+;"],
+        "keysMac": ["⌘;"]
+      },
+      {
+        "id": "markdown.insertTable",
+        "title": "Insérer un tableau",
+        "category": "Édition",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "quarantine.add",
+        "title": "Mettre en quarantaine",
+        "category": "Édition",
+        "keys": ["Leader Q"],
+        "keysMac": ["Leader Q"]
+      },
+      {
+        "id": "search.inFiles",
+        "title": "Rechercher dans les fichiers…",
+        "category": "Édition",
+        "keys": ["Ctrl+Shift+F"],
+        "keysMac": ["⇧⌘F"]
+      },
+      {
+        "id": "navigation.deselectLine",
+        "title": "Retirer la dernière ligne sélectionnée",
+        "category": "Édition",
+        "keys": ["Ctrl+Shift+L"],
+        "keysMac": ["⇧⌘L"]
+      },
+      {
+        "id": "navigation.selectLine",
+        "title": "Sélectionner la ligne",
+        "category": "Édition",
+        "keys": ["Ctrl+L"],
+        "keysMac": ["⌘L"]
+      },
+      {
+        "id": "navigation.selectParagraph",
+        "title": "Sélectionner le paragraphe ou la cascade",
+        "category": "Édition",
+        "keys": ["Leader L"],
+        "keysMac": ["Leader L"]
+      },
+      {
+        "id": "workbench.welcome",
+        "title": "Accueil",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "explorer.addFolder",
+        "title": "Ajouter un dossier…",
+        "category": "Fichier",
+        "keys": ["Ctrl+Shift+O"],
+        "keysMac": ["⇧⌘O"]
+      },
+      {
+        "id": "file.changeEncoding",
+        "title": "Changer l’encodage…",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.changeLineEnding",
+        "title": "Changer les fins de ligne…",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.save",
+        "title": "Enregistrer",
+        "category": "Fichier",
+        "keys": ["Ctrl+S"],
+        "keysMac": ["⌘S"]
+      },
+      {
+        "id": "file.saveWithEncoding",
+        "title": "Enregistrer avec un autre encodage…",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.saveAs",
+        "title": "Enregistrer sous…",
+        "category": "Fichier",
+        "keys": ["Ctrl+Shift+S"],
+        "keysMac": ["⇧⌘S"]
+      },
+      {
+        "id": "explorer.removeAllFolders",
+        "title": "Fermer tous les dossiers",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.new",
+        "title": "Nouveau fichier",
+        "category": "Fichier",
+        "keys": ["Ctrl+N"],
+        "keysMac": ["⌘N"]
+      },
+      {
+        "id": "workbench.quickOpen",
+        "title": "Ouverture rapide…",
+        "category": "Fichier",
+        "keys": ["Ctrl+P", "Leader O"],
+        "keysMac": ["⌘P", "Leader O"]
+      },
+      {
+        "id": "file.open",
+        "title": "Ouvrir un fichier…",
+        "category": "Fichier",
+        "keys": ["Ctrl+O"],
+        "keysMac": ["⌘O"]
+      },
+      {
+        "id": "app.checkForUpdates",
+        "title": "Rechercher des mises à jour…",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "file.reopenWithEncoding",
+        "title": "Rouvrir avec un autre encodage…",
+        "category": "Fichier",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "tabs.close",
+        "title": "Fermer l’onglet",
+        "category": "Onglets",
+        "keys": ["Ctrl+W"],
+        "keysMac": ["⌘W"]
+      },
+      {
+        "id": "tabs.previous",
+        "title": "Onglet précédent",
+        "category": "Onglets",
+        "keys": ["Ctrl+Shift+Tab", "Ctrl+PageUp"],
+        "keysMac": ["⌃⇧Tab", "⌘PageUp"]
+      },
+      {
+        "id": "tabs.next",
+        "title": "Onglet suivant",
+        "category": "Onglets",
+        "keys": ["Ctrl+Tab", "Ctrl+PageDown"],
+        "keysMac": ["⌃Tab", "⌘PageDown"]
+      },
+      {
+        "id": "tabs.reopenClosed",
+        "title": "Rouvrir le dernier onglet fermé",
+        "category": "Onglets",
+        "keys": ["Ctrl+Shift+T"],
+        "keysMac": ["⇧⌘T"]
+      },
+      {
+        "id": "preferences.openExtensions",
+        "title": "Extensions…",
+        "category": "Préférences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.openKeybindingsFile",
+        "title": "Ouvrir keybindings.json",
+        "category": "Préférences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.openSettingsFile",
+        "title": "Ouvrir settings.json",
+        "category": "Préférences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "preferences.open",
+        "title": "Préférences…",
+        "category": "Préférences",
+        "keys": ["Ctrl+,"],
+        "keysMac": ["⌘,"]
+      },
+      {
+        "id": "preferences.openShortcuts",
+        "title": "Raccourcis clavier…",
+        "category": "Préférences",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.toggleSpellcheck",
+        "title": "Activer ou désactiver le correcteur orthographique",
+        "category": "Texte",
+        "keys": ["F7"],
+        "keysMac": ["F7"]
+      },
+      {
+        "id": "text.joinLines",
+        "title": "Joindre les lignes",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "editor.chooseSpellLanguage",
+        "title": "Langue du correcteur orthographique…",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.titleCase",
+        "title": "Majuscule À Chaque Mot",
+        "category": "Texte",
+        "keys": ["Leader U"],
+        "keysMac": ["Leader U"]
+      },
+      {
+        "id": "text.sentenceCase",
+        "title": "Majuscule en début de phrase",
+        "category": "Texte",
+        "keys": ["Leader Shift+U"],
+        "keysMac": ["Leader ⇧U"]
+      },
+      {
+        "id": "text.upperCase",
+        "title": "MAJUSCULES",
+        "category": "Texte",
+        "keys": ["Ctrl+Shift+U"],
+        "keysMac": ["⇧⌘U"]
+      },
+      {
+        "id": "text.lowerCase",
+        "title": "minuscules",
+        "category": "Texte",
+        "keys": ["Ctrl+U"],
+        "keysMac": ["⌘U"]
+      },
+      {
+        "id": "text.trimTrailingWhitespace",
+        "title": "Supprimer les espaces en fin de ligne",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.removeDuplicateLines",
+        "title": "Supprimer les lignes en double",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.sortLines",
+        "title": "Trier les lignes (A à Z)",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "text.sortLinesDescending",
+        "title": "Trier les lignes (Z à A)",
+        "category": "Texte",
+        "keys": [],
+        "keysMac": []
+      }
+    ],
+    "settings": [
+      {
+        "key": "autoPairs.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Fermer automatiquement ( [ { \" ' et, en Markdown, ** et `. Taper un de ces caractères, ou * _ ` ~, sur une sélection l’entoure."
+      },
+      {
+        "key": "cascades.colorByDepth",
+        "type": "boolean",
+        "default": true,
+        "description": "Une couleur différente par niveau de profondeur."
+      },
+      {
+        "key": "cascades.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Dessiner les connecteurs de cascade."
+      },
+      {
+        "key": "cascades.highlight",
+        "type": "boolean",
+        "default": true,
+        "description": "Mettre en valeur la branche et le parent de la ligne active ou survolée."
+      },
+      {
+        "key": "cascades.ignoreLists",
+        "type": "boolean",
+        "default": false,
+        "description": "Ne pas dessiner de cascade vers les éléments de liste (- item, 1. item…)."
+      },
+      {
+        "key": "cascades.languages",
+        "type": "array",
+        "default": ["plaintext", "markdown"],
+        "description": "Langages où les cascades sont actives (plaintext couvre .txt et sans extension)."
+      },
+      {
+        "key": "cascades.lineWidth",
+        "type": "number",
+        "default": 1.2,
+        "description": "Épaisseur des traits (px)."
+      },
+      {
+        "key": "cascades.style",
+        "type": "string",
+        "default": "arrow",
+        "description": "Style des connecteurs : arrow, rounded, curved, bullet, line, dashed, dotted, guides.",
+        "values": ["arrow", "rounded", "curved", "bullet", "line", "dashed", "dotted", "guides"]
+      },
+      {
+        "key": "changeMarkers.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Marquer dans la marge les lignes modifiées depuis le dernier enregistrement : vert ajoutée, orange modifiée, rouge supprimée."
+      },
+      {
+        "key": "editor.folding",
+        "type": "boolean",
+        "default": true,
+        "description": "Afficher la marge de repli."
+      },
+      {
+        "key": "editor.fontFamily",
+        "type": "string",
+        "default": "'Cascadia Code', Consolas, 'SF Mono', Menlo, 'DejaVu Sans Mono', monospace",
+        "description": "Police de l’éditeur (liste CSS, la première installée est utilisée)."
+      },
+      {
+        "key": "editor.fontLigatures",
+        "type": "boolean",
+        "default": false,
+        "description": "Activer les ligatures de la police (=> devient ⇒ avec Cascadia Code…)."
+      },
+      {
+        "key": "editor.fontSize",
+        "type": "number",
+        "default": 14,
+        "description": "Taille de police de l’éditeur (px)."
+      },
+      {
+        "key": "editor.highlightActiveLine",
+        "type": "boolean",
+        "default": true,
+        "description": "Surligner la ligne du curseur."
+      },
+      {
+        "key": "editor.insertSpaces",
+        "type": "boolean",
+        "default": false,
+        "description": "Indenter avec des espaces plutôt qu’avec des tabulations."
+      },
+      {
+        "key": "editor.lineHeight",
+        "type": "number",
+        "default": 1.6,
+        "description": "Hauteur de ligne, en multiple de la taille de police."
+      },
+      {
+        "key": "editor.lineNumbers",
+        "type": "boolean",
+        "default": true,
+        "description": "Afficher les numéros de ligne."
+      },
+      {
+        "key": "editor.tabSize",
+        "type": "number",
+        "default": 4,
+        "description": "Largeur d’une tabulation."
+      },
+      {
+        "key": "editor.wordWrap",
+        "type": "boolean",
+        "default": false,
+        "description": "Retour à la ligne automatique."
+      },
+      {
+        "key": "explorer.exclude",
+        "type": "array",
+        "default": [".git", "node_modules"],
+        "description": "Noms masqués dans l’explorateur (* pour n’importe quel texte : \"*.log\")."
+      },
+      {
+        "key": "files.autoSave",
+        "type": "string",
+        "default": "off",
+        "description": "Enregistrer automatiquement les fichiers modifiés (pas les onglets sans titre).",
+        "values": ["off", "afterDelay"]
+      },
+      {
+        "key": "files.autoSaveDelay",
+        "type": "number",
+        "default": 1000,
+        "description": "Délai en millisecondes avant l’enregistrement automatique."
+      },
+      {
+        "key": "files.defaultExtension",
+        "type": "string",
+        "default": "txt",
+        "description": "Extension proposée pour un nouveau fichier (\"\" pour aucune)."
+      },
+      {
+        "key": "files.largeFileSize",
+        "type": "number",
+        "default": 50,
+        "description": "Taille (en Mo) à partir de laquelle un fichier s’ouvre en mode allégé : sans coloration, cascades ni comptage des mots."
+      },
+      {
+        "key": "indentKeep.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Entrée garde l’indentation exacte de la ligne courante."
+      },
+      {
+        "key": "insertDate.format",
+        "type": "string",
+        "default": "DD/MM/YYYY",
+        "description": "Format de la date insérée : YYYY année, MM mois, MMMM mois en lettres, DD jour, dddd jour en lettres, HH:mm heure, [texte] tel quel. Exemple : \"dddd D MMMM YYYY\"."
+      },
+      {
+        "key": "keyboard.leader",
+        "type": "string",
+        "default": "Ctrl+Space",
+        "description": "Touche leader : les raccourcis \"Leader X\" se font avec cette touche puis X (comme dans Vim)."
+      },
+      {
+        "key": "links.ctrlClick",
+        "type": "boolean",
+        "default": true,
+        "description": "Ctrl+clic ouvre un lien : une adresse web dans le navigateur, un fichier dans un onglet."
+      },
+      {
+        "key": "links.pasteAsMarkdown",
+        "type": "boolean",
+        "default": true,
+        "description": "En Markdown, coller une adresse web sur du texte sélectionné en fait un lien [texte](adresse)."
+      },
+      {
+        "key": "markdownTables.enabled",
+        "type": "boolean",
+        "default": true,
+        "description": "Dans un tableau Markdown, Tab et Shift+Tab passent d’une cellule à l’autre en alignant les colonnes."
+      },
+      {
+        "key": "plugins.enabled",
+        "type": "array",
+        "default": [],
+        "description": "Plugins activés, par id (Préférences > Extensions)."
+      },
+      {
+        "key": "preview.fontFamily",
+        "type": "string",
+        "default": "system-ui, 'Segoe UI', sans-serif",
+        "description": "Police des aperçus (Markdown, HTML)."
+      },
+      {
+        "key": "preview.fontSize",
+        "type": "number",
+        "default": 15,
+        "description": "Taille de police des aperçus (px)."
+      },
+      {
+        "key": "preview.htmlScripts",
+        "type": "boolean",
+        "default": false,
+        "description": "Exécuter les scripts des pages HTML prévisualisées (toujours isolées de l’application)."
+      },
+      {
+        "key": "session.restore",
+        "type": "boolean",
+        "default": true,
+        "description": "Rouvrir les onglets, y compris non enregistrés, au démarrage."
+      },
+      {
+        "key": "smartLists.continue",
+        "type": "boolean",
+        "default": true,
+        "description": "Entrée continue la liste, ou en sort sur une puce vide."
+      },
+      {
+        "key": "smartLists.languages",
+        "type": "array",
+        "default": ["plaintext", "markdown"],
+        "description": "Langages où les listes intelligentes sont actives."
+      },
+      {
+        "key": "smartLists.renumber",
+        "type": "boolean",
+        "default": true,
+        "description": "Renuméroter les listes numérotées après chaque modification."
+      },
+      {
+        "key": "smartLists.tabIndents",
+        "type": "boolean",
+        "default": true,
+        "description": "Tab et Shift+Tab changent le niveau d’une ligne de liste."
+      },
+      {
+        "key": "spellcheck.enabled",
+        "type": "boolean",
+        "default": false,
+        "description": "Souligner les fautes d’orthographe (F7 pour activer ou désactiver)."
+      },
+      {
+        "key": "spellcheck.language",
+        "type": "string",
+        "default": "fr",
+        "description": "Langue du correcteur : \"fr\", \"en\", \"es\"… (dictionnaires installés dans Windows)."
+      },
+      {
+        "key": "updates.check",
+        "type": "boolean",
+        "default": true,
+        "description": "Rechercher une nouvelle version de Cascades au démarrage."
+      },
+      {
+        "key": "workbench.fontFamily",
+        "type": "string",
+        "default": "system-ui, 'Segoe UI', sans-serif",
+        "description": "Police de l’interface (menus, onglets, barre d’état)."
+      },
+      {
+        "key": "workbench.fontSize",
+        "type": "number",
+        "default": 13,
+        "description": "Taille de police de l’interface (px)."
+      },
+      {
+        "key": "workbench.language",
+        "type": "string",
+        "default": "auto",
+        "description": "Langue de l’interface : \"auto\" suit le système, \"en\" anglais, \"fr\" français.",
+        "values": ["auto", "en", "fr"]
+      },
+      {
+        "key": "workbench.showMenuBar",
+        "type": "boolean",
+        "default": true,
+        "description": "Afficher la barre de menus."
+      },
+      {
+        "key": "workbench.showStatusBar",
+        "type": "boolean",
+        "default": true,
+        "description": "Afficher la barre d’état."
+      },
+      {
+        "key": "workbench.showTabs",
+        "type": "boolean",
+        "default": true,
+        "description": "Afficher les onglets."
+      },
+      {
+        "key": "workbench.theme",
+        "type": "string",
+        "default": "auto",
+        "description": "Thème : \"auto\" suit le mode clair ou sombre du système, sinon un id de thème."
+      },
+      {
+        "key": "workbench.themeDark",
+        "type": "string",
+        "default": "dark",
+        "description": "Thème utilisé en mode auto quand le système est sombre."
+      },
+      {
+        "key": "workbench.themeLight",
+        "type": "string",
+        "default": "light",
+        "description": "Thème utilisé en mode auto quand le système est clair."
+      },
+      {
+        "key": "zen.width",
+        "type": "number",
+        "default": 80,
+        "description": "Largeur de la colonne de texte en mode zen, en caractères."
+      }
+    ]
+  }
+}
