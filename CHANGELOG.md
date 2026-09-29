@@ -4,6 +4,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-09-29
+
+### Ajouté
+
+- README : section Télécharger, avec le fichier à prendre pour chaque système.
+
 ## [0.6.0] - 2026-09-29
 
 ### Ajouté

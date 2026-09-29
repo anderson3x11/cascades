@@ -9,7 +9,19 @@ The simplicity of Notepad++, the customization of Vim, a modern interface.
 
 ![Cascades: notes with cascades](docs/images/editor.png)
 
-> In development (milestone 0.5). Windows first, then macOS and Linux. See [the roadmap](docs/ROADMAP.md).
+> In development (version 0.6). Windows first, then macOS and Linux. See [the roadmap](docs/ROADMAP.md).
+
+## Download
+
+Get the latest version on the [Releases page](https://github.com/anderson3x11/cascades/releases/latest):
+
+- **Windows**: `Cascades_…_x64-setup.exe`. No administrator rights needed.
+- **macOS** (Intel and Apple Silicon): `Cascades_…_universal.dmg`.
+- **Linux**: `.AppImage` (any distribution), `.deb` (Debian, Ubuntu) or `.rpm` (Fedora, openSUSE).
+
+Cascades then updates itself: it offers each new version at start, or from File > Check for updates….
+
+The installers are not signed with a paid certificate yet. On Windows, "Windows protected your PC" may appear: click More info, then Run anyway. On macOS, allow the app in System Settings > Privacy & Security.
 
 ## The cascades
 
