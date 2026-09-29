@@ -4,6 +4,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-09-29
+
 ### Ajouté
 
 - Installateurs : `.exe` pour Windows (sans droits administrateur), `.dmg` universel pour macOS, `.AppImage`, `.deb` et `.rpm` pour Linux, construits par GitHub Actions à chaque tag `vX.Y.Z` dans une Release en brouillon.
