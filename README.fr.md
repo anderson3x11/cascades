@@ -7,7 +7,7 @@ La simplicité de Notepad++, la personnalisation de Vim, une interface moderne.
 
 [English](README.md)
 
-![Cascades : des notes avec cascades, l'explorateur à gauche](docs/images/cascades.png)
+![Cascades : des notes avec cascades](docs/images/editor.png)
 
 > En cours de développement (jalon 0.5). Windows d'abord, puis macOS et Linux. Voir [la feuille de route](docs/ROADMAP.md).
 
@@ -15,13 +15,7 @@ La simplicité de Notepad++, la personnalisation de Vim, une interface moderne.
 
 On écrit ses notes ligne par ligne, et on indente avec Tab une ligne qui découle de celle du dessus. Cascades dessine les liens :
 
-```
-Elden Ring
-├──> Combat exigeant
-│    ├──> Surtout les boss du DLC
-│    └──> Parades très satisfaisantes
-└──> Direction artistique folle
-```
+![Une note tapée au clavier : chaque ligne indentée reçoit son lien](docs/images/cascades.gif)
 
 Le fichier ne contient que des tabulations : les traits sont dessinés, jamais écrits, et copier du texte copie les tabulations. Chaque ligne parente se replie, la branche de la ligne courante est mise en valeur, et il y a huit styles (flèches, arrondis, courbes, points, tirets…).
 
@@ -40,6 +34,8 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 - « Quarantaine » : mettre de côté un passage (Leader Q) pour essayer son texte sans lui, et le replacer n'importe où plus tard.
 
 **Fichiers**
+
+![L'explorateur à gauche, avec un dossier de notes](docs/images/cascades.png)
 
 - Onglets, vues scindées (jusqu'à quatre, le même fichier dans plusieurs vues), et session restaurée au démarrage, onglets non enregistrés compris : fermer la fenêtre ne fait rien perdre.
 - Explorateur à gauche avec un ou plusieurs dossiers : créer, renommer, mettre à la corbeille. Ouverture rapide (Ctrl+P) parmi les onglets ouverts, les fichiers récents et tous les fichiers des dossiers.
@@ -64,6 +60,8 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 - Masquer la barre de menus, les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
 - Une touche leader (Ctrl+Espace) pour plus de raccourcis, avec une barre qui montre la suite possible.
 - Tout est une commande, dans la palette de commandes (Ctrl+Shift+P). Un script `init.js` peut ajouter les vôtres.
+
+![Le mode zen : seulement le texte, centré](docs/images/zen.png)
 
 ## Raccourcis
 

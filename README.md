@@ -7,7 +7,7 @@ The simplicity of Notepad++, the customization of Vim, a modern interface.
 
 [Français](README.fr.md)
 
-![Cascades: notes with cascades, the explorer on the left](docs/images/cascades.png)
+![Cascades: notes with cascades](docs/images/editor.png)
 
 > In development (milestone 0.5). Windows first, then macOS and Linux. See [the roadmap](docs/ROADMAP.md).
 
@@ -15,13 +15,7 @@ The simplicity of Notepad++, the customization of Vim, a modern interface.
 
 You write notes line by line, and indent a line with Tab when it follows from the one above. Cascades draws the connections:
 
-```
-Elden Ring
-├──> Tough combat
-│    ├──> Especially the DLC bosses
-│    └──> Very satisfying parries
-└──> Wild art direction
-```
+![Typing a note: each indented line gets its connector](docs/images/cascades.gif)
 
 The file itself only holds tabs: the lines are drawn, never written, and copying text copies the tabs. Each parent line can be folded, the branch of the current line is highlighted, and there are eight styles (arrows, rounded, curves, dots, dashes…).
 
@@ -40,6 +34,8 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 - "Quarantine": set a passage aside (Leader Q) to try your text without it, and put it back anywhere later.
 
 **Files**
+
+![The explorer on the left, with a folder of notes](docs/images/cascades.png)
 
 - Tabs, split views (up to four, the same file in several views), and a session restored on start, unsaved tabs included: closing the window loses nothing.
 - Explorer on the left with one or more folders: create, rename, send to the recycle bin. Quick open (Ctrl+P) over open tabs, recent files and every file of the folders.
@@ -64,6 +60,8 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 - Hide the menu bar, tabs or status bar; zen mode for writing full screen.
 - A leader key (Ctrl+Space) for more shortcuts, with a hint bar that shows what comes next.
 - Everything is a command, in the command palette (Ctrl+Shift+P). An `init.js` script can add your own.
+
+![Zen mode: only the text, centered](docs/images/zen.png)
 
 ## Shortcuts
 
