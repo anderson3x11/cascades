@@ -44,6 +44,14 @@ describe('markdownInput', () => {
     expect(type('``|', '`')).toBeNull();
   });
 
+  it('outside Markdown, only wraps selections', () => {
+    const state = stateOf('*|');
+    expect(markdownInput(state, '*', false)).toBeNull();
+    const selected = stateOf('[mot]');
+    const spec = markdownInput(selected, '_', false);
+    expect(spec && selected.update(spec).state.doc.toString()).toBe('_mot_');
+  });
+
   it('leaves _ alone without a selection (snake_case)', () => {
     expect(type('snake|', '_')).toBeNull();
   });

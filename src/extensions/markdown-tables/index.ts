@@ -89,5 +89,44 @@ export default defineExtension({
       { title: 'Aligner le tableau', category: 'Édition' },
     );
     ctx.menus.registerItem('edit', { command: 'markdown.alignTable', group: '3_lines', order: 31 });
+
+    ctx.commands.register(
+      'markdown.insertTable',
+      () => {
+        const view = ctx.editor.view();
+        if (!view) return;
+        const { state } = view;
+        const pos = state.selection.main.head;
+        const line = state.doc.lineAt(pos);
+        // On its own lines, with the first header selected, ready to be typed over.
+        const empty = line.text.trim() === '';
+        const before = empty ? '' : '\n\n';
+        const table = formatTable({
+          first: 0,
+          last: 2,
+          rows: [
+            ['Colonne 1', 'Colonne 2'],
+            ['---', '---'],
+            ['', ''],
+          ],
+          aligns: ['none', 'none'],
+        }).join('\n');
+        const from = empty ? line.from : line.to;
+        const start = from + before.length + 2;
+        view.dispatch({
+          changes: { from, to: line.to, insert: before + table },
+          selection: { anchor: start, head: start + 'Colonne 1'.length },
+          scrollIntoView: true,
+          userEvent: 'input',
+        });
+        view.focus();
+      },
+      { title: 'Insérer un tableau', category: 'Édition' },
+    );
+    ctx.menus.registerItem('edit', {
+      command: 'markdown.insertTable',
+      group: '3_lines',
+      order: 32,
+    });
   },
 });

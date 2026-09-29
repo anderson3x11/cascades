@@ -29,7 +29,7 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 - **Rechercher dans les fichiers** (Ctrl+Shift+F, onglet Rechercher à gauche) : dans tous les dossiers ouverts, avec la casse, le mot entier ou une expression régulière. Les résultats arrivent au fil de l'eau ; un clic ouvre le fichier sur l'occurrence. **Remplacer** montre l'aperçu (ancien texte barré, nouveau en couleur), demande confirmation, garde l'encodage et les fins de ligne de chaque fichier, et laisse de côté les fichiers ouverts avec des modifications non enregistrées.
 - **Paires automatiques** : parenthèses, crochets, accolades et guillemets se ferment seuls ; en Markdown, `**` et `` ` `` aussi. Sélectionne un mot et tape `*`, `(` ou `` ` `` pour l'entourer.
 - **Liens** : Ctrl+clic ouvre une adresse web dans le navigateur, ou un lien Markdown vers un fichier dans un onglet. En Markdown, colle une adresse sur du texte sélectionné pour en faire un lien.
-- **Tableaux Markdown** : Tab et Shift+Tab passent d'une cellule à l'autre en alignant les colonnes ; Tab après la dernière cellule ajoute une ligne.
+- **Tableaux Markdown** : Tab et Shift+Tab passent d'une cellule à l'autre en alignant les colonnes ; Tab après la dernière cellule ajoute une ligne. Édition > Insérer un tableau en pose un prêt à remplir.
 - Tout est une commande, tous les raccourcis sont des bindings remplaçables.
 - Configuration par `settings.json`, `keybindings.json` (format VS Code) et script `init.js`.
 

@@ -4,28 +4,29 @@ import { EditorView, keymap } from '@codemirror/view';
 import { defineExtension } from '../../api';
 import { deleteMarkdownPair, markdownInput } from './markdown';
 
-/** Markdown pairs: **bold**, `code`, and wrapping a selection in * _ ` ~. */
-const markdownPairs = [
+/** Wrapping a selection in * _ ` ~, and in Markdown the **bold** and `code` pairs. */
+const pairInput = (markdown: boolean) =>
   EditorView.inputHandler.of((view, _from, _to, text) => {
-    const spec = markdownInput(view.state, text);
+    const spec = markdownInput(view.state, text, markdown);
     if (!spec) return false;
     view.dispatch(spec);
     return true;
-  }),
-  Prec.high(
-    keymap.of([
-      {
-        key: 'Backspace',
-        run: (view) => {
-          const spec = deleteMarkdownPair(view.state);
-          if (!spec) return false;
-          view.dispatch(spec);
-          return true;
-        },
+  });
+
+/** Backspace between an empty **|** or `|` removes both halves. */
+const markdownBackspace = Prec.high(
+  keymap.of([
+    {
+      key: 'Backspace',
+      run: (view) => {
+        const spec = deleteMarkdownPair(view.state);
+        if (!spec) return false;
+        view.dispatch(spec);
+        return true;
       },
-    ]),
-  ),
-];
+    },
+  ]),
+);
 
 /**
  * Closing pairs: ( [ { " ' are closed as they are typed and wrap a selection;
@@ -39,16 +40,19 @@ export default defineExtension({
         type: 'boolean',
         default: true,
         description:
-          'Fermer automatiquement ( [ { " \' et, en Markdown, ** et `. Taper un de ces caractères sur une sélection l’entoure.',
+          'Fermer automatiquement ( [ { " \' et, en Markdown, ** et `. Taper un de ces caractères, ou * _ ` ~, sur une sélection l’entoure.',
       },
     });
 
     const handle = ctx.editor.addExtension((tab) => {
       if (!ctx.settings.get<boolean>('autoPairs.enabled', tab.language)) return [];
+      const markdown = tab.language === 'markdown';
       return [
         closeBrackets(),
-        keymap.of(closeBracketsKeymap),
-        tab.language === 'markdown' ? markdownPairs : [],
+        // Before the editor's own Backspace, so that "(|)" goes away in one press.
+        Prec.high(keymap.of(closeBracketsKeymap)),
+        pairInput(markdown),
+        markdown ? markdownBackspace : [],
       ];
     });
     ctx.settings.onDidChange(({ keys }) => {

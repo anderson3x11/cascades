@@ -44,6 +44,23 @@ test('Tab moves between cells and aligns the table', async ({ page }) => {
   );
 });
 
+test('Insert a table puts a table to fill below the text', async ({ page }) => {
+  await page.keyboard.press('Control+End');
+  await page.evaluate(() =>
+    (window as unknown as DevWindow).__cascades.commands.execute('markdown.insertTable'),
+  );
+  await page.keyboard.type('Titre');
+  await page.keyboard.press('Tab');
+  await page.keyboard.type('Auteur');
+  expect((await text(page))?.split('\n').slice(3)).toEqual([
+    '',
+    // Aligned when leaving "Titre"; "Auteur" was typed afterwards.
+    '| Titre | Auteur |',
+    '| ----- | --------- |',
+    '|       |           |',
+  ]);
+});
+
 test('Tab outside a table still indents', async ({ page }) => {
   await page.keyboard.press('Control+End');
   await page.keyboard.press('Enter');

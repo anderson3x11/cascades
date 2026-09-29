@@ -10,12 +10,16 @@ const at = (state: EditorState, from: number, to: number) =>
   state.sliceDoc(Math.max(from, 0), Math.min(to, state.doc.length));
 
 /**
- * Typing `text` in Markdown, or null to let it be typed as is:
+ * Typing `text`, or null to let it be typed as is:
  * - over a selection, * _ ` and ~ wrap it (and keep it selected, so ** is two presses);
- * - a second * makes a **bold** pair; ` makes a `code` pair, and ``` a fence;
- * - typing the closing character steps over it.
+ * - in Markdown only (`pairs`), a second * makes a **bold** pair, ` a `code`
+ *   pair and ``` a fence, and typing the closing character steps over it.
  */
-export function markdownInput(state: EditorState, text: string): TransactionSpec | null {
+export function markdownInput(
+  state: EditorState,
+  text: string,
+  pairs = true,
+): TransactionSpec | null {
   const wrap = WRAPS[text];
   if (wrap === undefined) return null;
   const ranges = state.selection.ranges;
@@ -29,7 +33,7 @@ export function markdownInput(state: EditorState, text: string): TransactionSpec
       range: EditorSelection.range(range.from + wrap.length, range.to + wrap.length),
     }));
   }
-  if (ranges.length > 1 || !ranges[0]?.empty) return null;
+  if (!pairs || ranges.length > 1 || !ranges[0]?.empty) return null;
 
   const pos = state.selection.main.head;
   const next = at(state, pos, pos + 1);

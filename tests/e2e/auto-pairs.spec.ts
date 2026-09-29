@@ -47,6 +47,24 @@ test('Markdown: ** and ` pairs, a fence, and wrapping a selection', async ({ pag
   expect(await text(page)).toBe('**mot**');
 });
 
+test('Backspace right after an opening bracket removes the pair', async ({ page }) => {
+  await open(page, 'C:/notes/c.txt');
+  await page.keyboard.type('(');
+  expect(await text(page)).toBe('()');
+  await page.keyboard.press('Backspace');
+  expect(await text(page)).toBe('');
+});
+
+test('in a text file, * wraps a selection but a lone star stays alone', async ({ page }) => {
+  await open(page, 'C:/notes/d.txt', 'mot');
+  await page.keyboard.press('Shift+Home');
+  await page.keyboard.type('*');
+  expect(await text(page)).toBe('*mot*');
+  await page.keyboard.press('End');
+  await page.keyboard.type(' *');
+  expect(await text(page)).toBe('*mot* *');
+});
+
 test('the setting turns pairs off', async ({ page }) => {
   await page.evaluate(() =>
     (window as unknown as DevWindow).__cascades.settings.setUserSettings({
