@@ -7,23 +7,24 @@ import {
   type Node,
   type ParseError,
 } from 'jsonc-parser';
+import { t } from '../i18n/i18n';
 import type { RawSettings } from './registry';
 
 const FORMAT = { formattingOptions: { insertSpaces: true, tabSize: 2, eol: '\n' } };
 
-/** French messages for the usual mistakes, by jsonc-parser error name. */
-const ERROR_MESSAGES: Record<string, string> = {
-  InvalidSymbol: 'caractère inattendu',
-  ValueExpected: 'valeur attendue',
-  PropertyNameExpected: 'nom entre guillemets attendu',
-  ColonExpected: '« : » attendu',
-  CommaExpected: 'virgule manquante',
-  CloseBraceExpected: '« } » manquant',
-  CloseBracketExpected: '« ] » manquant',
-  EndOfFileExpected: 'texte en trop après la fin',
-  UnexpectedEndOfString: 'guillemet fermant manquant',
-  UnexpectedEndOfComment: 'commentaire /* non fermé',
-};
+/** Plain messages for the usual mistakes, by jsonc-parser error name. */
+const errorMessages = (): Record<string, string> => ({
+  InvalidSymbol: t('unexpected character'),
+  ValueExpected: t('value expected'),
+  PropertyNameExpected: t('name in quotes expected'),
+  ColonExpected: t('":" expected'),
+  CommaExpected: t('missing comma'),
+  CloseBraceExpected: t('missing "}"'),
+  CloseBracketExpected: t('missing "]"'),
+  EndOfFileExpected: t('extra text after the end'),
+  UnexpectedEndOfString: t('missing closing quote'),
+  UnexpectedEndOfComment: t('unclosed /* comment'),
+});
 
 /** A mistake in a config file, for the editor to underline. */
 export interface ConfigProblem {
@@ -37,7 +38,7 @@ const PARSE_OPTIONS = { allowTrailingComma: true };
 
 function syntaxMessage(error: ParseError): string {
   const name = printParseErrorCode(error.error);
-  return ERROR_MESSAGES[name] ?? name;
+  return errorMessages()[name] ?? name;
 }
 
 /** Parses a JSON-with-comments file (settings.json, keybindings.json). Throws on errors. */
@@ -47,7 +48,7 @@ export function parseJsonc(text: string): unknown {
   const first = errors[0];
   if (first) {
     const line = text.slice(0, first.offset).split('\n').length;
-    throw new Error(`${syntaxMessage(first)} (ligne ${line})`);
+    throw new Error(t('{problem} (line {line})', { problem: syntaxMessage(first), line }));
   }
   return value;
 }
@@ -84,7 +85,7 @@ export function parseSettings(text: string | null): RawSettings {
   if (text === null || text.trim() === '') return {};
   const value = parseJsonc(text);
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    throw new Error('le fichier doit contenir un objet { … }');
+    throw new Error(t('the file must hold an object { … }'));
   }
   return value as RawSettings;
 }

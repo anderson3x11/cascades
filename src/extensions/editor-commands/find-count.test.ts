@@ -9,9 +9,9 @@ describe('countMatches', () => {
     const state = EditorState.create({ doc, selection: EditorSelection.single(12, 16) });
     const count = countMatches(state, new SearchQuery({ search: 'pain' }));
     expect(count).toEqual({ total: 3, current: 2, capped: false });
-    expect(countLabel(count)).toBe('2 sur 3');
-    expect(countLabel({ total: 3, current: null, capped: false })).toBe('3 résultats');
-    expect(countLabel({ total: 0, current: null, capped: false })).toBe('Aucun résultat');
+    expect(countLabel(count)).toBe('2 of 3');
+    expect(countLabel({ total: 3, current: null, capped: false })).toBe('3 results');
+    expect(countLabel({ total: 0, current: null, capped: false })).toBe('No results');
   });
 
   it('respects case and ignores an invalid expression', () => {

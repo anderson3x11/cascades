@@ -12,6 +12,7 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     viewport: { width: 1280, height: 760 },
     deviceScaleFactor: 1.5,
+    locale: 'en-US',
   },
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,

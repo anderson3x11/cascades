@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { ViewerInstance, ViewerSpec } from '../api';
   import type { Workbench } from '../app/workbench';
+  import { t } from '../core/i18n/i18n';
 
   let {
     workbench,
@@ -52,7 +53,9 @@
       })
       .catch((err: unknown) => {
         loading = false;
-        error = `Impossible de charger l’aperçu : ${err instanceof Error ? err.message : String(err)}`;
+        error = t('Could not load the preview: {problem}', {
+          problem: err instanceof Error ? err.message : String(err),
+        });
       });
 
     const updates = workbench.events.on('editor.didUpdate', ({ tab, docChanged }) => {
@@ -77,11 +80,11 @@
   });
 </script>
 
-<section class="preview" aria-label="Aperçu : {spec.title}">
+<section class="preview" aria-label={t('Preview: {title}', { title: spec.title })}>
   {#if error}
     <p class="message">{error}</p>
   {:else if loading}
-    <p class="message">Chargement…</p>
+    <p class="message">{t('Loading…')}</p>
   {/if}
   <div class="host" bind:this={host}></div>
 </section>

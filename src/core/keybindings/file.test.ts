@@ -28,13 +28,13 @@ describe('parseKeybindings', () => {
     ]`);
     expect(bindings).toEqual([{ key: '', command: '-file.save' }]);
     expect(errors).toHaveLength(3);
-    expect(errors[0]).toMatch(/^entrée 1 : .*Truc/);
-    expect(errors[1]).toMatch(/^entrée 2 : "key" manquant/);
+    expect(errors[0]).toMatch(/^entry 1: .*Truc/);
+    expect(errors[1]).toMatch(/^entry 2: missing "key"/);
   });
 
   it('refuses a file that is not a list', () => {
     expect(parseKeybindings(null)).toEqual({ bindings: [], errors: [] });
-    expect(() => parseKeybindings('{}')).toThrow(/liste/);
-    expect(() => parseKeybindings('[ { ]')).toThrow(/ligne 1/);
+    expect(() => parseKeybindings('{}')).toThrow(/list/);
+    expect(() => parseKeybindings('[ { ]')).toThrow(/line 1/);
   });
 });

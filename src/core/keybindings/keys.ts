@@ -3,6 +3,7 @@
  *   "Ctrl+Shift+P", "Ctrl+K Ctrl+S", "Ctrl+K Z"
  * Everything is normalized to lower case with a fixed modifier order.
  */
+import { t } from '../i18n/i18n';
 
 const MODIFIER_ORDER = ['ctrl', 'alt', 'shift', 'meta'] as const;
 type Modifier = (typeof MODIFIER_ORDER)[number];
@@ -46,11 +47,14 @@ export function normalizeChord(chord: string): string {
   // Split on '+' but keep a literal trailing '+' key ("Ctrl++").
   const parts = chord.trim().split(/\+(?!$)/);
   const key = parts.pop();
-  if (!key) throw new Error(`touche invalide : « ${chord} »`);
+  if (!key) throw new Error(t('invalid key: "{key}"', { key: chord }));
   const mods = new Set<Modifier>();
   for (const part of parts) {
     const mod = MODIFIER_ALIASES[part.toLowerCase()];
-    if (!mod) throw new Error(`modificateur inconnu « ${part} » dans « ${chord} »`);
+    if (!mod)
+      throw new Error(
+        t('unknown modifier "{modifier}" in "{key}"', { modifier: part, key: chord }),
+      );
     mods.add(mod);
   }
   return [...MODIFIER_ORDER.filter((m) => mods.has(m)), normalizeKey(key)].join('+');
@@ -59,7 +63,7 @@ export function normalizeChord(chord: string): string {
 /** Parses "Ctrl+K Ctrl+S" into ["ctrl+k", "ctrl+s"]. */
 export function parseKeySequence(sequence: string): string[] {
   const chords = sequence.trim().split(/\s+/).filter(Boolean);
-  if (chords.length === 0) throw new Error('raccourci vide');
+  if (chords.length === 0) throw new Error(t('empty shortcut'));
   return chords.map(normalizeChord);
 }
 
@@ -70,9 +74,13 @@ const KEY_LABELS: Record<string, string> = {
   right: '→',
   pageup: 'PageUp',
   pagedown: 'PageDown',
-  escape: 'Échap',
-  enter: 'Entrée',
-  space: 'Espace',
+};
+
+/** Keys whose name is translated. */
+const KEY_NAMES: Record<string, string> = {
+  escape: 'Esc',
+  enter: 'Enter',
+  space: 'Space',
 };
 
 /** Human readable form of normalized chords: ["ctrl+k", "z"] -> "Ctrl+K Z". */
@@ -81,7 +89,12 @@ export function formatKeySequence(chords: readonly string[]): string {
     .map((chord) =>
       chord
         .split(/\+(?!$)/)
-        .map((part) => KEY_LABELS[part] ?? part.charAt(0).toUpperCase() + part.slice(1))
+        .map(
+          (part) =>
+            KEY_LABELS[part] ??
+            (part in KEY_NAMES ? t(KEY_NAMES[part] ?? part) : null) ??
+            part.charAt(0).toUpperCase() + part.slice(1),
+        )
         .join('+'),
     )
     .join(' ');

@@ -9,6 +9,7 @@
     type Shortcut,
   } from './keybindings-edit';
   import { fold } from './sections';
+  import { t } from '../../api';
 
   let { ctx, openFile }: { ctx: ExtensionContext; openFile: () => void } = $props();
 
@@ -89,15 +90,22 @@
     recording = null;
     if (!key) return;
     if (typesText(key)) {
-      notice = `« ${ctx.keybindings.format(key)} » seul taperait du texte : ajoute Ctrl ou Alt.`;
+      notice = t('"{key}" alone would type text: add Ctrl or Alt.', {
+        key: ctx.keybindings.format(key),
+      });
       return;
     }
     const label = ctx.keybindings.format(key);
     const others = shortcuts.filter((s) => s.label === label && s.command !== command);
     await change((text) => setShortcut(text, command, key, previous));
     if (others.length > 0) {
-      const names = [...new Set(others.map((s) => `« ${titleOf(s.command)} »`))].join(', ');
-      notice = `${label} servait aussi à ${names} : c'est le nouveau raccourci qui l'emporte.`;
+      const names = [
+        ...new Set(others.map((s) => t('"{name}"', { name: titleOf(s.command) }))),
+      ].join(', ');
+      notice = t('{key} was also used for {commands}: the new shortcut wins.', {
+        key: label,
+        commands: names,
+      });
     }
   }
 </script>
@@ -107,8 +115,8 @@
     <input
       class="search"
       type="search"
-      placeholder="Rechercher une commande ou un raccourci"
-      aria-label="Rechercher une commande ou un raccourci"
+      placeholder={t('Search for a command or a shortcut')}
+      aria-label={t('Search for a command or a shortcut')}
       bind:value={query}
       spellcheck="false"
     />
@@ -116,7 +124,7 @@
 
   {#if notice}<p class="notice" role="status">{notice}</p>{/if}
 
-  <ul class="list" aria-label="Raccourcis">
+  <ul class="list" aria-label={t('Shortcuts')}>
     {#each rows as row (row.id)}
       {@const customized = isCustomized(fileText, row.id)}
       <li class="row" class:modified={customized}>
@@ -126,49 +134,56 @@
         </div>
         <div class="keys">
           {#if recording?.command === row.id}
-            <span class="recording" aria-live="polite"
-              >Appuie sur les touches… Échap pour annuler</span
-            >
+            <span class="recording" aria-live="polite">{t('Press the keys… Esc to cancel')}</span>
           {:else}
             {#each row.shortcuts as shortcut, i (i)}
               <span class="chip">
                 <button
                   class="key"
-                  title={shortcut.when ? `Quand : ${shortcut.when}` : 'Changer ce raccourci'}
-                  aria-label="Changer {shortcut.label} : {row.title}"
+                  title={shortcut.when
+                    ? t('When: {condition}', { condition: shortcut.when })
+                    : t('Change this shortcut')}
+                  aria-label={t('Change {key}: {command}', {
+                    key: shortcut.label,
+                    command: row.title,
+                  })}
                   onclick={() => record(row.id, shortcut)}>{shortcut.label}</button
                 ><button
                   class="remove"
-                  title="Retirer ce raccourci"
-                  aria-label="Retirer {shortcut.label} : {row.title}"
+                  title={t('Remove this shortcut')}
+                  aria-label={t('Remove {key}: {command}', {
+                    key: shortcut.label,
+                    command: row.title,
+                  })}
                   onclick={() => change((text) => removeShortcut(text, shortcut))}>×</button
                 >
               </span>
             {/each}
             <button
               class="add"
-              title="Ajouter un raccourci"
-              aria-label="Ajouter un raccourci : {row.title}"
+              title={t('Add a shortcut')}
+              aria-label={t('Add a shortcut: {command}', { command: row.title })}
               onclick={() => record(row.id)}>+</button
             >
           {/if}
           <button
             class="reset"
             class:hidden={!customized}
-            title="Revenir aux raccourcis par défaut"
-            aria-label="Revenir aux raccourcis par défaut : {row.title}"
+            title={t('Back to the default shortcuts')}
+            aria-label={t('Back to the default shortcuts: {command}', { command: row.title })}
             onclick={() => change((text) => resetCommand(text, row.id))}>↺</button
           >
         </div>
       </li>
     {:else}
-      <li class="empty">Aucune commande ne correspond.</li>
+      <li class="empty">{t('No command matches.')}</li>
     {/each}
   </ul>
 
   <footer>
-    <button class="link" onclick={openFile}>Ouvrir keybindings.json</button>
-    <span>Clique sur un raccourci pour le changer. La touche leader se règle dans Réglages.</span>
+    <button class="link" onclick={openFile}>{t('Open {file}', { file: 'keybindings.json' })}</button
+    >
+    <span>{t('Click a shortcut to change it. The leader key is set in Settings.')}</span>
   </footer>
 </div>
 

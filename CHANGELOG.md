@@ -6,6 +6,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ### Ajouté
 
+- Interface en anglais et en français : la langue du système par défaut, ou le réglage `workbench.language` (appliqué après un redémarrage de la fenêtre, session conservée). Les textes sont écrits en anglais dans le code, les traductions sont dans `src/locales` ; les plugins traduisent les leurs avec `ctx.i18n`. Un test vérifie que chaque texte a sa traduction française.
+- README en anglais (`README.md`) et en français (`README.fr.md`), avec des captures prises par `npm run screenshots`.
 - Noyau : registre de commandes, résolveur de raccourcis (séquences, conditions `when`), settings en couches (défauts, utilisateur, par langage), registre de menus, bus d'événements, hôte d'extensions.
 - API d'extensions (`src/api`), utilisée par toutes les fonctionnalités internes.
 - Barre de menus Fichier, Édition, Affichage, alimentée par les extensions via `ctx.menus`, avec le raccourci de chaque commande.

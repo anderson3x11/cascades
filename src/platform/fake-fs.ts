@@ -67,7 +67,7 @@ export const fakeFs = {
   },
 
   read(path: string): string {
-    return files.get(path) ?? fail(`${path}: fichier introuvable`);
+    return files.get(path) ?? fail(`${path}: file not found`);
   },
 
   /** The text as bytes, one per character (tests put binary content as latin-1 text). */
@@ -81,7 +81,7 @@ export const fakeFs = {
   },
 
   list(dir: string): FakeEntry[] {
-    if (!dirs.has(dir)) fail(`${dir}: dossier introuvable`);
+    if (!dirs.has(dir)) fail(`${dir}: folder not found`);
     const entries: FakeEntry[] = [];
     for (const path of files.keys()) {
       if (parentOf(path) === dir) entries.push({ name: nameOf(path), isDir: false });
@@ -109,19 +109,19 @@ export const fakeFs = {
   },
 
   createFile(path: string): void {
-    if (exists(path)) fail(`${path}: existe déjà`);
+    if (exists(path)) fail(`${path}: already exists`);
     files.set(path, '');
     changed(path);
   },
 
   createDir(path: string): void {
-    if (exists(path)) fail(`${path}: existe déjà`);
+    if (exists(path)) fail(`${path}: already exists`);
     dirs.add(path);
     changed(path);
   },
 
   rename(from: string, to: string): void {
-    if (exists(to)) fail(`${to}: un fichier ou dossier porte déjà ce nom`);
+    if (exists(to)) fail(`${to}: a file or folder already has this name`);
     const move = (path: string) => (path === from ? to : `${to}${path.slice(from.length)}`);
     const inside = (path: string) => path === from || path.startsWith(`${from}/`);
     for (const [path, text] of [...files]) {

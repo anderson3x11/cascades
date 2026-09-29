@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { ExtensionContext, FileMatches, SearchOptions } from '../../api';
+  import { t, type ExtensionContext, type FileMatches, type SearchOptions } from '../../api';
   import { MAX_MATCHES, type SearchModel } from './model.svelte';
 
   let { ctx, model }: { ctx: ExtensionContext; model: SearchModel } = $props();
 
   const toggles: { key: keyof SearchOptions; label: string; text: string }[] = [
-    { key: 'caseSensitive', label: 'Respecter la casse', text: 'Aa' },
-    { key: 'wholeWord', label: 'Mot entier', text: 'ab' },
-    { key: 'regex', label: 'Expression régulière', text: '.*' },
+    { key: 'caseSensitive', label: t('Match case'), text: 'Aa' },
+    { key: 'wholeWord', label: t('Whole word'), text: 'ab' },
+    { key: 'regex', label: t('Regular expression'), text: '.*' },
   ];
 
   const lastSeparator = (path: string) => Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
@@ -34,8 +34,11 @@
   const summary = $derived.by(() => {
     const count = model.matchCount;
     const files = model.results.length;
-    if (count === 0) return model.running ? 'Recherche…' : 'Aucun résultat.';
-    const text = `${count} résultat${count > 1 ? 's' : ''} dans ${files} fichier${files > 1 ? 's' : ''}`;
+    if (count === 0) return model.running ? t('Searching…') : t('No results.');
+    const text = t('{results} in {files}', {
+      results: count === 1 ? t('1 result') : t('{count} results', { count }),
+      files: files === 1 ? t('1 file') : t('{count} files', { count: files }),
+    });
     return model.running ? `${text}…` : `${text}.`;
   });
 </script>
@@ -46,8 +49,8 @@
       <input
         class="query"
         type="text"
-        placeholder="Rechercher"
-        aria-label="Rechercher dans les fichiers"
+        placeholder={t('Search')}
+        aria-label={t('Search in files')}
         spellcheck="false"
         bind:value={model.query}
         oninput={() => model.schedule()}
@@ -71,16 +74,16 @@
     <div class="field">
       <input
         type="text"
-        placeholder="Remplacer par"
-        aria-label="Remplacer par"
+        placeholder={t('Replace with')}
+        aria-label={t('Replace with')}
         spellcheck="false"
         bind:value={model.replacement}
         oninput={() => model.schedule()}
       />
       <button
         class="replace-all"
-        title="Tout remplacer"
-        aria-label="Tout remplacer"
+        title={t('Replace all')}
+        aria-label={t('Replace all')}
         disabled={model.results.length === 0 || model.running}
         onclick={() => model.replace(model.results.map((f) => f.path))}
       >
@@ -93,24 +96,26 @@
 
   {#if model.noFolder}
     <div class="empty">
-      <p>Ajoute un dossier dans l’explorateur pour chercher dans ses fichiers.</p>
+      <p>{t('Add a folder in the explorer to search its files.')}</p>
       <button class="primary" onclick={() => ctx.commands.execute('explorer.addFolder')}>
-        Ajouter un dossier…
+        {t('Add folder…')}
       </button>
     </div>
   {:else if model.query !== ''}
     <p class="status" role="status">
       {#if model.error}<span class="error">{model.error}</span>{:else}{summary}{/if}
       {#if model.running}
-        <button class="link" onclick={() => model.stop()}>Arrêter</button>
+        <button class="link" onclick={() => model.stop()}>{t('Stop')}</button>
       {/if}
     </p>
     {#if model.notice}<p class="notice">{model.notice}</p>{/if}
     {#if model.truncated}
-      <p class="notice">Plus de {MAX_MATCHES} résultats : précise la recherche.</p>
+      <p class="notice">
+        {t('More than {count} results: narrow the search.', { count: MAX_MATCHES })}
+      </p>
     {/if}
 
-    <ul class="results" aria-label="Résultats">
+    <ul class="results" aria-label={t('Results')}>
       {#each model.results as file (file.path)}
         {@const open = !model.collapsed.has(file.path)}
         <li>
@@ -124,8 +129,8 @@
             <span class="file-actions">
               <button
                 class="icon"
-                title="Remplacer dans ce fichier"
-                aria-label="Remplacer dans {nameOf(file.path)}"
+                title={t('Replace in this file')}
+                aria-label={t('Replace in {file}', { file: nameOf(file.path) })}
                 onclick={() => model.replace([file.path])}
               >
                 <svg viewBox="0 0 16 16" aria-hidden="true"
@@ -134,8 +139,8 @@
               </button>
               <button
                 class="icon"
-                title="Écarter ce fichier"
-                aria-label="Écarter {nameOf(file.path)}"
+                title={t('Dismiss this file')}
+                aria-label={t('Dismiss {file}', { file: nameOf(file.path) })}
                 onclick={() => model.dismiss(file.path)}>×</button
               >
             </span>
@@ -146,7 +151,7 @@
                 <li>
                   <button
                     class="match"
-                    title="Ligne {match.line}"
+                    title={t('Line {number}', { number: match.line })}
                     onclick={() => model.reveal(file.path, match.line, match.column, match.length)}
                   >
                     <span class="line">{match.line}</span>

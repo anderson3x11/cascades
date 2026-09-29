@@ -1,7 +1,7 @@
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { Prec } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { deleteMarkdownPair, markdownInput } from './markdown';
 
 /** Wrapping a selection in * _ ` ~, and in Markdown the **bold** and `code` pairs. */
@@ -39,8 +39,9 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: true,
-        description:
-          'Fermer automatiquement ( [ { " \' et, en Markdown, ** et `. Taper un de ces caractères, ou * _ ` ~, sur une sélection l’entoure.',
+        description: t(
+          'Close ( [ { " \' by themselves and, in Markdown, ** and `. Typing one of them, or * _ ` ~, over a selection wraps it.',
+        ),
       },
     });
 

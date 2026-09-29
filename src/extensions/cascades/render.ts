@@ -21,6 +21,7 @@ import {
   type Glyph,
   type SourceLine,
 } from './tree';
+import { t } from '../../api';
 
 export const CASCADE_STYLES = [
   'arrow',
@@ -138,7 +139,9 @@ class BlockToggle extends WidgetType {
   toDOM(): HTMLElement {
     const button = document.createElement('button');
     button.className = this.hidden ? 'cm-cascade-toggle hidden' : 'cm-cascade-toggle';
-    button.title = this.hidden ? 'Afficher la cascade de ce bloc' : 'Masquer la cascade de ce bloc';
+    button.title = this.hidden
+      ? t('Show the cascade of this block')
+      : t('Hide the cascade of this block');
     button.setAttribute('aria-label', button.title);
     button.innerHTML =
       '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2v6.5a2 2 0 0 0 2 2h6M9.5 8l2.5 2.5L9.5 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';

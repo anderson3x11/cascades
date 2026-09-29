@@ -1,6 +1,6 @@
 import { Prec, type EditorState, type TransactionSpec } from '@codemirror/state';
 import { keymap, type EditorView } from '@codemirror/view';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { cellAt, cellRange, findTable, formatTable, moveInTable } from './table';
 
 /**
@@ -59,8 +59,9 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: true,
-        description:
-          'Dans un tableau Markdown, Tab et Shift+Tab passent d’une cellule à l’autre en alignant les colonnes.',
+        description: t(
+          'In a Markdown table, Tab and Shift+Tab move between cells and align the columns.',
+        ),
       },
     });
 
@@ -81,12 +82,12 @@ export default defineExtension({
         if (view && !run(0)(view)) {
           ctx.banners.show({
             kind: 'info',
-            message: 'Place le curseur dans un tableau Markdown pour l’aligner.',
-            actions: [{ label: 'OK', run: () => {} }],
+            message: t('Put the cursor in a Markdown table to align it.'),
+            actions: [{ label: t('OK'), run: () => {} }],
           });
         }
       },
-      { title: 'Aligner le tableau', category: 'Édition' },
+      { title: t('Align the table'), category: t('Edit') },
     );
     ctx.menus.registerItem('edit', { command: 'markdown.alignTable', group: '3_lines', order: 31 });
 
@@ -101,11 +102,12 @@ export default defineExtension({
         // On its own lines, with the first header selected, ready to be typed over.
         const empty = line.text.trim() === '';
         const before = empty ? '' : '\n\n';
+        const header = t('Column {number}', { number: 1 });
         const table = formatTable({
           first: 0,
           last: 2,
           rows: [
-            ['Colonne 1', 'Colonne 2'],
+            [header, t('Column {number}', { number: 2 })],
             ['---', '---'],
             ['', ''],
           ],
@@ -115,13 +117,13 @@ export default defineExtension({
         const start = from + before.length + 2;
         view.dispatch({
           changes: { from, to: line.to, insert: before + table },
-          selection: { anchor: start, head: start + 'Colonne 1'.length },
+          selection: { anchor: start, head: start + header.length },
           scrollIntoView: true,
           userEvent: 'input',
         });
         view.focus();
       },
-      { title: 'Insérer un tableau', category: 'Édition' },
+      { title: t('Insert a table'), category: t('Edit') },
     );
     ctx.menus.registerItem('edit', {
       command: 'markdown.insertTable',

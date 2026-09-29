@@ -1,4 +1,4 @@
-import { defineExtension, type TabInfo } from '../../api';
+import { defineExtension, t, type TabInfo } from '../../api';
 
 const MAX_CLOSED = 20;
 
@@ -28,11 +28,11 @@ export default defineExtension({
       // Closing one view of a document shown elsewhere loses nothing.
       if (tab.dirty && otherViews(tab).length === 0) {
         const choice = await ctx.dialogs.choose(
-          `Enregistrer les modifications de « ${tab.title} » ?`,
-          { buttons: ['Enregistrer', 'Ne pas enregistrer', 'Annuler'] },
+          t('Save the changes to "{file}"?', { file: tab.title }),
+          { buttons: [t('Save'), t('Don’t save'), t('Cancel')] },
         );
-        if (choice === 'Annuler') return false;
-        if (choice === 'Enregistrer' && !(await ctx.commands.execute('file.save', tab.id))) {
+        if (choice === t('Cancel')) return false;
+        if (choice === t('Save') && !(await ctx.commands.execute('file.save', tab.id))) {
           return false;
         }
       }
@@ -54,12 +54,12 @@ export default defineExtension({
     });
 
     ctx.commands.register('tabs.next', () => step(1), {
-      title: 'Onglet suivant',
-      category: 'Onglets',
+      title: t('Next tab'),
+      category: t('Tabs'),
     });
     ctx.commands.register('tabs.previous', () => step(-1), {
-      title: 'Onglet précédent',
-      category: 'Onglets',
+      title: t('Previous tab'),
+      category: t('Tabs'),
     });
 
     ctx.commands.register(
@@ -71,7 +71,7 @@ export default defineExtension({
             : ctx.workspace.active();
         return tab ? await close(tab) : false;
       },
-      { title: 'Fermer l’onglet', category: 'Onglets' },
+      { title: t('Close the tab'), category: t('Tabs') },
     );
 
     ctx.commands.register(
@@ -80,12 +80,12 @@ export default defineExtension({
         const path = closed.pop();
         if (path) await ctx.commands.execute('file.openPath', path);
       },
-      { title: 'Rouvrir le dernier onglet fermé', category: 'Onglets' },
+      { title: t('Reopen the last closed tab'), category: t('Tabs') },
     );
 
     ctx.menus.registerItem('file', { command: 'tabs.close', group: '3_close', order: 1 });
     ctx.menus.registerItem('file', { command: 'tabs.reopenClosed', group: '3_close', order: 2 });
-    ctx.menus.registerMenu({ id: 'view', title: 'Affichage', order: 30 });
+    ctx.menus.registerMenu({ id: 'view', title: t('View'), order: 30 });
     ctx.menus.registerItem('view', { command: 'tabs.next', group: '1_tabs', order: 1 });
     ctx.menus.registerItem('view', { command: 'tabs.previous', group: '1_tabs', order: 2 });
 

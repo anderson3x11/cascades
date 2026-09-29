@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { Workbench } from '../app/workbench';
+  import { t } from '../core/i18n/i18n';
 
   let { workbench }: { workbench: Workbench } = $props();
   const hint = $derived(workbench.keyHint);
 </script>
 
 {#if hint.typed}
-  <div class="hint" role="status" aria-label="Touches disponibles">
+  <div class="hint" role="status" aria-label={t('Available keys')}>
     <span class="typed">{hint.typed} …</span>
     <ul>
       {#each hint.items as item (item.key)}
@@ -16,7 +17,7 @@
         </li>
       {/each}
     </ul>
-    <span class="escape"><kbd>Échap</kbd> annuler</span>
+    <span class="escape"><kbd>{t('Esc')}</kbd> {t('cancel')}</span>
   </div>
 {/if}
 

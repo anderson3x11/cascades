@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import type { Group } from '../app/tab.svelte';
   import type { Workbench } from '../app/workbench';
+  import { t } from '../core/i18n/i18n';
 
   let { workbench, group, focused }: { workbench: Workbench; group: Group; focused: boolean } =
     $props();
@@ -31,26 +32,26 @@
     const canGrow = ws.groups.length < 4;
     const items: { label: string; command: string; enabled: boolean }[] = [
       {
-        label: 'Cloner dans la vue suivante',
+        label: t('Clone to the next view'),
         command: 'view.cloneToNextGroup',
         enabled: index < ws.groups.length - 1 || canGrow,
       },
       {
-        label: 'Déplacer vers la vue suivante',
+        label: t('Move to the next view'),
         command: 'view.moveToNextGroup',
         enabled: index < ws.groups.length - 1 || (canGrow && group.tabs.length > 1),
       },
       {
-        label: 'Déplacer vers la vue précédente',
+        label: t('Move to the previous view'),
         command: 'view.moveToPreviousGroup',
         enabled: index > 0,
       },
       {
-        label: 'Réunir toutes les vues',
+        label: t('Join all views'),
         command: 'view.joinGroups',
         enabled: ws.groups.length > 1,
       },
-      { label: 'Fermer', command: 'tabs.close', enabled: true },
+      { label: t('Close'), command: 'tabs.close', enabled: true },
     ];
     return items;
   });
@@ -236,8 +237,8 @@
       <button
         class="close"
         class:dirty={tab.dirty}
-        aria-label="Fermer"
-        title={tab.dirty ? 'Modifications non enregistrées' : 'Fermer'}
+        aria-label={t('Close')}
+        title={tab.dirty ? t('Unsaved changes') : t('Close')}
         onpointerdown={(e) => e.stopPropagation()}
         onclick={(e) => {
           e.stopPropagation();
@@ -248,8 +249,8 @@
   {/each}
   <button
     class="new"
-    aria-label="Nouveau fichier"
-    title="Nouveau fichier"
+    aria-label={t('New file')}
+    title={t('New file')}
     onclick={() => {
       focusThisGroup();
       run('file.new');

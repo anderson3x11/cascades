@@ -93,7 +93,7 @@ pub fn decode(bytes: &[u8]) -> Decoded {
 /// un autre encodage"). A BOM of that encoding is kept track of and removed.
 pub fn decode_as(bytes: &[u8], label: &str) -> Result<Decoded, String> {
     let encoding = Encoding::for_label(label.as_bytes())
-        .ok_or_else(|| format!("encodage inconnu : {label}"))?;
+        .ok_or_else(|| format!("unknown encoding: {label}"))?;
     let bom = Encoding::for_bom(bytes).is_some_and(|(found, _)| found == encoding);
     let (text, _) = encoding.decode_with_bom_removal(bytes);
     let line_ending = detect_line_ending(&text);
@@ -114,7 +114,7 @@ pub fn encode(text: &str, info: &TextInfo) -> Result<Vec<u8>, String> {
         LineEnding::Crlf => text.replace('\n', "\r\n"),
     };
     let encoding = Encoding::for_label(info.encoding.as_bytes())
-        .ok_or_else(|| format!("encodage inconnu : {}", info.encoding))?;
+        .ok_or_else(|| format!("unknown encoding: {}", info.encoding))?;
 
     let mut out = Vec::with_capacity(text.len() + 3);
     if encoding == UTF_16LE || encoding == UTF_16BE {
@@ -139,7 +139,7 @@ pub fn encode(text: &str, info: &TextInfo) -> Result<Vec<u8>, String> {
     let (bytes, _, unmappable) = encoding.encode(&text);
     if unmappable {
         return Err(format!(
-            "certains caractères n'existent pas en {} : enregistre plutôt le fichier en UTF-8",
+            "some characters do not exist in {}: save the file as UTF-8 instead",
             encoding.name()
         ));
     }

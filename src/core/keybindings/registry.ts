@@ -1,6 +1,7 @@
 import { toDisposable, type Disposable } from '../disposable';
 import { Emitter } from '../events/emitter';
 import { parseWhen, type ContextLookup, type WhenExpr } from '../context/when';
+import { t } from '../i18n/i18n';
 import { LEADER, normalizeChord, parseKeySequence } from './keys';
 
 export interface KeybindingSpec {
@@ -132,7 +133,7 @@ export class KeybindingRegistry {
   /** Changes the chord that "Leader" stands for, e.g. "Ctrl+Space". */
   setLeader(key: string): void {
     const chord = normalizeChord(key);
-    if (chord === LEADER) throw new Error('la touche leader ne peut pas être « Leader »');
+    if (chord === LEADER) throw new Error(t('the leader key cannot be "Leader"'));
     this.leader = chord;
     this.pending = [];
     this.onDidChange.fire();

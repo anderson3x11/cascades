@@ -8,6 +8,7 @@ import {
 } from '@codemirror/view';
 import type { ExtensionContext } from '../../api';
 import { maskLine } from './mask';
+import { t } from '../../api';
 
 /** Waits for a pause in typing or scrolling before asking the dictionary. */
 const DELAY_MS = 350;
@@ -160,10 +161,10 @@ export function spellChecker(
             ctx.contextMenu.show(at, [
               ...(suggestions.length > 0
                 ? suggestions.slice(0, 6).map((s) => ({ label: s, run: replace(s) }))
-                : [{ label: 'Aucune suggestion', run: () => {}, disabled: true }]),
+                : [{ label: t('No suggestions'), run: () => {}, disabled: true }]),
               'separator',
               {
-                label: 'Ajouter au dictionnaire',
+                label: t('Add to the dictionary'),
                 run: () =>
                   void ctx.spelling.add(language(), word).then(() => {
                     shared.forget();
@@ -171,7 +172,7 @@ export function spellChecker(
                   }),
               },
               {
-                label: 'Ignorer ce mot',
+                label: t('Ignore this word'),
                 run: () => {
                   shared.ignored.add(word.toLowerCase());
                   recheckAll();

@@ -1,4 +1,5 @@
-import { invoke, isTauri } from '@tauri-apps/api/core';
+import { isTauri } from '@tauri-apps/api/core';
+import { invoke } from './invoke';
 import { message, open, save } from '@tauri-apps/plugin-dialog';
 
 /**

@@ -1,4 +1,5 @@
-import { invoke, isTauri } from '@tauri-apps/api/core';
+import { isTauri } from '@tauri-apps/api/core';
+import { invoke } from './invoke';
 
 /** A misspelled word in a line, in JavaScript string units. */
 export interface Misspelling {

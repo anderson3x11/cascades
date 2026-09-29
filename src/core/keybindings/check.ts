@@ -1,10 +1,11 @@
 import type { Node } from 'jsonc-parser';
 import { parseWhen } from '../context/when';
 import { parseJsoncTree, problemAt, type ConfigProblem } from '../settings/file';
+import { t } from '../i18n/i18n';
 import { parseKeySequence } from './keys';
 
 const PROPERTIES = ['key', 'command', 'when', 'args'];
-const NOT_TEXT = 'attendu : un texte entre guillemets';
+const notText = () => t('expected: {type}', { type: t('a text in quotes') });
 
 const messageOf = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
@@ -16,12 +17,14 @@ export function checkKeybindings(
   const { tree, problems } = parseJsoncTree(text);
   if (!tree) return problems;
   if (tree.type !== 'array') {
-    return [...problems, problemAt(tree, 'error', 'le fichier doit contenir une liste [ … ]')];
+    return [...problems, problemAt(tree, 'error', t('the file must hold a list [ … ]'))];
   }
 
   for (const item of tree.children ?? []) {
     if (item.type !== 'object') {
-      problems.push(problemAt(item, 'error', 'attendu : { "key": …, "command": … }'));
+      problems.push(
+        problemAt(item, 'error', t('expected: {type}', { type: '{ "key": …, "command": … }' })),
+      );
       continue;
     }
     const values = new Map<string, Node>();
@@ -31,7 +34,11 @@ export function checkKeybindings(
       const name = String(keyNode.value);
       if (!PROPERTIES.includes(name)) {
         problems.push(
-          problemAt(keyNode, 'warning', `propriété inconnue (${PROPERTIES.join(', ')})`),
+          problemAt(
+            keyNode,
+            'warning',
+            t('unknown property ({known})', { known: PROPERTIES.join(', ') }),
+          ),
         );
       } else if (valueNode) {
         values.set(name, valueNode);
@@ -43,25 +50,26 @@ export function checkKeybindings(
     const command = values.get('command');
     let removal = false;
     if (!command) {
-      problems.push(problemAt(brace, 'error', '"command" manquant'));
+      problems.push(problemAt(brace, 'error', t('missing "{name}"', { name: 'command' })));
     } else if (command.type !== 'string') {
-      problems.push(problemAt(command, 'error', NOT_TEXT));
+      problems.push(problemAt(command, 'error', notText()));
     } else {
       const id = String(command.value);
       removal = id.startsWith('-');
       const name = id.replace(/^-/, '');
       if (!hasCommand(name)) {
-        problems.push(problemAt(command, 'warning', `commande inconnue : ${name}`));
+        problems.push(problemAt(command, 'warning', t('unknown command: {name}', { name })));
       }
     }
 
     const key = values.get('key');
     if (!key) {
-      if (!removal) problems.push(problemAt(brace, 'error', '"key" manquant'));
+      if (!removal)
+        problems.push(problemAt(brace, 'error', t('missing "{name}"', { name: 'key' })));
     } else if (key.type !== 'string') {
-      problems.push(problemAt(key, 'error', NOT_TEXT));
+      problems.push(problemAt(key, 'error', notText()));
     } else if (String(key.value).trim() === '') {
-      if (!removal) problems.push(problemAt(key, 'error', 'raccourci vide'));
+      if (!removal) problems.push(problemAt(key, 'error', t('empty shortcut')));
     } else {
       try {
         parseKeySequence(String(key.value));
@@ -72,7 +80,7 @@ export function checkKeybindings(
 
     const when = values.get('when');
     if (when && when.type !== 'string') {
-      problems.push(problemAt(when, 'error', NOT_TEXT));
+      problems.push(problemAt(when, 'error', notText()));
     } else if (when) {
       try {
         parseWhen(String(when.value));

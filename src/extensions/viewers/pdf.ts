@@ -11,6 +11,7 @@ import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type { ViewerFactory, ViewerInput } from '../../api';
 import './pdf.css';
 import './viewers.css';
+import { t } from '../../api';
 
 GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -54,10 +55,10 @@ export function createPdfViewer(read: (path: string) => Promise<Uint8Array>): Vi
       };
       bar.append(
         info,
-        button('−', 'Réduire', () => zoom(-1)),
+        button('−', t('Zoom out'), () => zoom(-1)),
         level,
-        button('+', 'Agrandir', () => zoom(1)),
-        button('Ajuster', 'Ajuster à la largeur', () => setScale(null)),
+        button('+', t('Zoom in'), () => zoom(1)),
+        button(t('Fit'), t('Fit to the width'), () => setScale(null)),
       );
       root.append(stage, bar);
       host.append(root);
@@ -84,7 +85,10 @@ export function createPdfViewer(read: (path: string) => Promise<Uint8Array>): Vi
         if (pages.length === 0) return;
         const top = stage.scrollTop + stage.clientHeight / 3;
         const index = pages.findIndex((p) => p.box.offsetTop + p.box.offsetHeight > top);
-        info.textContent = `Page ${Math.max(index, 0) + 1} / ${pages.length}`;
+        info.textContent = t('Page {number} / {count}', {
+          number: Math.max(index, 0) + 1,
+          count: pages.length,
+        });
       };
 
       const draw = async (page: Page) => {
@@ -178,7 +182,7 @@ export function createPdfViewer(read: (path: string) => Promise<Uint8Array>): Vi
       const load = async (next: string) => {
         const current = ++run;
         clear();
-        info.textContent = 'Chargement…';
+        info.textContent = t('Loading…');
         try {
           const data = await read(next);
           if (current !== run) return;
@@ -211,8 +215,10 @@ export function createPdfViewer(read: (path: string) => Promise<Uint8Array>): Vi
           message.className = 'cv-pdf-error';
           message.textContent =
             err instanceof PasswordException
-              ? 'Ce PDF est protégé par un mot de passe.'
-              : `PDF illisible : ${err instanceof Error ? err.message : String(err)}`;
+              ? t('This PDF is protected by a password.')
+              : t('Unreadable PDF: {problem}', {
+                  problem: err instanceof Error ? err.message : String(err),
+                });
           stage.replaceChildren(message);
         }
       };

@@ -2,7 +2,7 @@ import { cursorDocEnd, cursorDocStart } from '@codemirror/commands';
 import { gotoLine } from '@codemirror/search';
 import type { EditorSelection } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
-import { defineExtension, type KeybindingSpec } from '../../api';
+import { defineExtension, t, type KeybindingSpec } from '../../api';
 import {
   bookmarkExtension,
   bookmarkedLines,
@@ -29,25 +29,25 @@ export default defineExtension({
   id: 'cascades.navigation',
   activate(ctx) {
     ctx.editor.addExtension(() => bookmarkExtension);
-    ctx.menus.registerMenu({ id: 'go', title: 'Aller', order: 27 });
+    ctx.menus.registerMenu({ id: 'go', title: t('Go'), order: 27 });
 
     const listBookmarks = async (view: EditorView) => {
       const lines = bookmarkedLines(view.state);
       if (lines.length === 0) {
         ctx.banners.show({
           kind: 'info',
-          message: 'Aucun signet dans ce fichier. Ctrl+F2 en pose un sur la ligne du curseur.',
-          actions: [{ label: 'OK', run: () => {} }],
+          message: t('No bookmark in this file. Ctrl+F2 sets one on the line of the cursor.'),
+          actions: [{ label: t('OK'), run: () => {} }],
         });
         return;
       }
       const line = await ctx.quickPick.show(
         lines.map((n) => ({
-          label: view.state.doc.line(n).text.trim() || '(ligne vide)',
-          description: `ligne ${n}`,
+          label: view.state.doc.line(n).text.trim() || t('(empty line)'),
+          description: t('line {number}', { number: n }),
           value: n,
         })),
-        { placeholder: 'Aller au signet' },
+        { placeholder: t('Go to bookmark') },
       );
       if (line !== undefined) goToLine(view, line);
     };
@@ -55,7 +55,7 @@ export default defineExtension({
     const actions: Action[] = [
       {
         id: 'navigation.selectLine',
-        title: 'Sélectionner la ligne',
+        title: t('Select line'),
         menu: 'edit',
         group: '4_select',
         keys: ['Ctrl+L'],
@@ -63,7 +63,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.deselectLine',
-        title: 'Retirer la dernière ligne sélectionnée',
+        title: t('Remove the last selected line'),
         menu: 'edit',
         group: '4_select',
         keys: ['Ctrl+Shift+L'],
@@ -71,7 +71,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.selectParagraph',
-        title: 'Sélectionner le paragraphe ou la cascade',
+        title: t('Select the paragraph or cascade'),
         menu: 'edit',
         group: '4_select',
         keys: ['Leader L'],
@@ -79,7 +79,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.goToLine',
-        title: 'Aller à la ligne…',
+        title: t('Go to line…'),
         menu: 'go',
         group: '1_place',
         keys: ['Ctrl+G'],
@@ -87,7 +87,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.goToTop',
-        title: 'Début du fichier',
+        title: t('Start of the file'),
         menu: 'go',
         group: '1_place',
         keys: ['Ctrl+Home'],
@@ -95,7 +95,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.goToBottom',
-        title: 'Fin du fichier',
+        title: t('End of the file'),
         menu: 'go',
         group: '1_place',
         keys: ['Ctrl+End'],
@@ -103,7 +103,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.toggleBookmark',
-        title: 'Poser ou retirer un signet',
+        title: t('Set or remove a bookmark'),
         menu: 'go',
         group: '2_bookmarks',
         keys: ['Ctrl+F2'],
@@ -111,7 +111,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.nextBookmark',
-        title: 'Signet suivant',
+        title: t('Next bookmark'),
         menu: 'go',
         group: '2_bookmarks',
         keys: ['F2'],
@@ -119,7 +119,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.previousBookmark',
-        title: 'Signet précédent',
+        title: t('Previous bookmark'),
         menu: 'go',
         group: '2_bookmarks',
         keys: ['Shift+F2'],
@@ -127,7 +127,7 @@ export default defineExtension({
       },
       {
         id: 'navigation.listBookmarks',
-        title: 'Signets…',
+        title: t('Bookmarks…'),
         menu: 'go',
         group: '2_bookmarks',
         run: (v) => void listBookmarks(v),
@@ -142,7 +142,7 @@ export default defineExtension({
           const view = ctx.editor.view();
           if (view) action.run(view);
         },
-        { title: action.title, category: action.menu === 'go' ? 'Aller' : 'Édition' },
+        { title: action.title, category: action.menu === 'go' ? t('Go') : t('Edit') },
       );
       ctx.menus.registerItem(action.menu, { command: action.id, group: action.group, order });
       for (const key of action.keys ?? [])

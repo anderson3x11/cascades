@@ -17,7 +17,7 @@ describe('parseTheme', () => {
   });
 
   it('explains what is wrong', () => {
-    expect(() => parseTheme('x', '{')).toThrow(/JSON invalide/);
+    expect(() => parseTheme('x', '{')).toThrow(/invalid JSON/);
     expect(() => parseTheme('x', '{"type":"dark","colors":{}}')).toThrow(/name/);
     expect(() => parseTheme('x', '{"name":"a","type":"sepia","colors":{}}')).toThrow(/type/);
     expect(() => parseTheme('x', '{"name":"a","type":"dark"}')).toThrow(/colors/);
@@ -25,8 +25,8 @@ describe('parseTheme', () => {
 
   it('rejects unsafe keys and values', () => {
     const theme = (colors: object) => JSON.stringify({ name: 'a', type: 'light', colors });
-    expect(() => parseTheme('x', theme({ '--bg': '#fff' }))).toThrow(/nom de couleur/);
-    expect(() => parseTheme('x', theme({ bg: 'red; color: blue' }))).toThrow(/valeur/);
-    expect(() => parseTheme('x', theme({ bg: 42 }))).toThrow(/valeur/);
+    expect(() => parseTheme('x', theme({ '--bg': '#fff' }))).toThrow(/color name/);
+    expect(() => parseTheme('x', theme({ bg: 'red; color: blue' }))).toThrow(/value/);
+    expect(() => parseTheme('x', theme({ bg: 42 }))).toThrow(/value/);
   });
 });

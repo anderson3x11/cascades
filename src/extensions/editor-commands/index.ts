@@ -9,35 +9,35 @@ import {
   undo,
 } from '@codemirror/commands';
 import { openSearchPanel, selectNextOccurrence } from '@codemirror/search';
-import { defineExtension, type EditorView } from '../../api';
+import { defineExtension, t, type EditorView } from '../../api';
 import { findCount } from './find-count';
 
 type EditorCommand = (view: EditorView) => boolean;
 
 /**
  * CodeMirror commands exposed as app commands, so they can be rebound and
- * listed, with their place in the Édition menu.
+ * listed, with their place in the Edit menu.
  */
-const COMMANDS: [id: string, title: string, run: EditorCommand, menuGroup: string][] = [
-  ['editor.undo', 'Annuler', undo, '1_history'],
-  ['editor.redo', 'Rétablir', redo, '1_history'],
-  ['search.find', 'Rechercher', openSearchPanel, '2_find'],
-  ['search.replace', 'Remplacer', openSearchPanel, '2_find'],
-  ['editor.duplicateLine', 'Dupliquer la ligne', copyLineDown, '3_lines'],
-  ['editor.moveLineUp', 'Déplacer la ligne vers le haut', moveLineUp, '3_lines'],
-  ['editor.moveLineDown', 'Déplacer la ligne vers le bas', moveLineDown, '3_lines'],
-  ['editor.deleteLine', 'Supprimer la ligne', deleteLine, '3_lines'],
-  ['editor.toggleComment', 'Commenter / décommenter', toggleComment, '3_lines'],
-  ['editor.selectAll', 'Tout sélectionner', selectAll, '4_select'],
-  ['editor.addNextOccurrence', 'Ajouter l’occurrence suivante', selectNextOccurrence, '4_select'],
+const commands = (): [id: string, title: string, run: EditorCommand, menuGroup: string][] => [
+  ['editor.undo', t('Undo'), undo, '1_history'],
+  ['editor.redo', t('Redo'), redo, '1_history'],
+  ['search.find', t('Find'), openSearchPanel, '2_find'],
+  ['search.replace', t('Replace'), openSearchPanel, '2_find'],
+  ['editor.duplicateLine', t('Duplicate line'), copyLineDown, '3_lines'],
+  ['editor.moveLineUp', t('Move line up'), moveLineUp, '3_lines'],
+  ['editor.moveLineDown', t('Move line down'), moveLineDown, '3_lines'],
+  ['editor.deleteLine', t('Delete line'), deleteLine, '3_lines'],
+  ['editor.toggleComment', t('Comment / uncomment'), toggleComment, '3_lines'],
+  ['editor.selectAll', t('Select all'), selectAll, '4_select'],
+  ['editor.addNextOccurrence', t('Add next occurrence'), selectNextOccurrence, '4_select'],
 ];
 
 export default defineExtension({
   id: 'cascades.editor-commands',
   activate(ctx) {
-    ctx.menus.registerMenu({ id: 'edit', title: 'Édition', order: 20 });
+    ctx.menus.registerMenu({ id: 'edit', title: t('Edit'), order: 20 });
     ctx.editor.addExtension(() => findCount);
-    for (const [order, [id, title, run, group]] of COMMANDS.entries()) {
+    for (const [order, [id, title, run, group]] of commands().entries()) {
       ctx.menus.registerItem('edit', { command: id, group, order });
       ctx.commands.register(
         id,
@@ -47,7 +47,7 @@ export default defineExtension({
           view.focus();
           return run(view);
         },
-        { title, category: 'Éditeur' },
+        { title, category: t('Editor') },
       );
     }
   },

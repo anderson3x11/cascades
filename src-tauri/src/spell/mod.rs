@@ -188,7 +188,7 @@ mod system {
                     } else {
                         let tags = strings(&factory.SupportedLanguages().map_err(text)?);
                         super::pick_variant(language, &tags).ok_or_else(|| {
-                            format!("aucun dictionnaire « {language} » n'est installé dans Windows")
+                            format!("no \"{language}\" dictionary is installed in Windows")
                         })?
                     }
                 };
@@ -249,8 +249,7 @@ mod system {
 mod system {
     use super::Misspelling;
 
-    const UNAVAILABLE: &str =
-        "la correction orthographique n'est pas encore disponible sur ce système";
+    const UNAVAILABLE: &str = "spell checking is not available on this system yet";
 
     pub struct Backend;
 
@@ -283,7 +282,7 @@ mod tests {
         let found = match speller.check("fr".into(), vec!["Bonjour chocola, à bientôt".into()]) {
             Ok(found) => found,
             // No French dictionary on this machine (a CI runner): nothing to test.
-            Err(e) if e.contains("aucun dictionnaire") => {
+            Err(e) if e.contains("dictionary is installed") => {
                 eprintln!("skipped: {e}");
                 return;
             }

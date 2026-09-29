@@ -61,7 +61,7 @@ pub fn build(query: &str, options: &SearchOptions) -> Result<Regex, String> {
         .case_insensitive(!options.case_sensitive)
         .build()
         .map_err(|e| match e {
-            regex::Error::Syntax(message) => format!("expression invalide : {message}"),
+            regex::Error::Syntax(message) => format!("invalid expression: {message}"),
             other => other.to_string(),
         })
 }
@@ -172,7 +172,7 @@ pub fn replace_in_file(
     replacement: &str,
     options: &SearchOptions,
 ) -> Result<usize, String> {
-    let decoded = read(path).ok_or("fichier illisible, binaire ou trop gros")?;
+    let decoded = read(path).ok_or("unreadable file, binary or too big")?;
     let (text, count) = replace(&decoded.text, re, replacement, options);
     if count > 0 {
         let bytes = fs::encode(&text, &decoded.info)?;
@@ -246,7 +246,7 @@ mod tests {
         assert!(
             build("(", &options(false, false, true))
                 .unwrap_err()
-                .starts_with("expression invalide")
+                .starts_with("invalid expression")
         );
     }
 }

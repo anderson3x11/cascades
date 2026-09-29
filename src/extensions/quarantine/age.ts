@@ -1,12 +1,13 @@
+import { t } from '../../api';
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
-/** "à l'instant", "il y a 5 min", "il y a 3 h", "il y a 2 j". */
+/** "just now", "5 min ago", "3 h ago", "2 d ago". */
 export function formatAge(createdAt: number, now = Date.now()): string {
   const elapsed = Math.max(0, now - createdAt);
-  if (elapsed < MINUTE) return 'à l’instant';
-  if (elapsed < HOUR) return `il y a ${Math.floor(elapsed / MINUTE)} min`;
-  if (elapsed < DAY) return `il y a ${Math.floor(elapsed / HOUR)} h`;
-  return `il y a ${Math.floor(elapsed / DAY)} j`;
+  if (elapsed < MINUTE) return t('just now');
+  if (elapsed < HOUR) return t('{count} min ago', { count: Math.floor(elapsed / MINUTE) });
+  if (elapsed < DAY) return t('{count} h ago', { count: Math.floor(elapsed / HOUR) });
+  return t('{count} d ago', { count: Math.floor(elapsed / DAY) });
 }

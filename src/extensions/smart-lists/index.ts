@@ -1,6 +1,6 @@
 import { EditorState, Prec, type Extension, type TransactionSpec } from '@codemirror/state';
 import { keymap, type EditorView, type KeyBinding } from '@codemirror/view';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { continueList, indentList, renumberChanges, toggleTask } from './list';
 
 const run =
@@ -37,22 +37,22 @@ export default defineExtension({
       languages: {
         type: 'array',
         default: ['plaintext', 'markdown'],
-        description: 'Langages où les listes intelligentes sont actives.',
+        description: t('Languages where smart lists are on.'),
       },
       continue: {
         type: 'boolean',
         default: true,
-        description: 'Entrée continue la liste, ou en sort sur une puce vide.',
+        description: t('Enter continues the list, or leaves it on an empty bullet.'),
       },
       tabIndents: {
         type: 'boolean',
         default: true,
-        description: 'Tab et Shift+Tab changent le niveau d’une ligne de liste.',
+        description: t('Tab and Shift+Tab change the level of a list line.'),
       },
       renumber: {
         type: 'boolean',
         default: true,
-        description: 'Renuméroter les listes numérotées après chaque modification.',
+        description: t('Renumber numbered lists after each change.'),
       },
     });
 
@@ -83,7 +83,7 @@ export default defineExtension({
         const view = ctx.editor.view();
         return view ? run(toggleTask)(view) : false;
       },
-      { title: 'Cocher / décocher la tâche', category: 'Éditeur' },
+      { title: t('Check / uncheck the task'), category: t('Editor') },
     );
     ctx.menus.registerItem('edit', { command: 'editor.toggleTask', group: '3_lines', order: 20 });
   },

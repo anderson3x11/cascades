@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ModalSpec } from '../api';
   import type { Workbench } from '../app/workbench';
+  import { t } from '../core/i18n/i18n';
 
   let { workbench, modal }: { workbench: Workbench; modal: ModalSpec } = $props();
 
@@ -45,7 +46,7 @@
 >
   <header>
     <h2>{modal.title}</h2>
-    <button aria-label="Fermer" title="Fermer (Échap)" onclick={close}>×</button>
+    <button aria-label={t('Close')} title={t('Close (Esc)')} onclick={close}>×</button>
   </header>
   <div class="body" bind:this={host}></div>
 </div>

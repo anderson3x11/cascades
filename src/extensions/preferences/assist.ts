@@ -1,5 +1,6 @@
 import { getLocation, type Location } from 'jsonc-parser';
 import type { SettingSchema } from '../../api';
+import { t } from '../../api';
 
 export type ConfigFileName = 'settings.json' | 'keybindings.json';
 
@@ -24,11 +25,11 @@ export interface Suggestions {
   options: Suggestion[];
 }
 
-const KEYBINDING_PROPERTIES: [string, string][] = [
-  ['key', 'Raccourci : "Ctrl+Shift+N", "Leader X"…'],
-  ['command', 'Commande lancée ; "-commande" retire un raccourci'],
-  ['when', 'Condition : "editorFocus"…'],
-  ['args', 'Argument passé à la commande'],
+const keybindingProperties = (): [string, string][] => [
+  ['key', t('Shortcut: "Ctrl+Shift+N", "Leader X"…')],
+  ['command', t('Command to run; "-command" removes a shortcut')],
+  ['when', t('Condition: "editorFocus"…')],
+  ['args', t('Argument passed to the command')],
 ];
 
 const isLanguageBlock = (segment: unknown) =>
@@ -59,7 +60,9 @@ function rangeAt(text: string, pos: number, location: Location): { from: number;
 }
 
 const describe = (schema: SettingSchema) =>
-  [schema.description, `Par défaut : ${JSON.stringify(schema.default)}`].filter(Boolean).join('\n');
+  [schema.description, t('Default: {value}', { value: JSON.stringify(schema.default) })]
+    .filter(Boolean)
+    .join('\n');
 
 const valueSuggestions = (values: readonly unknown[]): Suggestion[] =>
   values.map((value) => {
@@ -103,7 +106,7 @@ export function suggest(
   }
 
   if (location.isAtPropertyKey && path.length === 2 && typeof path[0] === 'number') {
-    const options = KEYBINDING_PROPERTIES.map(([name, info]) => ({
+    const options = keybindingProperties().map(([name, info]) => ({
       label: JSON.stringify(name),
       displayLabel: name,
       apply: hasValue ? JSON.stringify(name) : `${JSON.stringify(name)}: `,

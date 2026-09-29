@@ -1,4 +1,4 @@
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 
 /**
  * Built-in viewers. Each one is a separate module, loaded the first time a
@@ -11,14 +11,13 @@ export default defineExtension({
       fontFamily: {
         type: 'string',
         default: "system-ui, 'Segoe UI', sans-serif",
-        description: 'Police des aperçus (Markdown, HTML).',
+        description: t('Font of the previews (Markdown, HTML).'),
       },
-      fontSize: { type: 'number', default: 15, description: 'Taille de police des aperçus (px).' },
+      fontSize: { type: 'number', default: 15, description: t('Font size of the previews (px).') },
       htmlScripts: {
         type: 'boolean',
         default: false,
-        description:
-          'Exécuter les scripts des pages HTML prévisualisées (toujours isolées de l’application).',
+        description: t('Run the scripts of previewed HTML pages (always kept apart from the app).'),
       },
     });
     const applyFont = () => {
@@ -84,7 +83,7 @@ export default defineExtension({
     });
     ctx.viewers.register({
       id: 'hex',
-      title: 'Hexadécimal',
+      title: t('Hexadecimal'),
       extensions: [],
       kind: 'replace',
       binary: true,
@@ -107,14 +106,14 @@ export default defineExtension({
 
     ctx.viewers.register({
       id: 'csv',
-      title: 'Tableau',
+      title: t('Table'),
       extensions: ['csv'],
       kind: 'preview',
       load: async () => (await import('./table')).createTableViewer(),
     });
     ctx.viewers.register({
       id: 'tsv',
-      title: 'Tableau',
+      title: t('Table'),
       extensions: ['tsv', 'tab'],
       kind: 'preview',
       load: async () => (await import('./table')).createTableViewer('\t'),

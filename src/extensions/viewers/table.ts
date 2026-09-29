@@ -1,6 +1,7 @@
 import type { ViewerFactory, ViewerInput } from '../../api';
 import { parseCsv } from './csv';
 import './viewers.css';
+import { t } from '../../api';
 
 /** Rows drawn at most, so a huge file stays responsive. */
 const MAX_ROWS = 5000;
@@ -35,7 +36,7 @@ export function createTableViewer(delimiter?: string): ViewerFactory {
           const button = document.createElement('button');
           const arrow = sort?.column === c ? (sort.descending ? ' ▼' : ' ▲') : '';
           button.textContent = (header[c] ?? '') + arrow;
-          button.title = 'Trier';
+          button.title = t('Sort');
           button.onclick = () => {
             sort =
               sort?.column === c
@@ -58,8 +59,11 @@ export function createTableViewer(delimiter?: string): ViewerFactory {
         info.className = 'cv-table-info';
         info.textContent =
           body.length > MAX_ROWS
-            ? `${MAX_ROWS} premières lignes sur ${body.length}.`
-            : `${body.length} ligne${body.length > 1 ? 's' : ''}, ${columns} colonne${columns > 1 ? 's' : ''}.`;
+            ? t('First {shown} lines of {count}.', { shown: MAX_ROWS, count: body.length })
+            : t('{lines}, {columns}.', {
+                lines: body.length === 1 ? t('1 line') : t('{count} lines', { count: body.length }),
+                columns: columns === 1 ? t('1 column') : t('{count} columns', { count: columns }),
+              });
         root.replaceChildren(info, table);
       };
 

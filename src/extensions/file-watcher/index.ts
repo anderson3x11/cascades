@@ -1,6 +1,6 @@
-import { defineExtension, type Disposable, type TabInfo } from '../../api';
+import { defineExtension, t, type Disposable, type TabInfo } from '../../api';
 import { decide } from './decide';
-import { MARKER_MINE, merge3, renderMerge } from './merge';
+import { markerMine, merge3, renderMerge } from './merge';
 
 /** Events often come in bursts during a save; wait for the file to settle. */
 const SETTLE_MS = 250;
@@ -45,7 +45,7 @@ export default defineExtension({
 
       const view = ctx.editor.view();
       if (view && ctx.workspace.active()?.id === id) {
-        const index = text.split('\n').indexOf(MARKER_MINE);
+        const index = text.split('\n').indexOf(markerMine());
         const pos = view.state.doc.line(index + 1).from;
         view.dispatch({ selection: { anchor: pos }, scrollIntoView: true });
       }
@@ -58,9 +58,14 @@ export default defineExtension({
             tabId: id,
             message:
               conflicts === 1
-                ? 'Fusion faite, 1 conflit à résoudre : choisis la version à garder dans le texte.'
-                : `Fusion faite, ${conflicts} conflits à résoudre : choisis la version à garder dans le texte.`,
-            actions: [{ label: 'OK', run: () => {} }],
+                ? t('Merged, 1 conflict to resolve: choose the version to keep in the text.')
+                : t(
+                    'Merged, {count} conflicts to resolve: choose the version to keep in the text.',
+                    {
+                      count: conflicts,
+                    },
+                  ),
+            actions: [{ label: t('OK'), run: () => {} }],
           }),
         );
       }
@@ -89,13 +94,13 @@ export default defineExtension({
           const theirs = disk ?? '';
           showBanner(
             tab,
-            `« ${tab.title} » a été modifié sur le disque, et vous avez des modifications non enregistrées.`,
+            t('"{file}" was changed on disk, and you have unsaved changes.', { file: tab.title }),
             [
-              { label: 'Fusionner', run: () => mergeWithDisk(id, theirs) },
+              { label: t('Merge'), run: () => mergeWithDisk(id, theirs) },
               // Keep the editor text; saving will then overwrite the new version knowingly.
-              { label: 'Garder ma version', run: () => ctx.workspace.setSavedText(id, theirs) },
+              { label: t('Keep my version'), run: () => ctx.workspace.setSavedText(id, theirs) },
               {
-                label: 'Prendre la version du disque',
+                label: t('Take the version on disk'),
                 run: () => ctx.workspace.reload(id, theirs),
               },
             ],
@@ -105,9 +110,9 @@ export default defineExtension({
         case 'removed':
           // The text only exists in the editor now: flag it as unsaved.
           ctx.workspace.setSavedText(id, '');
-          showBanner(tab, `« ${tab.title} » a été supprimé ou déplacé sur le disque.`, [
-            { label: 'Garder ouvert', run: () => {} },
-            { label: 'Fermer l’onglet', run: () => ctx.workspace.close(id) },
+          showBanner(tab, t('"{file}" was deleted or moved on disk.', { file: tab.title }), [
+            { label: t('Keep open'), run: () => {} },
+            { label: t('Close the tab'), run: () => ctx.workspace.close(id) },
           ]);
       }
     };

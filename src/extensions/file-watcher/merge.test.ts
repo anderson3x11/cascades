@@ -37,7 +37,7 @@ describe('merge3', () => {
     const { text, conflicts } = merged('a', 'mine', 'theirs');
     expect(conflicts).toBe(1);
     expect(text).toBe(
-      lines('<<<<<<< ma version', 'mine', '=======', 'theirs', '>>>>>>> version du disque'),
+      lines('<<<<<<< my version', 'mine', '=======', 'theirs', '>>>>>>> version on disk'),
     );
   });
 

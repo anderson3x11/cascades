@@ -28,7 +28,7 @@ describe('suggest in settings.json', () => {
     expect(result?.options[0]).toMatchObject({
       label: '"editor.tabSize"',
       apply: '"editor.tabSize": 4',
-      info: 'Largeur d’une tabulation\nPar défaut : 4',
+      info: 'Largeur d’une tabulation\nDefault: 4',
     });
   });
 
@@ -84,7 +84,7 @@ describe('explain', () => {
   it('describes a setting and a command', () => {
     const settings = '{ "editor.tabSize": 2 }';
     expect(explain('settings.json', settings, 5, KNOWLEDGE)?.text).toBe(
-      'editor.tabSize\nLargeur d’une tabulation\nPar défaut : 4',
+      'editor.tabSize\nLargeur d’une tabulation\nDefault: 4',
     );
     expect(explain('settings.json', settings, 20, KNOWLEDGE)).toBeNull();
 

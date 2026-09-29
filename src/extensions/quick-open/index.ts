@@ -1,4 +1,4 @@
-import { defineExtension, type ExtensionContext } from '../../api';
+import { defineExtension, t, type ExtensionContext } from '../../api';
 
 const RECENT_FILE = 'recent.json';
 const MAX_RECENT = 50;
@@ -65,7 +65,7 @@ export default defineExtension({
     ctx.events.on('workspace.didChangeTab', (tab) => remember(tab.path));
     // For other extensions (the welcome page).
     ctx.commands.register('quickOpen.recentFiles', () => [...recent], {
-      title: 'Fichiers récents',
+      title: t('Recent files'),
       hidden: true,
     });
 
@@ -73,22 +73,24 @@ export default defineExtension({
       'workbench.quickOpen',
       async () => {
         const active = ctx.workspace.active()?.id;
-        const tabs = ctx.workspace.tabs().filter((t) => t.id !== active);
-        const openPaths = new Set(ctx.workspace.tabs().map((t) => t.path));
+        const tabs = ctx.workspace.tabs().filter((tab) => tab.id !== active);
+        const openPaths = new Set(ctx.workspace.tabs().map((tab) => tab.path));
         const folders = await openFolders(ctx);
         const inFolders = (path: string) => relativeDir(path, folders) !== split(path).dir;
         const items = [
-          ...tabs.map((t) => ({
-            label: t.title,
-            description: t.path ? `${relativeDir(t.path, folders)} · ouvert` : 'ouvert',
-            value: { tab: t.id, path: t.path },
+          ...tabs.map((tab) => ({
+            label: tab.title,
+            description: tab.path ? `${relativeDir(tab.path, folders)} · ${t('open')}` : t('open'),
+            value: { tab: tab.id, path: tab.path },
           })),
           ...recent
             .filter((p) => !openPaths.has(p))
             .map((p) => ({
               label: split(p).name,
               // Files outside the open folders say where they come from.
-              description: inFolders(p) ? relativeDir(p, folders) : `${split(p).dir} · récent`,
+              description: inFolders(p)
+                ? relativeDir(p, folders)
+                : `${split(p).dir} · ${t('recent')}`,
               value: { tab: null as string | null, path: p as string | null },
             })),
         ];
@@ -106,15 +108,15 @@ export default defineExtension({
           : undefined;
         const choice = await ctx.quickPick.show(items, {
           placeholder: folders.length
-            ? 'Ouvrir un onglet, un fichier récent ou un fichier des dossiers'
-            : 'Ouvrir un onglet ou un fichier récent',
+            ? t('Open a tab, a recent file or a file of the folders')
+            : t('Open a tab or a recent file'),
           more,
         });
         if (!choice) return;
         if (choice.tab) ctx.workspace.activate(choice.tab);
         else if (choice.path) await ctx.commands.execute('file.openPath', choice.path);
       },
-      { title: 'Ouverture rapide…', category: 'Fichier' },
+      { title: t('Quick open…'), category: t('File') },
     );
     ctx.keybindings.register([
       { key: 'Ctrl+P', command: 'workbench.quickOpen' },

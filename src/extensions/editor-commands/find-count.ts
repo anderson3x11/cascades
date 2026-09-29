@@ -1,6 +1,7 @@
 import { getSearchQuery, searchPanelOpen, type SearchQuery } from '@codemirror/search';
 import type { EditorState } from '@codemirror/state';
 import { EditorView, ViewPlugin, type ViewUpdate } from '@codemirror/view';
+import { t } from '../../api';
 
 /** Past this many matches, counting stops ("10 000+"). */
 const LIMIT = 10_000;
@@ -30,10 +31,10 @@ export function countMatches(state: EditorState, query: SearchQuery): MatchCount
 }
 
 export function countLabel({ total, current, capped }: MatchCount): string {
-  if (total === 0) return 'Aucun résultat';
-  const all = capped ? `${total.toLocaleString('fr-FR')}+` : total.toLocaleString('fr-FR');
-  if (current !== null) return `${current} sur ${all}`;
-  return `${all} résultat${total > 1 ? 's' : ''}`;
+  if (total === 0) return t('No results');
+  const all = capped ? `${total.toLocaleString()}+` : total.toLocaleString();
+  if (current !== null) return t('{current} of {total}', { current, total: all });
+  return total === 1 ? t('1 result') : t('{count} results', { count: all });
 }
 
 /** "3 sur 12" next to the field of the search panel (Ctrl+F). */

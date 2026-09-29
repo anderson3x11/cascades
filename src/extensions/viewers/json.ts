@@ -1,5 +1,6 @@
 import type { ViewerFactory, ViewerInput } from '../../api';
 import './viewers.css';
+import { t } from '../../api';
 
 /** Levels open when a document is shown for the first time. */
 const OPEN_DEPTH = 2;
@@ -56,8 +57,8 @@ function node(
       'span',
       'cv-meta',
       Array.isArray(value)
-        ? `[ ${count} élément${count > 1 ? 's' : ''} ]`
-        : `{ ${count} clé${count > 1 ? 's' : ''} }`,
+        ? `[ ${count === 1 ? t('1 item') : t('{count} items', { count })} ]`
+        : `{ ${count === 1 ? t('1 key') : t('{count} keys', { count })} }`,
     ),
   );
   details.append(summary);
@@ -87,7 +88,9 @@ export const jsonViewer: ViewerFactory = {
         const error = el(
           'p',
           'cv-error',
-          `JSON invalide : ${err instanceof Error ? err.message : String(err)}`,
+          t('invalid JSON: {problem}', {
+            problem: err instanceof Error ? err.message : String(err),
+          }),
         );
         root.prepend(error);
         return;

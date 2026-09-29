@@ -1,4 +1,4 @@
-import { defineExtension, type KeybindingSpec } from '../../api';
+import { defineExtension, t, type KeybindingSpec } from '../../api';
 
 const EDITOR = 'editorFocus';
 
@@ -43,8 +43,7 @@ export default defineExtension({
       leader: {
         type: 'string',
         default: 'Ctrl+Space',
-        description:
-          'Touche leader : les raccourcis "Leader X" se font avec cette touche puis X (comme dans Vim).',
+        description: t('Leader key: "Leader X" shortcuts are this key, then X (as in Vim).'),
       },
     });
 
@@ -59,8 +58,11 @@ export default defineExtension({
         ctx.keybindings.setLeader('Ctrl+Space');
         warning = ctx.banners.show({
           kind: 'warning',
-          message: `Touche leader « ${key} » invalide, Ctrl+Space est utilisé. (${err instanceof Error ? err.message : String(err)})`,
-          actions: [{ label: 'OK', run: () => {} }],
+          message: t('Invalid leader key "{key}", Ctrl+Space is used instead. ({problem})', {
+            key,
+            problem: err instanceof Error ? err.message : String(err),
+          }),
+          actions: [{ label: t('OK'), run: () => {} }],
         });
       }
     };

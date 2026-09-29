@@ -1,6 +1,12 @@
 import { RangeSet, RangeSetBuilder, Text } from '@codemirror/state';
 import { EditorView, gutter, GutterMarker, ViewPlugin, type ViewUpdate } from '@codemirror/view';
-import { defineExtension, type Disposable, type ExtensionContext, type TabInfo } from '../../api';
+import {
+  defineExtension,
+  t,
+  type Disposable,
+  type ExtensionContext,
+  type TabInfo,
+} from '../../api';
 import { changedLines, type ChangeKind } from './changes';
 
 /** Waits for a pause in typing before comparing with the saved text. */
@@ -109,8 +115,9 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: true,
-        description:
-          'Marquer dans la marge les lignes modifiées depuis le dernier enregistrement : vert ajoutée, orange modifiée, rouge supprimée.',
+        description: t(
+          'Mark the lines changed since the last save in the margin: green added, orange changed, red deleted.',
+        ),
       },
     });
     const handle = ctx.editor.addExtension((tab) =>

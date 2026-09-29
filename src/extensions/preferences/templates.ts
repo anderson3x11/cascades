@@ -1,21 +1,25 @@
-export const SETTINGS_TEMPLATE = `// Réglages personnels : ils remplacent les valeurs par défaut.
-// Écris-les entre les accolades { }, séparés par des virgules.
-// Tape " pour voir la liste des réglages ; survole un réglage pour sa description.
-// Les lignes qui commencent par // sont des commentaires, sans effet.
+import { t } from '../../api';
+
+export const settingsTemplate =
+  () => `// ${t('Personal settings: they replace the default values.')}
+// ${t('Write them between the braces { }, separated by commas.')}
+// ${t('Type " to see the list of settings; hover a setting for its description.')}
+// ${t('Lines that start with // are comments, with no effect.')}
 {
   // "editor.fontSize": 16,
-  // Un bloc "[langage]" ne vaut que pour les fichiers de ce langage :
+  // ${t('A "[language]" block only applies to the files of that language:')}
   // "[markdown]": { "editor.wordWrap": true },
 }
 `;
 
-export const KEYBINDINGS_TEMPLATE = `// Raccourcis personnels : ils s'ajoutent à ceux par défaut, ou les remplacent.
-// Écris-les entre les crochets [ ], un par ligne, séparés par des virgules.
-// Après "command": , tape " pour voir la liste des commandes.
-// Les lignes qui commencent par // sont des commentaires, sans effet.
+export const keybindingsTemplate =
+  () => `// ${t('Personal shortcuts: they add to the default ones, or replace them.')}
+// ${t('Write them between the brackets [ ], one per line, separated by commas.')}
+// ${t('After "command": , type " to see the list of commands.')}
+// ${t('Lines that start with // are comments, with no effect.')}
 [
   // { "key": "Ctrl+Shift+N", "command": "file.new" },
-  // Un "-" devant la commande retire un raccourci par défaut :
+  // ${t('A "-" before the command removes a default shortcut:')}
   // { "key": "Ctrl+D", "command": "-editor.addNextOccurrence" },
 ]
 `;

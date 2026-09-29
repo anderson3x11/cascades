@@ -1,15 +1,15 @@
-import type { ThemeSpec } from '../../api';
+import { t, type ThemeSpec } from '../../api';
 
 /**
- * Built-in themes. "Clair" and "Sombre" are the base palettes of
+ * Built-in themes. "Light" and "Dark" are the base palettes of
  * src/themes/default.css; the others only set what differs from them.
  */
-export const BUILTIN_THEMES: ThemeSpec[] = [
-  { id: 'light', name: 'Clair', type: 'light', colors: {} },
-  { id: 'dark', name: 'Sombre', type: 'dark', colors: {} },
+export const builtinThemes = (): ThemeSpec[] => [
+  { id: 'light', name: t('Light'), type: 'light', colors: {} },
+  { id: 'dark', name: t('Dark'), type: 'dark', colors: {} },
   {
     id: 'high-contrast',
-    name: 'Haut contraste',
+    name: t('High contrast'),
     type: 'dark',
     colors: {
       bg: '#000000',
@@ -60,7 +60,7 @@ export const BUILTIN_THEMES: ThemeSpec[] = [
   },
   {
     id: 'solarized-light',
-    name: 'Solarized clair',
+    name: t('Solarized light'),
     type: 'light',
     colors: {
       bg: '#fdf6e3',
@@ -106,7 +106,7 @@ export const BUILTIN_THEMES: ThemeSpec[] = [
   },
   {
     id: 'solarized-dark',
-    name: 'Solarized sombre',
+    name: t('Solarized dark'),
     type: 'dark',
     colors: {
       bg: '#002b36',

@@ -12,9 +12,9 @@ describe('formatDate', () => {
   });
 
   it('writes names in French', () => {
-    expect(formatDate(date, 'dddd D MMMM YYYY')).toBe('mardi 29 septembre 2026');
-    expect(formatDate(date, 'ddd D MMM')).toBe('mar. 29 sept.');
-    expect(formatDate(new Date(2026, 4, 1), 'D MMM')).toBe('1 mai');
+    expect(formatDate(date, 'dddd D MMMM YYYY', 'fr')).toBe('mardi 29 septembre 2026');
+    expect(formatDate(date, 'ddd D MMM', 'fr')).toBe('mar. 29 sept.');
+    expect(formatDate(new Date(2026, 4, 1), 'D MMM', 'fr')).toBe('1 mai');
   });
 
   it('keeps text in brackets', () => {

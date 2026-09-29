@@ -29,16 +29,16 @@ describe('checkKeybindings', () => {
         "Ctrl+S"
       ]`),
     ).toEqual([
-      ['"file.nouveau"', 'warning', 'commande inconnue : file.nouveau'],
-      ['"Hyper+N"', 'error', 'modificateur inconnu « Hyper » dans « Hyper+N »'],
-      ['"arg"', 'warning', 'propriété inconnue (key, command, when, args)'],
-      ['"a &&"', 'error', 'condition invalide : « a && »'],
-      ['{', 'error', '"key" manquant'],
-      ['"Ctrl+S"', 'error', 'attendu : { "key": …, "command": … }'],
+      ['"file.nouveau"', 'warning', 'unknown command: file.nouveau'],
+      ['"Hyper+N"', 'error', 'unknown modifier "Hyper" in "Hyper+N"'],
+      ['"arg"', 'warning', 'unknown property (key, command, when, args)'],
+      ['"a &&"', 'error', 'invalid condition: "a &&"'],
+      ['{', 'error', 'missing "key"'],
+      ['"Ctrl+S"', 'error', 'expected: { "key": …, "command": … }'],
     ]);
   });
 
   it('wants a list', () => {
-    expect(underlined('{}')).toEqual([['{}', 'error', 'le fichier doit contenir une liste [ … ]']]);
+    expect(underlined('{}')).toEqual([['{}', 'error', 'the file must hold a list [ … ]']]);
   });
 });

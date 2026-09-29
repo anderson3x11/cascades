@@ -1,24 +1,24 @@
-import type { SettingSchema } from '../../api';
+import { t, type SettingSchema } from '../../api';
 
 /** Titles of the built-in setting namespaces, in display order. */
-const SECTION_TITLES: Record<string, string> = {
-  editor: 'Éditeur',
-  cascades: 'Cascades',
-  smartLists: 'Listes intelligentes',
-  indentKeep: 'Indentation',
-  autoPairs: 'Paires automatiques',
-  links: 'Liens',
-  insertDate: 'Date',
-  markdownTables: 'Tableaux Markdown',
-  changeMarkers: 'Lignes modifiées',
-  spellcheck: 'Orthographe',
-  files: 'Fichiers',
-  session: 'Session',
-  workbench: 'Interface',
-  zen: 'Mode zen',
-  preview: 'Aperçus',
-  keyboard: 'Clavier',
-};
+const sectionTitles = (): Record<string, string> => ({
+  editor: t('Editor'),
+  cascades: t('Cascades'),
+  smartLists: t('Smart lists'),
+  indentKeep: t('Indentation'),
+  autoPairs: t('Auto pairs'),
+  links: t('Links'),
+  insertDate: t('Date'),
+  markdownTables: t('Markdown tables'),
+  changeMarkers: t('Changed lines'),
+  spellcheck: t('Spelling'),
+  files: t('Files'),
+  session: t('Session'),
+  workbench: t('Interface'),
+  zen: t('Zen mode'),
+  preview: t('Previews'),
+  keyboard: t('Keyboard'),
+});
 
 export type Setting = SettingSchema & { key: string };
 
@@ -35,7 +35,7 @@ export const fold = (text: string) =>
     .toLowerCase();
 
 /**
- * Settings grouped by namespace ("editor.tabSize" goes in "Éditeur"), keeping
+ * Settings grouped by namespace ("editor.tabSize" goes in "Editor"), keeping
  * those whose key or description contains every word of `query`.
  */
 export function sections(settings: Setting[], query: string): Section[] {
@@ -47,7 +47,8 @@ export function sections(settings: Setting[], query: string): Section[] {
     const namespace = setting.key.slice(0, setting.key.indexOf('.'));
     byNamespace.set(namespace, [...(byNamespace.get(namespace) ?? []), setting]);
   }
-  const known = Object.keys(SECTION_TITLES);
+  const titles = sectionTitles();
+  const known = Object.keys(titles);
   const rank = (namespace: string) => {
     const index = known.indexOf(namespace);
     return index === -1 ? known.length : index;
@@ -55,7 +56,7 @@ export function sections(settings: Setting[], query: string): Section[] {
   return [...byNamespace]
     .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
     .map(([namespace, list]) => ({
-      title: SECTION_TITLES[namespace] ?? namespace,
+      title: titles[namespace] ?? namespace,
       settings: list,
     }));
 }

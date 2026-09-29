@@ -1,22 +1,22 @@
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { countChars, countWords } from './counts';
 
 const COUNT_DELAY_MS = 200;
 
-/** "2,4 Mo", "830 Ko", "12 octets". */
-export function formatSize(bytes: number): string {
-  const units: [number, string][] = [
-    [1024 ** 3, 'Go'],
-    [1024 ** 2, 'Mo'],
-    [1024, 'Ko'],
+/** "2.4 MB", "830 KB", "12 bytes", with the number written for `locale`. */
+export function formatSize(bytes: number, locale = 'en'): string {
+  const units: [number, (size: string) => string][] = [
+    [1024 ** 3, (size) => t('{size} GB', { size })],
+    [1024 ** 2, (size) => t('{size} MB', { size })],
+    [1024, (size) => t('{size} KB', { size })],
   ];
   for (const [unit, name] of units) {
     if (bytes >= unit) {
       const value = bytes / unit;
-      return `${value.toLocaleString('fr-FR', { maximumFractionDigits: value < 10 ? 1 : 0 })} ${name}`;
+      return name(value.toLocaleString(locale, { maximumFractionDigits: value < 10 ? 1 : 0 }));
     }
   }
-  return `${bytes} octet${bytes > 1 ? 's' : ''}`;
+  return bytes === 1 ? t('1 byte') : t('{count} bytes', { count: bytes });
 }
 
 export default defineExtension({
@@ -30,21 +30,21 @@ export default defineExtension({
       priority: 30,
       command: 'editor.changeLanguage',
     });
-    language.tooltip = 'Changer le langage';
+    language.tooltip = t('Change the language');
     const encoding = ctx.statusBar.addItem({
       id: 'encoding',
       alignment: 'right',
       priority: 20,
       command: 'file.changeEncoding',
     });
-    encoding.tooltip = 'Changer l’encodage';
+    encoding.tooltip = t('Change the encoding');
     const eol = ctx.statusBar.addItem({
       id: 'eol',
       alignment: 'right',
       priority: 10,
       command: 'file.changeLineEnding',
     });
-    eol.tooltip = 'Changer les fins de ligne';
+    eol.tooltip = t('Change the line endings');
     /** Size of a file shown by a viewer (PDF, image, hex), instead of the text details. */
     const size = ctx.statusBar.addItem({ id: 'size', alignment: 'left', priority: 100 });
     const textItems = [position, counts, encoding, eol];
@@ -56,9 +56,11 @@ export default defineExtension({
       const line = state.doc.lineAt(main.head);
       const selected = state.selection.ranges.reduce((n, r) => n + (r.to - r.from), 0);
       position.text =
-        `Ln ${line.number}, Col ${main.head - line.from + 1}` +
-        (selected > 0 ? ` (${selected} sélectionnés)` : '') +
-        (state.selection.ranges.length > 1 ? ` · ${state.selection.ranges.length} curseurs` : '');
+        t('Ln {line}, Col {column}', { line: line.number, column: main.head - line.from + 1 }) +
+        (selected > 0 ? ` ${t('({count} selected)', { count: selected })}` : '') +
+        (state.selection.ranges.length > 1
+          ? ` · ${t('{count} cursors', { count: state.selection.ranges.length })}`
+          : '');
     };
 
     // Counting walks the whole document, so it is debounced.
@@ -69,7 +71,10 @@ export default defineExtension({
         const state = ctx.editor.state();
         if (!state || ctx.workspace.active()?.large) return;
         const text = state.doc.toString();
-        counts.text = `${countWords(text)} mots, ${countChars(text)} caractères`;
+        counts.text = t('{words} words, {characters} characters', {
+          words: countWords(text),
+          characters: countChars(text),
+        });
       }, COUNT_DELAY_MS);
     };
     ctx.subscriptions.add({ dispose: () => clearTimeout(timer) });
@@ -91,7 +96,7 @@ export default defineExtension({
           void ctx.fs
             .fileSize(tab.path)
             .then((bytes) => {
-              if (run === sizeRun) size.text = formatSize(bytes);
+              if (run === sizeRun) size.text = formatSize(bytes, ctx.i18n.language());
             })
             .catch(() => {});
         }
@@ -128,18 +133,22 @@ export default defineExtension({
         const choice = await ctx.quickPick.show<{ name: string | null }>(
           [
             {
-              label: 'Détection automatique',
-              description: 'd’après le nom et le début du fichier',
+              label: t('Detect automatically'),
+              description: t('from the name and the start of the file'),
               value: { name: null },
             },
-            { label: 'Texte brut', description: 'sans coloration', value: { name: 'plaintext' } },
+            { label: t('Plain text'), description: t('no colors'), value: { name: 'plaintext' } },
             ...names.map((name) => ({ label: name, value: { name } })),
           ],
-          { placeholder: `Langage actuel : ${current ?? 'texte brut'}` },
+          {
+            placeholder: t('Current language: {language}', {
+              language: current ?? t('plain text'),
+            }),
+          },
         );
         if (choice) ctx.workspace.setLanguage(tab.id, choice.name);
       },
-      { title: 'Changer le langage…', category: 'Affichage' },
+      { title: t('Change the language…'), category: t('View') },
     );
   },
 });

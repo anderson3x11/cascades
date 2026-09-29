@@ -1,19 +1,19 @@
-import { defineExtension, type TabInfo } from '../../api';
+import { defineExtension, t, type TabInfo } from '../../api';
 import { CASCADE_STYLES, blockKey, cascades, type CascadeStyle } from './render';
 import { rootLine } from './tree';
 
 const HIDDEN_FILE = 'cascades-hidden.json';
 
-const STYLE_NAMES: Record<CascadeStyle, string> = {
-  arrow: 'Flèches',
-  rounded: 'Coins arrondis',
-  curved: 'Courbes',
-  bullet: 'Points',
-  line: 'Traits simples',
-  dashed: 'Tirets',
-  dotted: 'Pointillés',
-  guides: 'Guides verticaux seulement',
-};
+const styleNames = (): Record<CascadeStyle, string> => ({
+  arrow: t('Arrows'),
+  rounded: t('Rounded corners'),
+  curved: t('Curves'),
+  bullet: t('Dots'),
+  line: t('Plain lines'),
+  dashed: t('Dashes'),
+  dotted: t('Dotted'),
+  guides: t('Vertical guides only'),
+});
 
 /** Visual connectors between indented lines and their parent line. */
 export default defineExtension({
@@ -23,39 +23,40 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: true,
-        description: 'Dessiner les connecteurs de cascade.',
+        description: t('Draw the cascade connectors.'),
       },
       languages: {
         type: 'array',
         default: ['plaintext', 'markdown'],
-        description:
-          'Langages où les cascades sont actives (plaintext couvre .txt et sans extension).',
+        description: t(
+          'Languages where cascades are drawn (plaintext covers .txt and files without extension).',
+        ),
       },
       style: {
         type: 'string',
         default: 'arrow',
         enum: CASCADE_STYLES,
-        description: `Style des connecteurs : ${CASCADE_STYLES.join(', ')}.`,
+        description: t('Style of the connectors: {styles}.', { styles: CASCADE_STYLES.join(', ') }),
       },
       ignoreLists: {
         type: 'boolean',
         default: false,
-        description: 'Ne pas dessiner de cascade vers les éléments de liste (- item, 1. item…).',
+        description: t('Draw no cascade to list items (- item, 1. item…).'),
       },
       lineWidth: {
         type: 'number',
         default: 1.2,
-        description: 'Épaisseur des traits (px).',
+        description: t('Width of the lines (px).'),
       },
       colorByDepth: {
         type: 'boolean',
         default: true,
-        description: 'Une couleur différente par niveau de profondeur.',
+        description: t('A different color for each depth.'),
       },
       highlight: {
         type: 'boolean',
         default: true,
-        description: 'Mettre en valeur la branche et le parent de la ligne active ou survolée.',
+        description: t('Highlight the branch and parent of the current or hovered line.'),
       },
     });
 
@@ -146,7 +147,7 @@ export default defineExtension({
         const root = rootLine((n) => ({ text: doc.line(n).text }), line, tabSize);
         if (root !== null) toggleBlock(tab, blockKey(doc.line(root).text));
       },
-      { title: 'Afficher ou masquer la cascade de ce bloc', category: 'Affichage' },
+      { title: t('Show or hide the cascade of this block'), category: t('View') },
     );
     ctx.keybindings.register({ key: 'Leader Shift+C', command: 'cascades.toggleBlock' });
     ctx.menus.registerItem('view', {
@@ -166,7 +167,7 @@ export default defineExtension({
         ctx.banners.show({
           kind: 'warning',
           message: err instanceof Error ? err.message : String(err),
-          actions: [{ label: 'OK', run: () => {} }],
+          actions: [{ label: t('OK'), run: () => {} }],
         });
       }
     };
@@ -175,7 +176,7 @@ export default defineExtension({
       'cascades.toggle',
       () =>
         save('cascades.enabled', ctx.settings.get<boolean>('cascades.enabled') ? false : undefined),
-      { title: 'Afficher ou masquer les cascades', category: 'Affichage' },
+      { title: t('Show or hide cascades'), category: t('View') },
     );
 
     ctx.commands.register(
@@ -184,12 +185,12 @@ export default defineExtension({
         const current = ctx.settings.get<CascadeStyle>('cascades.style');
         const chosen = await ctx.quickPick.show(
           CASCADE_STYLES.map((style) => ({
-            label: STYLE_NAMES[style],
+            label: styleNames()[style],
             description: style,
             value: style,
           })),
           {
-            placeholder: 'Style des cascades',
+            placeholder: t('Cascade style'),
             activeValue: current,
             onHighlight: (item) => {
               preview = item.value;
@@ -204,7 +205,7 @@ export default defineExtension({
           await save('cascades.enabled', undefined);
         await save('cascades.style', chosen === 'arrow' ? undefined : chosen);
       },
-      { title: 'Style des cascades…', category: 'Affichage' },
+      { title: t('Cascade style…'), category: t('View') },
     );
 
     ctx.keybindings.register({ key: 'Leader C', command: 'cascades.toggle' });

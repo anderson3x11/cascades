@@ -1,5 +1,7 @@
-import { convertFileSrc, invoke, isTauri } from '@tauri-apps/api/core';
+import { convertFileSrc, isTauri } from '@tauri-apps/api/core';
+import { invoke } from './invoke';
 import { openUrl } from '@tauri-apps/plugin-opener';
+import { t } from '../core/i18n/i18n';
 
 const allowed = new Set<string>();
 
@@ -21,7 +23,7 @@ export async function fileUrl(path: string): Promise<string> {
 
 /** Opens a web link in the default browser (a new tab outside the app). */
 export async function openExternal(url: string): Promise<void> {
-  if (!/^(https?|mailto):/i.test(url)) throw new Error(`Lien non pris en charge : ${url}`);
+  if (!/^(https?|mailto):/i.test(url)) throw new Error(t('Unsupported link: {url}', { url }));
   if (isTauri()) await openUrl(url);
   else window.open(url, '_blank', 'noopener');
 }

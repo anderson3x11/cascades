@@ -1,6 +1,6 @@
-import { defineExtension, type Disposable } from '../../api';
+import { defineExtension, t, type Disposable } from '../../api';
 import { pickTheme } from './pick';
-import { BUILTIN_THEMES } from './builtin';
+import { builtinThemes } from './builtin';
 
 const USER_FOLDER = 'themes';
 
@@ -11,24 +11,25 @@ const USER_FOLDER = 'themes';
 export default defineExtension({
   id: 'cascades.themes',
   async activate(ctx) {
-    for (const theme of BUILTIN_THEMES) ctx.themes.register(theme);
+    for (const theme of builtinThemes()) ctx.themes.register(theme);
 
     ctx.settings.register('workbench', {
       theme: {
         type: 'string',
         default: 'auto',
-        description:
-          'Thème : "auto" suit le mode clair ou sombre du système, sinon un id de thème.',
+        description: t(
+          'Theme: "auto" follows the light or dark mode of the system, or else a theme id.',
+        ),
       },
       themeLight: {
         type: 'string',
         default: 'light',
-        description: 'Thème utilisé en mode auto quand le système est clair.',
+        description: t('Theme used in auto mode when the system is light.'),
       },
       themeDark: {
         type: 'string',
         default: 'dark',
-        description: 'Thème utilisé en mode auto quand le système est sombre.',
+        description: t('Theme used in auto mode when the system is dark.'),
       },
     });
 
@@ -64,8 +65,11 @@ export default defineExtension({
           file,
           ctx.banners.show({
             kind: 'warning',
-            message: `Thème « ${file} » ignoré : ${err instanceof Error ? err.message : String(err)}`,
-            actions: [{ label: 'OK', run: () => {} }],
+            message: t('Theme "{file}" ignored: {problem}', {
+              file,
+              problem: err instanceof Error ? err.message : String(err),
+            }),
+            actions: [{ label: t('OK'), run: () => {} }],
           }),
         );
       }
@@ -96,8 +100,8 @@ export default defineExtension({
     };
 
     ctx.commands.register('themes.reload', scan, {
-      title: 'Recharger les thèmes',
-      category: 'Affichage',
+      title: t('Reload the themes'),
+      category: t('View'),
     });
 
     // Picker with live preview: highlighting a theme applies it, cancelling restores.
@@ -105,21 +109,25 @@ export default defineExtension({
       'view.selectTheme',
       async () => {
         await scan();
-        const types = { light: 'clair', dark: 'sombre' };
+        const types = { light: t('light'), dark: t('dark') };
         const items = [
-          { label: 'Automatique', description: 'suit le mode du système', value: 'auto' },
-          ...ctx.themes.list().map((t) => {
-            const type = t.name.toLowerCase() === types[t.type] ? '' : types[t.type];
-            const user = t.id.startsWith('user.') ? 'perso' : '';
+          {
+            label: t('Automatic'),
+            description: t('follows the mode of the system'),
+            value: 'auto',
+          },
+          ...ctx.themes.list().map((theme) => {
+            const type = theme.name.toLowerCase() === types[theme.type] ? '' : types[theme.type];
+            const user = theme.id.startsWith('user.') ? t('custom') : '';
             return {
-              label: t.name,
+              label: theme.name,
               description: [type, user].filter(Boolean).join(', '),
-              value: t.id,
+              value: theme.id,
             };
           }),
         ];
         const chosen = await ctx.quickPick.show(items, {
-          placeholder: 'Choisir un thème',
+          placeholder: t('Choose a theme'),
           activeValue: ctx.settings.get<string>('workbench.theme'),
           onHighlight: (item) => {
             if (item.value === 'auto') select();
@@ -141,7 +149,7 @@ export default defineExtension({
           });
         }
       },
-      { title: 'Thème…', category: 'Affichage' },
+      { title: t('Theme…'), category: t('View') },
     );
     ctx.menus.registerItem('view', {
       command: 'view.selectTheme',

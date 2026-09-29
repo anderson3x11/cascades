@@ -1,5 +1,6 @@
 import { applyEdits, getNodeValue, modify, parseTree, type ParseError } from 'jsonc-parser';
-import { isEmpty, KEYBINDINGS_TEMPLATE } from './templates';
+import { isEmpty, keybindingsTemplate } from './templates';
+import { t } from '../../api';
 
 /** A shortcut as listed by ctx.keybindings.list(). */
 export interface Shortcut {
@@ -22,7 +23,7 @@ function entriesOf(text: string): FileEntry[] {
   const errors: ParseError[] = [];
   const root = parseTree(text, errors, { allowTrailingComma: true });
   if (errors.length > 0 || root?.type !== 'array') {
-    throw new Error('keybindings.json contient une erreur, corrige-la d’abord.');
+    throw new Error(t('{file} has an error, fix it first.', { file: 'keybindings.json' }));
   }
   return (root.children ?? []).map((node) => getNodeValue(node) as FileEntry);
 }
@@ -54,7 +55,7 @@ function without(text: string, shortcut: Shortcut): string {
 }
 
 const start = (text: string | null) =>
-  text === null || isEmpty(text) ? KEYBINDINGS_TEMPLATE : text;
+  text === null || isEmpty(text) ? keybindingsTemplate() : text;
 
 /** Gives `command` the shortcut `key`, in place of `previous` when given. */
 export function setShortcut(

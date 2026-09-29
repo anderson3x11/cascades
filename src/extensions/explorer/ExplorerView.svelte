@@ -4,6 +4,7 @@
   import type { ExplorerModel, Row } from './model.svelte';
   import { ICON_PATHS, iconFor } from './icons';
   import { baseName, parentOf, samePath } from './paths';
+  import { t } from '../../api';
 
   let { ctx, model }: { ctx: ExtensionContext; model: ExplorerModel } = $props();
 
@@ -102,32 +103,32 @@
     if (!row) {
       ctx.contextMenu.show(at, [
         {
-          label: 'Ajouter un dossier…',
+          label: t('Add folder…'),
           run: () => void ctx.commands.execute('explorer.addFolder'),
         },
-        { label: 'Tout replier', run: () => model.collapseAll(), disabled: !model.roots.length },
+        { label: t('Collapse all'), run: () => model.collapseAll(), disabled: !model.roots.length },
       ]);
       return;
     }
     model.selected = row.path;
     const dir = model.folderFor(row.path) as string;
     const copy = {
-      label: 'Copier le chemin',
+      label: t('Copy path'),
       run: () => void navigator.clipboard.writeText(row.path),
     };
     const entryItems = model.isRoot(row.path)
-      ? [{ label: 'Retirer de la liste', run: () => model.remove(row.path) }]
+      ? [{ label: t('Remove from the list'), run: () => model.remove(row.path) }]
       : [
-          { label: 'Renommer', shortcut: 'F2', run: () => model.startRename(row.path) },
+          { label: t('Rename'), shortcut: 'F2', run: () => model.startRename(row.path) },
           {
-            label: 'Mettre à la corbeille',
-            shortcut: 'Suppr',
+            label: t('Move to the recycle bin'),
+            shortcut: t('Del'),
             run: () => void model.trash(row.path),
           },
         ];
     ctx.contextMenu.show(at, [
-      { label: 'Nouveau fichier', run: () => void model.startNew('file', dir) },
-      { label: 'Nouveau dossier', run: () => void model.startNew('folder', dir) },
+      { label: t('New file'), run: () => void model.startNew('file', dir) },
+      { label: t('New folder'), run: () => void model.startNew('folder', dir) },
       'separator',
       ...entryItems,
       'separator',
@@ -190,9 +191,9 @@
 <div class="explorer" onpointerdown={focusTree} oncontextmenu={(e) => showMenu(e, null)}>
   {#if model.roots.length === 0}
     <div class="empty">
-      <p>Aucun dossier ouvert.</p>
+      <p>{t('No folder open.')}</p>
       <button class="primary" onclick={() => ctx.commands.execute('explorer.addFolder')}>
-        Ajouter un dossier…
+        {t('Add folder…')}
       </button>
     </div>
   {:else}
@@ -202,7 +203,7 @@
       class="tree"
       role="tree"
       tabindex="0"
-      aria-label="Dossiers ouverts"
+      aria-label={t('Open folders')}
       aria-activedescendant={model.selected ? idOf(model.selected) : undefined}
       bind:this={tree}
       onkeydown={onKeydown}
@@ -214,7 +215,7 @@
           <div class="row editing" style:padding-left={indent(item.depth)}>
             <span class="chevron" aria-hidden="true">{item.isDir ? '▸' : ''}</span>
             <input
-              aria-label={item.isDir ? 'Nom du nouveau dossier' : 'Nom du nouveau fichier'}
+              aria-label={item.isDir ? t('Name of the new folder') : t('Name of the new file')}
               spellcheck="false"
               use:field
               onkeydown={onFieldKeydown}
@@ -253,7 +254,7 @@
             >
             {#if renaming(row)}
               <input
-                aria-label="Nouveau nom de {row.name}"
+                aria-label={t('New name of {name}', { name: row.name })}
                 spellcheck="false"
                 value={row.name}
                 use:field
@@ -275,7 +276,7 @@
       {/each}
     </div>
     <button class="add-folder" onclick={() => ctx.commands.execute('explorer.addFolder')}>
-      + Ajouter un dossier
+      + {t('Add folder')}
     </button>
   {/if}
 </div>

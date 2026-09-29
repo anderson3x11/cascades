@@ -7,7 +7,7 @@ import {
   lineNumbers,
 } from '@codemirror/view';
 import { codeFolding, foldGutter, indentUnit } from '@codemirror/language';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 
 const CHEVRON =
   '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4.5 6l3.5 3.5L11.5 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -20,8 +20,8 @@ const folding = [
     placeholderDOM(_view, onclick, lines: number) {
       const el = document.createElement('span');
       el.className = 'cm-foldPlaceholder';
-      el.textContent = `⋯ ${lines} ligne${lines > 1 ? 's' : ''}`;
-      el.title = 'Déplier';
+      el.textContent = `⋯ ${lines === 1 ? t('1 line') : t('{count} lines', { count: lines })}`;
+      el.title = t('Unfold');
       el.onclick = onclick;
       return el;
     },
@@ -30,7 +30,7 @@ const folding = [
     markerDOM(open) {
       const el = document.createElement('span');
       el.className = open ? 'cm-fold-marker' : 'cm-fold-marker cm-fold-closed';
-      el.title = open ? 'Replier' : 'Déplier';
+      el.title = open ? t('Fold') : t('Unfold');
       el.innerHTML = CHEVRON;
       return el;
     },
@@ -92,39 +92,39 @@ export default defineExtension({
   id: 'cascades.editor-settings',
   async activate(ctx) {
     ctx.settings.register('editor', {
-      tabSize: { type: 'number', default: 4, description: 'Largeur d’une tabulation.' },
+      tabSize: { type: 'number', default: 4, description: t('Width of a tab.') },
       insertSpaces: {
         type: 'boolean',
         default: false,
-        description: 'Indenter avec des espaces plutôt qu’avec des tabulations.',
+        description: t('Indent with spaces instead of tabs.'),
       },
-      wordWrap: { type: 'boolean', default: false, description: 'Retour à la ligne automatique.' },
+      wordWrap: { type: 'boolean', default: false, description: t('Wrap long lines.') },
       lineNumbers: {
         type: 'boolean',
         default: true,
-        description: 'Afficher les numéros de ligne.',
+        description: t('Show line numbers.'),
       },
-      folding: { type: 'boolean', default: true, description: 'Afficher la marge de repli.' },
+      folding: { type: 'boolean', default: true, description: t('Show the folding margin.') },
       highlightActiveLine: {
         type: 'boolean',
         default: true,
-        description: 'Surligner la ligne du curseur.',
+        description: t('Highlight the line of the cursor.'),
       },
-      fontSize: { type: 'number', default: 14, description: 'Taille de police de l’éditeur (px).' },
+      fontSize: { type: 'number', default: 14, description: t('Font size of the editor (px).') },
       fontFamily: {
         type: 'string',
         default: "'Cascadia Code', Consolas, monospace",
-        description: 'Police de l’éditeur (liste CSS, la première installée est utilisée).',
+        description: t('Font of the editor (a CSS list, the first installed one is used).'),
       },
       lineHeight: {
         type: 'number',
         default: 1.6,
-        description: 'Hauteur de ligne, en multiple de la taille de police.',
+        description: t('Line height, as a multiple of the font size.'),
       },
       fontLigatures: {
         type: 'boolean',
         default: false,
-        description: 'Activer les ligatures de la police (=> devient ⇒ avec Cascadia Code…).',
+        description: t('Use the ligatures of the font (=> becomes ⇒ with Cascadia Code…).'),
       },
     });
 
@@ -180,16 +180,16 @@ export default defineExtension({
     });
 
     ctx.commands.register('view.zoomIn', () => zoomBy(1), {
-      title: 'Agrandir le texte',
-      category: 'Affichage',
+      title: t('Zoom in'),
+      category: t('View'),
     });
     ctx.commands.register('view.zoomOut', () => zoomBy(-1), {
-      title: 'Réduire le texte',
-      category: 'Affichage',
+      title: t('Zoom out'),
+      category: t('View'),
     });
     ctx.commands.register('view.zoomReset', () => zoomBy(0), {
-      title: 'Taille de texte normale',
-      category: 'Affichage',
+      title: t('Reset zoom'),
+      category: t('View'),
     });
     ctx.menus.registerItem('view', { command: 'view.zoomIn', group: '3_zoom', order: 1 });
     ctx.menus.registerItem('view', { command: 'view.zoomOut', group: '3_zoom', order: 2 });

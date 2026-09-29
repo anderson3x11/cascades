@@ -15,6 +15,7 @@ const target = document.getElementById('app');
 if (!target) throw new Error('Missing #app element');
 
 const workbench = new Workbench();
+await workbench.prepare();
 mount(App, { target, props: { workbench } });
 void workbench.start(builtinExtensions);
 

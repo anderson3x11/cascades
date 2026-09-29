@@ -1,7 +1,7 @@
 import { invertedEffects } from '@codemirror/commands';
 import { StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { defineExtension, type TabInfo } from '../../api';
+import { defineExtension, t, type TabInfo } from '../../api';
 import { formatAge } from './age';
 import { passagesToQuarantine } from './extract';
 import { QuarantineStore, type Snippet } from './store';
@@ -187,11 +187,11 @@ export default defineExtension({
         ctx.panels.show(PANEL);
         changed();
       },
-      { title: 'Mettre en quarantaine', category: 'Édition' },
+      { title: t('Put in quarantine'), category: t('Edit') },
     );
     ctx.commands.register('quarantine.togglePanel', () => ctx.panels.toggle(PANEL), {
-      title: 'Panneau de quarantaine',
-      category: 'Affichage',
+      title: t('Quarantine panel'),
+      category: t('View'),
     });
     ctx.keybindings.register([
       { key: 'Leader Q', command: 'quarantine.add' },
@@ -274,31 +274,31 @@ export default defineExtension({
     const renderCard = (snippet: Snippet): HTMLElement => {
       const card = document.createElement('article');
       card.className = 'qx-card';
-      card.title = 'Glisser dans le texte pour le replacer';
+      card.title = t('Drag into the text to put it back');
       const text = document.createElement('pre');
       text.className = 'qx-text';
       text.textContent = snippet.text;
       const meta = document.createElement('div');
       meta.className = 'qx-meta';
-      meta.textContent = `ligne ${snippet.line} · ${formatAge(snippet.createdAt)}`;
+      meta.textContent = `${t('line {number}', { number: snippet.line })} · ${formatAge(snippet.createdAt)}`;
 
-      const del = button('Supprimer', () => {
+      const del = button(t('Delete'), () => {
         // First click arms, second confirms.
         if (del.dataset.armed) remove(snippet);
         else {
           del.dataset.armed = '1';
-          del.textContent = 'Confirmer ?';
+          del.textContent = t('Confirm?');
           setTimeout(() => {
             delete del.dataset.armed;
-            del.textContent = 'Supprimer';
+            del.textContent = t('Delete');
           }, 3000);
         }
       });
       const actions = document.createElement('div');
       actions.className = 'qx-actions';
       actions.append(
-        button('Réinsérer au curseur', () => reinsert(snippet)),
-        button('Copier', () => void navigator.clipboard.writeText(snippet.text)),
+        button(t('Put back at the cursor'), () => reinsert(snippet)),
+        button(t('Copy'), () => void navigator.clipboard.writeText(snippet.text)),
         del,
       );
       card.append(text, meta, actions);
@@ -310,31 +310,42 @@ export default defineExtension({
 
     ctx.panels.register({
       id: PANEL,
-      title: 'Quarantaine',
+      title: t('Quarantine'),
       render(host) {
         const root = document.createElement('div');
         root.className = 'qx-panel';
         host.append(root);
 
         const draw = () => {
-          const t = target();
-          const snippets = t ? store.list(keyOf(t.tab)) : [];
+          const current = target();
+          const snippets = current ? store.list(keyOf(current.tab)) : [];
           const children: HTMLElement[] = [];
           const intro = document.createElement('p');
           intro.className = 'qx-intro';
-          if (!t) {
-            intro.textContent = 'Ouvre un fichier texte pour voir sa quarantaine.';
+          if (!current) {
+            intro.textContent = t('Open a text file to see its quarantine.');
           } else if (snippets.length === 0) {
             const key = ctx.keybindings.label('quarantine.add');
-            intro.textContent = `Aucun passage de côté pour « ${t.tab.title} ». Sélectionne du texte puis ${key ?? 'Édition > Mettre en quarantaine'}.`;
+            intro.textContent = t('Nothing set aside for "{file}". Select some text, then {key}.', {
+              file: current.tab.title,
+              key: key ?? `${t('Edit')} > ${t('Put in quarantine')}`,
+            });
           } else {
-            intro.textContent = `${snippets.length} passage${snippets.length > 1 ? 's' : ''} de côté pour « ${t.tab.title} ». Glisse une carte dans le texte pour la replacer.`;
+            intro.textContent =
+              snippets.length === 1
+                ? t('1 passage set aside for "{file}". Drag a card into the text to put it back.', {
+                    file: current.tab.title,
+                  })
+                : t(
+                    '{count} passages set aside for "{file}". Drag a card into the text to put it back.',
+                    { count: snippets.length, file: current.tab.title },
+                  );
           }
           children.push(intro, ...snippets.map(renderCard));
-          if (last && t && last.key === keyOf(t.tab)) {
+          if (last && current && last.key === keyOf(current.tab)) {
             const bar = document.createElement('div');
             bar.className = 'qx-undo';
-            bar.append('Passage supprimé.', button('Annuler', undoDelete));
+            bar.append(t('Passage deleted.'), button(t('Undo'), undoDelete));
             children.push(bar);
           }
           root.replaceChildren(...children);

@@ -1,5 +1,6 @@
 import type { ViewerFactory, ViewerInput } from '../../api';
 import './viewers.css';
+import { t } from '../../api';
 
 const BYTES_PER_ROW = 16;
 const ROW_HEIGHT = 20;
@@ -34,7 +35,8 @@ export function formatRow(offset: number, bytes: Uint8Array): [string, string, s
   return [hex(offset, 8), cells.join(' '), text];
 }
 
-const formatSize = (size: number) => `${size.toLocaleString('fr-FR')} octet${size > 1 ? 's' : ''}`;
+const formatSize = (size: number) =>
+  size === 1 ? t('1 byte') : t('{count} bytes', { count: size.toLocaleString() });
 
 /** Read-only hex view of any file, reading only the part on screen. */
 export function createHexViewer(source: HexSource): ViewerFactory {
@@ -135,14 +137,16 @@ export function createHexViewer(source: HexSource): ViewerFactory {
           size = await source.size(next);
         } catch (err) {
           if (current !== run) return;
-          info.textContent = `Fichier illisible : ${err instanceof Error ? err.message : String(err)}`;
+          info.textContent = t('Unreadable file: {problem}', {
+            problem: err instanceof Error ? err.message : String(err),
+          });
           return;
         }
         if (current !== run) return;
         rows = Math.ceil(size / BYTES_PER_ROW);
         spacer.style.height = `${Math.min(rows * ROW_HEIGHT, MAX_HEIGHT)}px`;
         stage.scrollTop = 0;
-        info.textContent = size === 0 ? 'Fichier vide' : `${formatSize(size)} · lecture seule`;
+        info.textContent = size === 0 ? t('Empty file') : `${formatSize(size)} · ${t('read-only')}`;
         await draw();
       };
 

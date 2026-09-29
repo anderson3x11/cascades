@@ -6,6 +6,7 @@
   import type { ExtensionContext } from '../../api';
   import SettingsPage from './SettingsPage.svelte';
   import ShortcutsPage from './ShortcutsPage.svelte';
+  import { t } from '../../api';
 
   let {
     ctx,
@@ -19,12 +20,12 @@
   } = $props();
 
   const pages: { id: PreferencesPage; label: string }[] = [
-    { id: 'settings', label: 'Réglages' },
-    { id: 'shortcuts', label: 'Raccourcis' },
+    { id: 'settings', label: t('Settings') },
+    { id: 'shortcuts', label: t('Shortcuts') },
   ];
 </script>
 
-<nav aria-label="Pages des préférences">
+<nav aria-label={t('Preferences pages')}>
   {#each pages as { id, label } (id)}
     <button class:active={page === id} aria-current={page === id} onclick={() => (page = id)}>
       {label}

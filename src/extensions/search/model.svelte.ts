@@ -1,5 +1,6 @@
 import { SvelteSet } from 'svelte/reactivity';
 import type { ExtensionContext, FileMatches, SearchOptions, SearchRun } from '../../api';
+import { t } from '../../api';
 
 /** Past this many matches the search stops: the list must stay readable. */
 export const MAX_MATCHES = 2000;
@@ -109,17 +110,22 @@ export class SearchModel {
     const kept = files.filter((f) => !dirty.includes(samePath(f.path)));
     const skipped = files.length - kept.length;
     if (kept.length === 0) {
-      this.notice = 'Ces fichiers ont des modifications non enregistrées : enregistre-les d’abord.';
+      this.notice = t('These files have unsaved changes: save them first.');
       return;
     }
     const count = kept.reduce((sum, f) => sum + f.matches.length, 0);
-    const what = `${count} occurrence${count > 1 ? 's' : ''} dans ${kept.length} fichier${kept.length > 1 ? 's' : ''}`;
+    const what = t('{matches} in {files}', {
+      matches: count === 1 ? t('1 match') : t('{count} matches', { count }),
+      files: kept.length === 1 ? t('1 file') : t('{count} files', { count: kept.length }),
+    });
     const question =
       this.replacement === ''
-        ? `Supprimer ${what} ?`
-        : `Remplacer ${what} par « ${this.replacement} » ?`;
-    const answer = await this.ctx.dialogs.choose(question, { buttons: ['Remplacer', 'Annuler'] });
-    if (answer !== 'Remplacer') return;
+        ? t('Delete {what}?', { what })
+        : t('Replace {what} with "{replacement}"?', { what, replacement: this.replacement });
+    const answer = await this.ctx.dialogs.choose(question, {
+      buttons: [t('Replace'), t('Cancel')],
+    });
+    if (answer !== t('Replace')) return;
 
     try {
       const done = await this.ctx.fs.replaceInFiles(
@@ -131,14 +137,20 @@ export class SearchModel {
       const replaced = done.reduce((sum, r) => sum + r.count, 0);
       const failed = done.filter((r) => r.error);
       const parts = [
-        `${replaced} occurrence${replaced > 1 ? 's' : ''} remplacée${replaced > 1 ? 's' : ''}.`,
+        replaced === 1
+          ? t('1 match replaced.')
+          : t('{count} matches replaced.', { count: replaced }),
       ];
       if (skipped > 0) {
         parts.push(
-          `${skipped} fichier${skipped > 1 ? 's' : ''} ouvert${skipped > 1 ? 's' : ''} avec des modifications non enregistrées laissé${skipped > 1 ? 's' : ''} de côté.`,
+          skipped === 1
+            ? t('1 open file with unsaved changes left out.')
+            : t('{count} open files with unsaved changes left out.', { count: skipped }),
         );
       }
-      if (failed.length > 0) parts.push(`Échec pour ${failed.map((r) => r.path).join(', ')}.`);
+      if (failed.length > 0) {
+        parts.push(t('Failed for {files}.', { files: failed.map((r) => r.path).join(', ') }));
+      }
       await this.search();
       this.notice = parts.join(' ');
     } catch (err) {

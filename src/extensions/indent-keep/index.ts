@@ -1,6 +1,6 @@
 import { Prec } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { newlineKeepingIndent } from './newline';
 
 export default defineExtension({
@@ -10,7 +10,7 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: true,
-        description: 'Entrée garde l’indentation exacte de la ligne courante.',
+        description: t('Enter keeps the exact indentation of the current line.'),
       },
     });
 

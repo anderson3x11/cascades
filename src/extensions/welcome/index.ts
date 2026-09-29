@@ -1,5 +1,5 @@
 import { mount, unmount } from 'svelte';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import WelcomeView from './WelcomeView.svelte';
 
 const VIEWER = 'welcome';
@@ -15,7 +15,7 @@ export default defineExtension({
 
     ctx.viewers.register({
       id: VIEWER,
-      title: 'Accueil',
+      title: t('Welcome'),
       extensions: [],
       kind: 'replace',
       load: async () => ({
@@ -48,9 +48,9 @@ export default defineExtension({
       () => {
         const tab = welcomeTab();
         if (tab) ctx.workspace.activate(tab.id);
-        else ctx.workspace.open({ path: null, text: '', viewer: VIEWER, title: 'Accueil' });
+        else ctx.workspace.open({ path: null, text: '', viewer: VIEWER, title: t('Welcome') });
       },
-      { title: 'Accueil', category: 'Fichier' },
+      { title: t('Welcome'), category: t('File') },
     );
     ctx.menus.registerItem('file', { command: 'workbench.welcome', group: '1_new', order: 5 });
 

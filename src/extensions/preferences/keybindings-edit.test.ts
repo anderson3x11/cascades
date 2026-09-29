@@ -56,7 +56,7 @@ describe('keybindings.json edits', () => {
 
   it('starts a missing file from the template', () => {
     const text = setShortcut(null, 'file.new', 'Ctrl+Shift+N');
-    expect(text).toContain('// Raccourcis personnels');
+    expect(text).toContain('// Personal shortcuts');
     expect(entries(text)).toEqual([{ key: 'Ctrl+Shift+N', command: 'file.new' }]);
   });
 
@@ -69,6 +69,6 @@ describe('keybindings.json edits', () => {
   });
 
   it('refuses to touch a file with a mistake', () => {
-    expect(() => setShortcut('[ { ]', 'file.new', 'F2')).toThrow(/corrige/);
+    expect(() => setShortcut('[ { ]', 'file.new', 'F2')).toThrow(/fix it/);
   });
 });

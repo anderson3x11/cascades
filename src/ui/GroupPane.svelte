@@ -6,6 +6,7 @@
   import EditorHost from './EditorHost.svelte';
   import PreviewPane from './PreviewPane.svelte';
   import TabBar from './TabBar.svelte';
+  import { t } from '../core/i18n/i18n';
 
   let {
     workbench,
@@ -46,7 +47,7 @@
   }
 </script>
 
-<section class="group" class:focused aria-label="Vue" data-group-id={group.id}>
+<section class="group" class:focused aria-label={t('Editor view')} data-group-id={group.id}>
   {#if showTabs}<TabBar {workbench} {group} {focused} />{/if}
   <Banners {workbench} tabId={tab?.id ?? null} />
   <div class="area" bind:this={area}>
@@ -62,7 +63,7 @@
         class="divider"
         role="separator"
         aria-orientation="vertical"
-        aria-label="Redimensionner l’aperçu"
+        aria-label={t('Resize the preview')}
         onpointerdown={onDividerDown}
         ondblclick={() => (viewers.split = 0.5)}
       ></div>

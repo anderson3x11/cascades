@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ExtensionContext } from '../../api';
   import { sections, type Setting } from './sections';
+  import { t } from '../../api';
 
   let { ctx, openFile }: { ctx: ExtensionContext; openFile: () => void } = $props();
 
@@ -56,17 +57,17 @@
     <input
       class="search"
       type="search"
-      placeholder="Rechercher un réglage"
-      aria-label="Rechercher un réglage"
+      placeholder={t('Search for a setting')}
+      aria-label={t('Search for a setting')}
       bind:value={query}
       spellcheck="false"
     />
     <label class="scope">
-      Pour
+      {t('For')}
       <select bind:value={scope}>
-        <option value="">tous les fichiers</option>
+        <option value="">{t('all files')}</option>
         {#each languages as language (language)}
-          <option value={language}>les fichiers {language}</option>
+          <option value={language}>{t('{language} files', { language })}</option>
         {/each}
       </select>
     </label>
@@ -124,13 +125,15 @@
                   onchange={(e) => set(setting, e.currentTarget.value)}
                 />
               {:else}
-                <button class="link" onclick={openFile}>Modifier dans settings.json</button>
+                <button class="link" onclick={openFile}
+                  >{t('Edit in {file}', { file: 'settings.json' })}</button
+                >
               {/if}
               <button
                 class="reset"
                 class:hidden={!modified}
-                title="Revenir à la valeur par défaut"
-                aria-label="Revenir à la valeur par défaut : {setting.key}"
+                title={t('Back to the default value')}
+                aria-label={t('Back to the default value: {key}', { key: setting.key })}
                 onclick={() => set(setting, undefined)}>↺</button
               >
             </div>
@@ -138,13 +141,13 @@
         {/each}
       </section>
     {:else}
-      <p class="empty">Aucun réglage ne correspond.</p>
+      <p class="empty">{t('No setting matches.')}</p>
     {/each}
   </div>
 
   <footer>
-    <button class="link" onclick={openFile}>Ouvrir settings.json</button>
-    <span>Tout ce qui est changé ici y est écrit, commentaires conservés.</span>
+    <button class="link" onclick={openFile}>{t('Open {file}', { file: 'settings.json' })}</button>
+    <span>{t('Everything changed here is written there, comments kept.')}</span>
   </footer>
 </div>
 

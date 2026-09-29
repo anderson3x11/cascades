@@ -49,9 +49,9 @@ describe('paths', () => {
 
   it('refuses names Windows does not accept', () => {
     expect(nameProblem('idées.md')).toBeNull();
-    expect(nameProblem('  ')).toMatch(/vide/);
-    expect(nameProblem('a:b')).toMatch(/interdits/);
-    expect(nameProblem('notes.')).toMatch(/finir/);
+    expect(nameProblem('  ')).toMatch(/empty/);
+    expect(nameProblem('a:b')).toMatch(/not allowed/);
+    expect(nameProblem('notes.')).toMatch(/end with/);
   });
 });
 

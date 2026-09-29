@@ -1,9 +1,9 @@
-import { defineExtension, type ExtensionContext, type TabInfo } from '../../api';
+import { defineExtension, t, type ExtensionContext, type TabInfo } from '../../api';
 
 /** Past this size, a file is not edited: it opens in the hex view, which reads only what it shows. */
 const EDIT_LIMIT = 512 * 1024 * 1024;
 
-const megabytes = (bytes: number) => `${Math.round(bytes / (1024 * 1024))} Mo`;
+const megabytes = (bytes: number) => t('{size} MB', { size: Math.round(bytes / (1024 * 1024)) });
 
 async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | null> {
   const existing = ctx.workspace.findByPath(path);
@@ -22,7 +22,9 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
     ctx.banners.show({
       kind: 'info',
       tabId: tab.id,
-      message: `Fichier trop gros pour être modifié (${megabytes(size)}) : il est affiché en lecture seule.`,
+      message: t('File too big to edit ({size}): it is shown read-only.', {
+        size: megabytes(size),
+      }),
     });
     return tab;
   }
@@ -31,7 +33,7 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
   const file = await ctx.fs.readTextFile(path);
   if (file.binary) {
     if (binary) return ctx.workspace.open({ path, text: '', viewer: binary.id });
-    await ctx.dialogs.alert(`${path}\n\nCe fichier n'est pas du texte et ne peut pas être ouvert.`);
+    await ctx.dialogs.alert(`${path}\n\n${t('This file is not text and cannot be opened.')}`);
     return null;
   }
   const tab = ctx.workspace.open({
@@ -46,8 +48,10 @@ async function openPath(ctx: ExtensionContext, path: string): Promise<TabInfo | 
     ctx.banners.show({
       kind: 'info',
       tabId: tab.id,
-      message: `Gros fichier (${megabytes(size)}) : coloration, cascades et comptage des mots sont coupés pour rester fluide.`,
-      actions: [{ label: 'OK', run: () => {} }],
+      message: t('Big file ({size}): colors, cascades and word count are off to stay fluid.', {
+        size: megabytes(size),
+      }),
+      actions: [{ label: t('OK'), run: () => {} }],
     });
   }
   return tab;
@@ -70,8 +74,8 @@ async function saveAs(ctx: ExtensionContext, tab: TabInfo): Promise<boolean> {
   if (tab.viewer) return false;
   const ext = ctx.settings.get<string>('files.defaultExtension').replace(/^\./, '');
   const filters = [
-    ...(ext ? [{ name: `Fichier .${ext}`, extensions: [ext] }] : []),
-    { name: 'Tous les fichiers', extensions: ['*'] },
+    ...(ext ? [{ name: t('.{extension} file', { extension: ext }), extensions: [ext] }] : []),
+    { name: t('All files'), extensions: ['*'] },
   ];
   const defaultPath = tab.path ?? (ext ? `${tab.title}.${ext}` : tab.title);
   const path = await ctx.dialogs.pickSavePath(defaultPath, filters);
@@ -85,32 +89,32 @@ export default defineExtension({
   activate(ctx) {
     const report = (err: unknown) => {
       console.error(err);
-      void ctx.dialogs.alert(String(err instanceof Error ? err.message : err), 'Erreur');
+      void ctx.dialogs.alert(String(err instanceof Error ? err.message : err), t('Error'));
     };
 
     ctx.settings.register('files', {
       largeFileSize: {
         type: 'number',
         default: 50,
-        description:
-          'Taille (en Mo) à partir de laquelle un fichier s’ouvre en mode allégé : sans coloration, cascades ni comptage des mots.',
+        description: t(
+          'Size (in MB) from which a file opens in light mode: no colors, cascades or word count.',
+        ),
       },
       defaultExtension: {
         type: 'string',
         default: 'txt',
-        description: 'Extension proposée pour un nouveau fichier ("" pour aucune).',
+        description: t('Extension offered for a new file ("" for none).'),
       },
       autoSave: {
         type: 'string',
         default: 'off',
         enum: ['off', 'afterDelay'],
-        description:
-          'Enregistrer automatiquement les fichiers modifiés (pas les onglets sans titre).',
+        description: t('Save changed files by themselves (not untitled tabs).'),
       },
       autoSaveDelay: {
         type: 'number',
         default: 1000,
-        description: 'Délai en millisecondes avant l’enregistrement automatique.',
+        description: t('Delay in milliseconds before saving by itself.'),
       },
     });
 
@@ -142,8 +146,8 @@ export default defineExtension({
     });
 
     ctx.commands.register('file.new', () => ctx.workspace.open({ path: null, text: '' }), {
-      title: 'Nouveau fichier',
-      category: 'Fichier',
+      title: t('New file'),
+      category: t('File'),
     });
 
     ctx.commands.register(
@@ -153,12 +157,12 @@ export default defineExtension({
           await openPath(ctx, path).catch(report);
         }
       },
-      { title: 'Ouvrir un fichier…', category: 'Fichier' },
+      { title: t('Open file…'), category: t('File') },
     );
 
     ctx.commands.register('file.openPath', (path) => openPath(ctx, String(path)), {
-      title: 'Ouvrir un chemin',
-      category: 'Fichier',
+      title: t('Open a path'),
+      category: t('File'),
       hidden: true,
     });
 
@@ -177,7 +181,7 @@ export default defineExtension({
           return false;
         }
       },
-      { title: 'Enregistrer', category: 'Fichier' },
+      { title: t('Save'), category: t('File') },
     );
 
     ctx.commands.register(
@@ -190,10 +194,10 @@ export default defineExtension({
           return false;
         });
       },
-      { title: 'Enregistrer sous…', category: 'Fichier' },
+      { title: t('Save as…'), category: t('File') },
     );
 
-    ctx.menus.registerMenu({ id: 'file', title: 'Fichier', order: 10 });
+    ctx.menus.registerMenu({ id: 'file', title: t('File'), order: 10 });
     ctx.menus.registerItem('file', { command: 'file.new', group: '1_new', order: 1 });
     ctx.menus.registerItem('file', { command: 'file.open', group: '1_new', order: 2 });
     ctx.menus.registerItem('file', { command: 'file.save', group: '2_save', order: 1 });

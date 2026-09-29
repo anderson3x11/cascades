@@ -1,5 +1,6 @@
 import {
   defineExtension,
+  t,
   type ExtensionContext,
   type GroupTarget,
   type OpenOptions,
@@ -124,7 +125,7 @@ export default defineExtension({
       restore: {
         type: 'boolean',
         default: true,
-        description: 'Rouvrir les onglets, y compris non enregistrés, au démarrage.',
+        description: t('Reopen the tabs on start, unsaved ones included.'),
       },
     });
 

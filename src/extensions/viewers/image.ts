@@ -1,5 +1,6 @@
 import type { ViewerFactory, ViewerInput } from '../../api';
 import './viewers.css';
+import { t } from '../../api';
 
 const ZOOM_STEPS = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 
@@ -59,14 +60,14 @@ export function createImageViewer(source: (input: ViewerInput) => Promise<string
 
       bar.append(
         info,
-        button('−', 'Réduire', () => zoom(-1)),
+        button('−', t('Zoom out'), () => zoom(-1)),
         level,
-        button('+', 'Agrandir', () => zoom(1)),
-        button('100 %', 'Taille réelle', () => {
+        button('+', t('Zoom in'), () => zoom(1)),
+        button('100 %', t('Actual size'), () => {
           scale = 1;
           apply();
         }),
-        button('Ajuster', 'Ajuster à la fenêtre', () => {
+        button(t('Fit'), t('Fit to the window'), () => {
           scale = null;
           apply();
         }),
@@ -86,7 +87,7 @@ export function createImageViewer(source: (input: ViewerInput) => Promise<string
         apply();
       };
       img.onerror = () => {
-        info.textContent = 'Image illisible';
+        info.textContent = t('Unreadable image');
       };
 
       const render = async (next: ViewerInput) => {

@@ -1,4 +1,4 @@
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 
 /** Command palette: every command, searchable, with its shortcut. */
 export default defineExtension({
@@ -16,10 +16,10 @@ export default defineExtension({
             value: c.id,
           }))
           .sort((a, b) => a.label.localeCompare(b.label));
-        const id = await ctx.quickPick.show(items, { placeholder: 'Rechercher une commande' });
+        const id = await ctx.quickPick.show(items, { placeholder: t('Search for a command') });
         if (id) await ctx.commands.execute(id);
       },
-      { title: 'Palette de commandes…', category: 'Affichage' },
+      { title: t('Command palette…'), category: t('View') },
     );
     ctx.keybindings.register([
       { key: 'Ctrl+Shift+P', command: 'workbench.commandPalette' },

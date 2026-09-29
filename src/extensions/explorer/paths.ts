@@ -1,4 +1,5 @@
 /** Path helpers for the explorer. Paths keep the separator of the opened folder. */
+import { t } from '../../api';
 
 export const separatorOf = (path: string) => (path.includes('\\') ? '\\' : '/');
 
@@ -53,9 +54,9 @@ export function isExcluded(name: string, patterns: readonly string[]): boolean {
 
 /** Why a file or folder name cannot be used on Windows, or null. */
 export function nameProblem(name: string): string | null {
-  if (name.trim() === '') return 'Le nom est vide.';
-  if (/[\\/:*?"<>|]/.test(name)) return 'Ces caractères sont interdits : \\ / : * ? " < > |';
-  if (name === '.' || name === '..') return 'Ce nom est réservé.';
-  if (/[. ]$/.test(name)) return 'Un nom ne peut pas finir par un point ou une espace.';
+  if (name.trim() === '') return t('The name is empty.');
+  if (/[\\/:*?"<>|]/.test(name)) return t('These characters are not allowed: \\ / : * ? " < > |');
+  if (name === '.' || name === '..') return t('This name is reserved.');
+  if (/[. ]$/.test(name)) return t('A name cannot end with a dot or a space.');
   return null;
 }

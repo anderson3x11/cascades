@@ -11,6 +11,7 @@ import {
   samePath,
   sortEntries,
 } from './paths';
+import { t } from '../../api';
 
 export interface Node {
   path: string;
@@ -148,7 +149,8 @@ export class ExplorerModel {
       );
     } catch (err) {
       this.children.set(dir, []);
-      if (this.isRoot(dir)) this.error = `Impossible de lire ${dir} : ${message(err)}`;
+      if (this.isRoot(dir))
+        this.error = t('Could not read {path}: {problem}', { path: dir, problem: message(err) });
     }
   }
 
@@ -267,18 +269,19 @@ export class ExplorerModel {
     if (this.isRoot(path)) return;
     const node = this.find(path);
     if (!node) return;
-    const what = node.isDir ? 'le dossier' : 'le fichier';
-    const answer = await this.ctx.dialogs.choose(
-      `Mettre ${what} « ${node.name} » à la corbeille ?`,
-      { buttons: ['Mettre à la corbeille', 'Annuler'] },
-    );
-    if (answer !== 'Mettre à la corbeille') return;
+    const question = node.isDir
+      ? t('Move the folder "{name}" to the recycle bin?', { name: node.name })
+      : t('Move the file "{name}" to the recycle bin?', { name: node.name });
+    const answer = await this.ctx.dialogs.choose(question, {
+      buttons: [t('Move to the recycle bin'), t('Cancel')],
+    });
+    if (answer !== t('Move to the recycle bin')) return;
     try {
       await this.ctx.fs.trash(path);
       await this.load(parentOf(path));
       if (this.selected === path) this.selected = null;
     } catch (err) {
-      this.error = `Impossible de supprimer : ${message(err)}`;
+      this.error = t('Could not delete: {problem}', { problem: message(err) });
     }
   }
 }

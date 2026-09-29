@@ -45,9 +45,9 @@ export interface KeybindingsApi {
   register(bindings: KeybindingSpec | KeybindingSpec[]): Disposable;
   /** Sets the leader key ("Ctrl+Space"). Throws on an invalid key. */
   setLeader(key: string): void;
-  /** Shortcut of a command as shown to the user ("Ctrl+Espace T"), or null. */
+  /** Shortcut of a command as shown to the user ("Ctrl+Space T"), or null. */
   label(command: string): string | null;
-  /** A key written as in keybindings.json, as shown to the user ("Leader S" -> "Ctrl+Espace S"). Throws if invalid. */
+  /** A key written as in keybindings.json, as shown to the user ("Leader S" -> "Ctrl+Space S"). Throws if invalid. */
   format(key: string): string;
   /** Shortcuts in effect (removed ones are left out), in registration order. */
   list(): KeybindingInfo[];
@@ -64,7 +64,7 @@ export interface KeybindingsApi {
 export interface KeybindingInfo {
   /** As written: "Ctrl+D", "Leader S". */
   key: string;
-  /** As shown: "Ctrl+Espace S". */
+  /** As shown: "Ctrl+Space S". */
   label: string;
   command: string;
   when: string | undefined;
@@ -182,7 +182,7 @@ export interface OpenOptions {
   text: string;
   /** Opens a view-only tab shown by this "replace" viewer (the text is ignored). */
   viewer?: string;
-  /** Name of a tab without a file ("Accueil"); otherwise "Sans titre N". */
+  /** Name of a tab without a file ("Welcome"); otherwise "Untitled N". */
   title?: string;
   /** A big file: light mode, without syntax colors (see TabInfo.large). */
   large?: boolean;
@@ -481,6 +481,28 @@ export interface BannersApi {
   show(options: BannerOptions): Disposable;
 }
 
+// Translation ---------------------------------------------------------------
+
+export interface I18nApi {
+  /**
+   * Text of the interface, written in English, in the user's language:
+   * the text "Close {file}?" with params { file }. Without a translation, the
+   * English is shown.
+   */
+  t(text: string, params?: Record<string, string | number>): string;
+  /** Language of the interface ("en", "fr"), fixed until the app restarts. */
+  language(): string;
+  /** Translations of English texts into `language`, e.g. ("fr", { Hello: 'Bonjour' }). */
+  addTranslations(language: string, catalog: Record<string, string>): Disposable;
+}
+
+/**
+ * Same as ctx.i18n.t, for code that runs outside activate(). Text is
+ * translated when t() is called, so call it when the text is needed, never
+ * at module load.
+ */
+export { t } from '../core/i18n/i18n';
+
 // Files and dialogs ----------------------------------------------------------
 
 export interface TextFile {
@@ -710,6 +732,7 @@ export interface ExtensionContext {
   readonly dialogs: DialogsApi;
   readonly configFiles: ConfigFilesApi;
   readonly app: AppApi;
+  readonly i18n: I18nApi;
 }
 
 export interface CascadesExtension {

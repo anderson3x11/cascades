@@ -11,7 +11,7 @@ const SETTINGS: Setting[] = [
 describe('sections', () => {
   it('groups by namespace, built-in sections first', () => {
     expect(sections(SETTINGS, '').map((s) => [s.title, s.settings.map((x) => x.key)])).toEqual([
-      ['Éditeur', ['editor.tabSize', 'editor.fontSize']],
+      ['Editor', ['editor.tabSize', 'editor.fontSize']],
       ['Interface', ['workbench.theme']],
       ['myPlugin', ['myPlugin.on']],
     ]);

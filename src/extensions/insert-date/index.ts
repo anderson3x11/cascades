@@ -1,5 +1,5 @@
 import { EditorSelection } from '@codemirror/state';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { formatDate } from './format';
 
 /** Inserts today's date (and time, if the format asks for it) at each cursor. */
@@ -10,8 +10,9 @@ export default defineExtension({
       format: {
         type: 'string',
         default: 'DD/MM/YYYY',
-        description:
-          'Format de la date insérée : YYYY année, MM mois, MMMM mois en lettres, DD jour, dddd jour en lettres, HH:mm heure, [texte] tel quel. Exemple : "dddd D MMMM YYYY".',
+        description: t(
+          'Format of the inserted date: YYYY year, MM month, MMMM month name, DD day, dddd day name, HH:mm time, [text] as is. Example: "dddd D MMMM YYYY".',
+        ),
       },
     });
 
@@ -24,6 +25,7 @@ export default defineExtension({
         const text = formatDate(
           new Date(),
           ctx.settings.get<string>('insertDate.format', tab?.language),
+          ctx.i18n.language(),
         );
         view.dispatch(
           view.state.changeByRange((range) => ({
@@ -34,7 +36,7 @@ export default defineExtension({
         );
         view.focus();
       },
-      { title: 'Insérer la date', category: 'Édition' },
+      { title: t('Insert the date'), category: t('Edit') },
     );
     ctx.keybindings.register({ key: 'Ctrl+;', command: 'editor.insertDate', when: 'editorFocus' });
     ctx.menus.registerItem('edit', { command: 'editor.insertDate', group: '3_lines', order: 30 });

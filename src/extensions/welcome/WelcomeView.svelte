@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ExtensionContext } from '../../api';
+  import { t, type ExtensionContext } from '../../api';
 
   let {
     ctx,
@@ -32,16 +32,16 @@
   const dirOf = (path: string) => path.slice(0, Math.max(cut(path), 0));
 
   const actions = [
-    { label: 'Nouveau fichier', command: 'file.new' },
-    { label: 'Ouvrir un fichier…', command: 'file.open' },
-    { label: 'Ajouter un dossier…', command: 'explorer.addFolder' },
-    { label: 'Ouverture rapide…', command: 'workbench.quickOpen' },
+    { label: t('New file'), command: 'file.new' },
+    { label: t('Open file…'), command: 'file.open' },
+    { label: t('Add folder…'), command: 'explorer.addFolder' },
+    { label: t('Quick open…'), command: 'workbench.quickOpen' },
   ];
   const tips = [
-    { label: 'Toutes les commandes', command: 'workbench.commandPalette' },
-    { label: 'Préférences', command: 'preferences.open' },
-    { label: 'Mode zen', command: 'view.toggleZen' },
-    { label: 'Correcteur orthographique', command: 'editor.toggleSpellcheck' },
+    { label: t('All commands'), command: 'workbench.commandPalette' },
+    { label: t('Preferences'), command: 'preferences.open' },
+    { label: t('Zen mode'), command: 'view.toggleZen' },
+    { label: t('Spell checker'), command: 'editor.toggleSpellcheck' },
   ];
   const shortcut = (command: string) => ctx.keybindings.label(command) ?? '';
 
@@ -60,7 +60,7 @@
 <div
   class="welcome"
   role="region"
-  aria-label="Accueil"
+  aria-label={t('Welcome')}
   tabindex="-1"
   bind:this={root}
   onkeydown={onKeydown}
@@ -68,11 +68,11 @@
   <div class="inner">
     <header>
       <h1>cascades</h1>
-      <p>Tape pour commencer une note.</p>
+      <p>{t('Type to start a note.')}</p>
     </header>
 
     <section>
-      <h2>Commencer</h2>
+      <h2>{t('Start')}</h2>
       <ul>
         {#each actions as { label, command } (command)}
           <li>
@@ -86,7 +86,7 @@
 
     {#if recent.length > 0}
       <section>
-        <h2>Récents</h2>
+        <h2>{t('Recent')}</h2>
         <ul>
           {#each recent as path (path)}
             <li>
@@ -100,7 +100,7 @@
     {/if}
 
     <section>
-      <h2>Bon à savoir</h2>
+      <h2>{t('Good to know')}</h2>
       <ul>
         {#each tips as { label, command } (command)}
           <li>

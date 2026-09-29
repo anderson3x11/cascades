@@ -1,6 +1,7 @@
 import type { ViewerFactory, ViewerInput } from '../../api';
 import { dirname, isAbsolute, resolvePath } from './paths';
 import './viewers.css';
+import { t } from '../../api';
 
 export interface HtmlHelpers {
   /** URL of a local file the page may load. */
@@ -62,7 +63,7 @@ export function createHtmlViewer(helpers: HtmlHelpers): ViewerFactory {
     create(host: HTMLElement, input: ViewerInput) {
       const frame = document.createElement('iframe');
       frame.className = 'cv-html';
-      frame.title = 'Aperçu HTML';
+      frame.title = t('HTML preview');
       host.append(frame);
       let run = 0;
       let current = input;

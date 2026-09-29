@@ -14,8 +14,8 @@ describe('parseSettings', () => {
   });
 
   it('explains errors with a line number', () => {
-    expect(() => parseSettings('{\n  "a": 1\n  "b": 2\n}')).toThrow(/ligne 3/);
-    expect(() => parseSettings('[1]')).toThrow(/objet/);
+    expect(() => parseSettings('{\n  "a": 1\n  "b": 2\n}')).toThrow(/line 3/);
+    expect(() => parseSettings('[1]')).toThrow(/object/);
   });
 });
 

@@ -1,5 +1,5 @@
 import { mount, unmount } from 'svelte';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import ExplorerView from './ExplorerView.svelte';
 import { ExplorerModel } from './model.svelte';
 
@@ -21,7 +21,7 @@ export default defineExtension({
       exclude: {
         type: 'array',
         default: ['.git', 'node_modules'],
-        description: 'Noms masqués dans l’explorateur (* pour n’importe quel texte : "*.log").',
+        description: t('Names hidden in the explorer (* for any text: "*.log").'),
       },
     });
 
@@ -36,23 +36,23 @@ export default defineExtension({
 
     ctx.panels.register({
       id: PANEL,
-      title: 'Fichiers',
+      title: t('Files'),
       side: 'left',
       actions: () =>
         model.roots.length === 0
           ? []
           : [
               {
-                label: 'Nouveau fichier',
+                label: t('New file'),
                 icon: 'M9 1.5H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5L9 1.5ZM9 1.5v4h4M8 8v4M6 10h4',
                 run: () => void model.newNearSelection('file'),
               },
               {
-                label: 'Nouveau dossier',
+                label: t('New folder'),
                 icon: 'M1.5 4a1 1 0 0 1 1-1h3.5l1.5 1.5h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4ZM8 7v4M6 9h4',
                 run: () => void model.newNearSelection('folder'),
               },
-              { label: 'Tout replier', icon: 'M4 10l4-4 4 4', run: () => model.collapseAll() },
+              { label: t('Collapse all'), icon: 'M4 10l4-4 4 4', run: () => model.collapseAll() },
             ],
       render(host) {
         const view = mount(ExplorerView, { target: host, props: { ctx, model } });
@@ -68,21 +68,21 @@ export default defineExtension({
     };
 
     ctx.commands.register('explorer.addFolder', addFolder, {
-      title: 'Ajouter un dossier…',
-      category: 'Fichier',
+      title: t('Add folder…'),
+      category: t('File'),
     });
     // For other extensions (quick open, search in files).
     ctx.commands.register('explorer.folders', () => [...model.roots], {
-      title: 'Dossiers ouverts',
+      title: t('Open folders'),
       hidden: true,
     });
     ctx.commands.register('explorer.removeAllFolders', () => model.removeAll(), {
-      title: 'Fermer tous les dossiers',
-      category: 'Fichier',
+      title: t('Close all folders'),
+      category: t('File'),
     });
     ctx.commands.register('view.toggleSidebar', () => ctx.panels.toggleSide('left'), {
-      title: 'Afficher ou masquer le panneau de gauche',
-      category: 'Affichage',
+      title: t('Show or hide the left panel'),
+      category: t('View'),
     });
     ctx.keybindings.register([
       { key: 'Ctrl+Shift+O', command: 'explorer.addFolder' },

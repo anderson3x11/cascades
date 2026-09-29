@@ -6,13 +6,13 @@ export interface LanguageChoice {
 
 /**
  * One choice per language from the dictionaries Windows reports ("fr-FR",
- * "fr-BE"… make one "français"), named in French. Technical tags
+ * "fr-BE"… make one "French"), named in `locale`. Technical tags
  * ("zh-Latn-CN-x-ext") are left out.
  */
-export function languageChoices(installed: readonly string[]): LanguageChoice[] {
+export function languageChoices(installed: readonly string[], locale = 'en'): LanguageChoice[] {
   let names: Intl.DisplayNames | null = null;
   try {
-    names = new Intl.DisplayNames(['fr'], { type: 'language' });
+    names = new Intl.DisplayNames([locale], { type: 'language' });
   } catch {
     // Without names, the tags are shown as they are.
   }
@@ -29,5 +29,5 @@ export function languageChoices(installed: readonly string[]): LanguageChoice[] 
     }
     choices.set(tag, { tag, label: label.charAt(0).toUpperCase() + label.slice(1) });
   }
-  return [...choices.values()].sort((a, b) => a.label.localeCompare(b.label, 'fr'));
+  return [...choices.values()].sort((a, b) => a.label.localeCompare(b.label, locale));
 }

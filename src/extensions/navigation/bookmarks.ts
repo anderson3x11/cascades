@@ -8,13 +8,14 @@ import {
   type Extension,
 } from '@codemirror/state';
 import { Decoration, EditorView, gutter, GutterMarker } from '@codemirror/view';
+import { t } from '../../api';
 
 class BookmarkMarker extends GutterMarker {
   override elementClass = 'cm-bookmark';
   override toDOM() {
     const dot = document.createElement('span');
     dot.className = 'cm-bookmark-dot';
-    dot.setAttribute('aria-label', 'Signet');
+    dot.setAttribute('aria-label', t('Bookmark'));
     return dot;
   }
 }

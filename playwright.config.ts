@@ -8,7 +8,8 @@ const PORT = 1430;
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  use: { baseURL: `http://localhost:${PORT}` },
+  // The tests were written against the French interface, which also checks the catalog.
+  use: { baseURL: `http://localhost:${PORT}`, locale: 'fr-FR' },
   webServer: {
     command: `npx vite --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,

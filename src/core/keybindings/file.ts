@@ -1,5 +1,6 @@
 import { parseWhen } from '../context/when';
 import { parseJsonc } from '../settings/file';
+import { t } from '../i18n/i18n';
 import { parseKeySequence } from './keys';
 import type { KeybindingSpec } from './registry';
 
@@ -18,7 +19,7 @@ export interface KeybindingsFile {
 export function parseKeybindings(text: string | null): KeybindingsFile {
   if (text === null || text.trim() === '') return { bindings: [], errors: [] };
   const value = parseJsonc(text);
-  if (!Array.isArray(value)) throw new Error('le fichier doit contenir une liste [ … ]');
+  if (!Array.isArray(value)) throw new Error(t('the file must hold a list [ … ]'));
 
   const bindings: KeybindingSpec[] = [];
   const errors: string[] = [];
@@ -26,7 +27,12 @@ export function parseKeybindings(text: string | null): KeybindingsFile {
     try {
       bindings.push(toSpec(item));
     } catch (err) {
-      errors.push(`entrée ${index + 1} : ${err instanceof Error ? err.message : String(err)}`);
+      errors.push(
+        t('entry {number}: {problem}', {
+          number: index + 1,
+          problem: err instanceof Error ? err.message : String(err),
+        }),
+      );
     }
   });
   return { bindings, errors };
@@ -34,19 +40,19 @@ export function parseKeybindings(text: string | null): KeybindingsFile {
 
 function toSpec(item: unknown): KeybindingSpec {
   if (typeof item !== 'object' || item === null || Array.isArray(item)) {
-    throw new Error('un objet { "key", "command" } est attendu');
+    throw new Error(t('expected: {type}', { type: '{ "key", "command" }' }));
   }
   const { key, command, when, args } = item as Record<string, unknown>;
   if (typeof command !== 'string' || command.replace(/^-/, '') === '') {
-    throw new Error('"command" manquant');
+    throw new Error(t('missing "{name}"', { name: 'command' }));
   }
   const removal = command.startsWith('-');
   if (typeof key !== 'string' || (!removal && key.trim() === '')) {
-    throw new Error('"key" manquant');
+    throw new Error(t('missing "{name}"', { name: 'key' }));
   }
   if (key.trim() !== '') parseKeySequence(key);
   if (when !== undefined) {
-    if (typeof when !== 'string') throw new Error('"when" doit être un texte');
+    if (typeof when !== 'string') throw new Error(t('"{name}" must be a text', { name: 'when' }));
     parseWhen(when);
   }
   const spec: KeybindingSpec = { key, command };

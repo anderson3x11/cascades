@@ -24,23 +24,23 @@ describe('checkSettings', () => {
     expect(
       underlined('{ "editor.tabsize": 2, "editor.tabSize": "2", "workbench.theme": "rose" }'),
     ).toEqual([
-      ['"editor.tabsize"', 'warning', 'réglage inconnu : editor.tabsize'],
-      ['"2"', 'error', 'attendu : un nombre'],
-      ['"rose"', 'error', 'valeurs possibles : "auto", "nord"'],
+      ['"editor.tabsize"', 'warning', 'unknown setting: editor.tabsize'],
+      ['"2"', 'error', 'expected: a number'],
+      ['"rose"', 'error', 'possible values: "auto", "nord"'],
     ]);
   });
 
   it('checks language blocks too', () => {
     expect(underlined('{ "[markdown]": { "editor.wordWrap": 1 }, "[css]": 3 }')).toEqual([
-      ['1', 'error', 'attendu : true ou false'],
-      ['3', 'error', 'attendu : un objet { … }'],
+      ['1', 'error', 'expected: true or false'],
+      ['3', 'error', 'expected: an object { … }'],
     ]);
   });
 
   it('reports syntax errors where they are', () => {
     const text = '{\n  "editor.tabSize": 2\n  "editor.wordWrap": true\n}';
     const [problem] = check(text);
-    expect(problem?.message).toBe('virgule manquante');
+    expect(problem?.message).toBe('missing comma');
     expect(text.slice(problem?.from).startsWith('"editor.wordWrap"')).toBe(true);
   });
 });

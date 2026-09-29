@@ -1,5 +1,7 @@
-import { Channel, invoke, isTauri } from '@tauri-apps/api/core';
+import { Channel, isTauri } from '@tauri-apps/api/core';
+import { invoke } from './invoke';
 import { fakeFs } from './fake-fs';
+import { t } from '../core/i18n/i18n';
 
 export interface SearchOptions {
   caseSensitive: boolean;
@@ -102,9 +104,14 @@ function regexOf(query: string, options: SearchOptions): RegExp {
   try {
     return new RegExp(source, options.caseSensitive ? 'gu' : 'giu');
   } catch (err) {
-    throw new Error(`expression invalide : ${err instanceof Error ? err.message : String(err)}`, {
-      cause: err,
-    });
+    throw new Error(
+      t('invalid expression: {problem}', {
+        problem: err instanceof Error ? err.message : String(err),
+      }),
+      {
+        cause: err,
+      },
+    );
   }
 }
 

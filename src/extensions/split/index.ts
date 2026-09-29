@@ -1,4 +1,4 @@
-import { defineExtension, type GroupTarget } from '../../api';
+import { defineExtension, t, type GroupTarget } from '../../api';
 
 /** Split view: several groups of tabs, a document shown in more than one. */
 export default defineExtension({
@@ -18,21 +18,21 @@ export default defineExtension({
     };
 
     ctx.commands.register('view.cloneToNextGroup', (id) => clone(id, 'next'), {
-      title: 'Cloner dans la vue suivante',
-      category: 'Affichage',
+      title: t('Clone to the next view'),
+      category: t('View'),
     });
     ctx.commands.register('view.moveToNextGroup', (id) => move(id, 'next'), {
-      title: 'Déplacer vers la vue suivante',
-      category: 'Affichage',
+      title: t('Move to the next view'),
+      category: t('View'),
     });
     ctx.commands.register('view.moveToPreviousGroup', (id) => move(id, 'previous'), {
-      title: 'Déplacer vers la vue précédente',
-      category: 'Affichage',
+      title: t('Move to the previous view'),
+      category: t('View'),
     });
     ctx.commands.register(
       'view.toggleSplitOrientation',
       () => ctx.workspace.setOrientation(ctx.workspace.orientation() === 'row' ? 'column' : 'row'),
-      { title: 'Vues côte à côte / empilées', category: 'Affichage' },
+      { title: t('Views side by side / stacked'), category: t('View') },
     );
     ctx.commands.register(
       'view.joinGroups',
@@ -47,13 +47,13 @@ export default defineExtension({
         const keep = ctx.workspace.tabs().find((t) => t.documentId === active);
         if (keep) ctx.workspace.activate(keep.id);
       },
-      { title: 'Réunir toutes les vues', category: 'Affichage' },
+      { title: t('Join all views'), category: t('View') },
     );
 
     for (let n = 1; n <= 4; n++) {
       ctx.commands.register(`view.focusGroup${n}`, () => ctx.workspace.focusGroup(n - 1), {
-        title: `Aller à la vue ${n}`,
-        category: 'Affichage',
+        title: t('Go to view {number}', { number: n }),
+        category: t('View'),
       });
     }
 

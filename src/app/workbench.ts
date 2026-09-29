@@ -18,6 +18,8 @@ import {
 } from '../core/keybindings/keys';
 import { KeybindingRegistry } from '../core/keybindings/registry';
 import { MenuRegistry } from '../core/menus/registry';
+import * as i18n from '../core/i18n/i18n';
+import fr from '../locales/fr.json';
 import { checkSettings } from '../core/settings/check';
 import { editSettings, parseSettings, type ConfigProblem } from '../core/settings/file';
 import { SettingsRegistry } from '../core/settings/registry';
@@ -46,6 +48,7 @@ import { Workspace } from './workspace.svelte';
 const WILL_QUIT_TIMEOUT_MS = 3000;
 const SETTINGS_FILE = 'settings.json';
 const KEYBINDINGS_FILE = 'keybindings.json';
+const LANGUAGE_SETTING = 'workbench.language';
 
 export class Workbench {
   readonly commands = new CommandRegistry();
@@ -70,6 +73,26 @@ export class Workbench {
   );
   private readonly willQuit = new Set<() => void | Promise<void>>();
 
+  /**
+   * Reads settings.json and sets the interface language, before anything is
+   * shown: text is translated when it is created.
+   */
+  async prepare(): Promise<void> {
+    i18n.addTranslations('fr', fr);
+    // User values are stored before extensions declare their schemas, so
+    // extensions read them from their very first activation.
+    await this.loadUserSettings();
+    this.language = i18n.pickLanguage(
+      this.settings.userSettings()[LANGUAGE_SETTING],
+      navigator.languages,
+    );
+    i18n.setLanguage(this.language);
+    document.documentElement.lang = this.language;
+  }
+
+  /** Interface language chosen at start; changing it takes a restart. */
+  private language = 'en';
+
   async start(builtins: CascadesExtension[]): Promise<void> {
     window.addEventListener('keydown', this.onKeyDown, { capture: true });
     // The webview's own menu (Back, Reload, Inspect…) makes no sense in the app.
@@ -85,9 +108,7 @@ export class Workbench {
       if (tab.id === this.workspace.activeId) this.contextKeys.set('editorLangId', tab.language);
     });
 
-    // User values are stored before extensions declare their schemas, so
-    // extensions read them from their very first activation.
-    await this.loadUserSettings();
+    this.registerLanguageSetting();
     // Hand edits of settings.json apply right away (our own writes change nothing).
     this.watchConfigFile(SETTINGS_FILE, () => void this.loadUserSettings());
 
@@ -179,6 +200,46 @@ export class Workbench {
     }
   };
 
+  /**
+   * The language setting belongs to the workbench, which applies it before
+   * extensions start. A new value applies after a restart of the window.
+   */
+  private registerLanguageSetting(): void {
+    const [namespace, name] = LANGUAGE_SETTING.split('.') as [string, string];
+    this.settings.registerSchema(namespace, {
+      [name]: {
+        type: 'string',
+        default: 'auto',
+        enum: ['auto', ...i18n.UI_LANGUAGES],
+        description: i18n.t(
+          'Language of the interface: "auto" follows the system, "en" English, "fr" French.',
+        ),
+      },
+    });
+    let banner: Disposable | null = null;
+    this.settings.onDidChange.on(({ keys }) => {
+      if (!keys.includes(LANGUAGE_SETTING)) return;
+      banner?.dispose();
+      banner = null;
+      const wanted = i18n.pickLanguage(this.settings.get(LANGUAGE_SETTING), navigator.languages);
+      if (wanted === this.language) return;
+      banner = this.banners.show({
+        kind: 'info',
+        message: i18n.t('The new language applies after a restart.'),
+        actions: [
+          { label: i18n.t('Restart now'), run: () => void this.restart() },
+          { label: i18n.t('Later'), run: () => {} },
+        ],
+      });
+    });
+  }
+
+  /** Reloads the window, keeping the session like a close would. */
+  private async restart(): Promise<void> {
+    await this.runWillQuit();
+    location.reload();
+  }
+
   /** Banner shown while settings.json cannot be read. */
   private settingsError: Disposable | null = null;
 
@@ -192,7 +253,7 @@ export class Workbench {
       this.settingsError = this.showFileError(
         SETTINGS_FILE,
         'preferences.openSettingsFile',
-        `ignoré : ${err instanceof Error ? err.message : String(err)}`,
+        i18n.t('ignored: {problem}', { problem: err instanceof Error ? err.message : String(err) }),
       );
     }
   }
@@ -213,12 +274,19 @@ export class Workbench {
         this.userKeybindings.add(this.keybindings.register(binding, 'user'));
       }
       if (errors.length > 0) {
-        const more = errors.length > 1 ? ` (et ${errors.length - 1} autre(s))` : '';
-        problem = `${errors[0]}${more}, ignorée.`;
+        problem =
+          errors.length > 1
+            ? i18n.t('{problem} (and {count} more), ignored.', {
+                problem: errors[0] ?? '',
+                count: errors.length - 1,
+              })
+            : i18n.t('{problem}, ignored.', { problem: errors[0] ?? '' });
       }
     } catch (err) {
       // The previous shortcuts stay in effect until the file is fixed.
-      problem = `ignoré : ${err instanceof Error ? err.message : String(err)}`;
+      problem = i18n.t('ignored: {problem}', {
+        problem: err instanceof Error ? err.message : String(err),
+      });
     }
     this.keyHint.clear();
     if (problem) {
@@ -241,7 +309,7 @@ export class Workbench {
     return this.banners.show({
       kind: 'warning',
       message: `${file} ${problem}`,
-      actions: [{ label: 'Ouvrir le fichier', run: () => void open() }],
+      actions: [{ label: i18n.t('Open the file'), run: () => void open() }],
     });
   }
 
@@ -256,7 +324,9 @@ export class Workbench {
     try {
       parseSettings(text);
     } catch (err) {
-      throw new Error(`${SETTINGS_FILE} contient une erreur, corrige-la d'abord.`, { cause: err });
+      throw new Error(i18n.t('{file} has an error, fix it first.', { file: SETTINGS_FILE }), {
+        cause: err,
+      });
     }
     const next = editSettings(text, key, value, language);
     this.settings.setUserSettings(parseSettings(next));
@@ -322,12 +392,15 @@ export class Workbench {
    * Runs the onWillQuit handlers when the window closes. Unsaved work is kept
    * by the session, so closing never asks for confirmation.
    */
+  private runWillQuit(): Promise<unknown> {
+    return Promise.race([
+      Promise.allSettled([...this.willQuit].map((handler) => handler())),
+      new Promise((resolve) => setTimeout(resolve, WILL_QUIT_TIMEOUT_MS)),
+    ]);
+  }
+
   private runWillQuitOnClose(): void {
-    const run = () =>
-      Promise.race([
-        Promise.allSettled([...this.willQuit].map((handler) => handler())),
-        new Promise((resolve) => setTimeout(resolve, WILL_QUIT_TIMEOUT_MS)),
-      ]);
+    const run = () => this.runWillQuit();
     if (isTauri()) {
       void getCurrentWindow().onCloseRequested(async () => {
         await run();
@@ -362,7 +435,7 @@ export class Workbench {
           this.keyHint.clear();
         },
         label: (command) => {
-          // The shortest shortcut is the one to show ("Ctrl+P" over "Ctrl+Espace O");
+          // The shortest shortcut is the one to show ("Ctrl+P" over "Ctrl+Space O");
           // among equals, the most recent (forCommand's order).
           const bindings = this.keybindings.forCommand(command);
           const shortest = bindings.reduce<(typeof bindings)[number] | undefined>(
@@ -521,6 +594,11 @@ export class Workbench {
       },
       contextMenu: {
         show: (position, items) => this.contextMenu.show(position, items),
+      },
+      i18n: {
+        t: i18n.t,
+        language: () => this.language,
+        addTranslations: (language, catalog) => track(i18n.addTranslations(language, catalog)),
       },
     };
   }

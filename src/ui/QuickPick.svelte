@@ -3,6 +3,7 @@
   import type { QuickPickItem } from '../api';
   import type { Workbench } from '../app/workbench';
   import { fuzzyFilter } from '../core/fuzzy';
+  import { t } from '../core/i18n/i18n';
 
   let { workbench }: { workbench: Workbench } = $props();
   const model = $derived(workbench.quickPick);
@@ -82,7 +83,7 @@
 
 {#if session}
   <div class="backdrop" role="presentation" onpointerdown={() => close(undefined)}></div>
-  <div class="picker" role="dialog" aria-label={session.options.placeholder ?? 'Sélection'}>
+  <div class="picker" role="dialog" aria-label={session.options.placeholder ?? t('Selection')}>
     <input
       bind:this={input}
       bind:value={query}
@@ -114,7 +115,7 @@
           {#if item.description}<span class="description">{item.description}</span>{/if}
         </li>
       {:else}
-        <li class="empty">Aucun résultat</li>
+        <li class="empty">{t('No results')}</li>
       {/each}
       {#if matches.length > results.length}
         <li class="empty">

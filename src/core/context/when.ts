@@ -4,6 +4,7 @@
  *   vim.mode == 'normal' || vim.mode == 'visual'
  *   (a || b) && c != 3
  */
+import { t } from '../i18n/i18n';
 
 export type ContextValue = string | number | boolean | undefined;
 export type ContextLookup = (key: string) => ContextValue;
@@ -33,13 +34,17 @@ function tokenize(source: string): Token[] {
     }
     if (ch === "'" || ch === '"') {
       const end = source.indexOf(ch, i + 1);
-      if (end === -1) throw new Error(`guillemet fermant manquant dans « ${source} »`);
+      if (end === -1)
+        throw new Error(t('missing closing quote in "{condition}"', { condition: source }));
       tokens.push({ kind: 'literal', value: source.slice(i + 1, end) });
       i = end + 1;
       continue;
     }
     const match = /^[\w.:-]+/.exec(source.slice(i));
-    if (!match) throw new Error(`« ${ch} » inattendu dans « ${source} »`);
+    if (!match)
+      throw new Error(
+        t('unexpected "{character}" in "{condition}"', { character: ch, condition: source }),
+      );
     const word = match[0];
     if (word === 'true' || word === 'false') {
       tokens.push({ kind: 'literal', value: word === 'true' });
@@ -63,7 +68,7 @@ export function parseWhen(source: string): WhenExpr {
   };
 
   const fail = (): never => {
-    throw new Error(`condition invalide : « ${source} »`);
+    throw new Error(t('invalid condition: "{condition}"', { condition: source }));
   };
 
   // or := and ('||' and)*

@@ -7,7 +7,7 @@ import {
   type DecorationSet,
   type ViewUpdate,
 } from '@codemirror/view';
-import { defineExtension, type ExtensionContext, type TabInfo } from '../../api';
+import { defineExtension, t, type ExtensionContext, type TabInfo } from '../../api';
 import { isUrl, linkAt, markdownLink, resolve, type FoundLink } from './links';
 
 /** The link to underline while Ctrl is held over it, or null. */
@@ -78,8 +78,8 @@ function followLinks(ctx: ExtensionContext, tab: TabInfo): Extension {
     } catch {
       ctx.banners.show({
         kind: 'warning',
-        message: `Fichier introuvable : ${destination.path}`,
-        actions: [{ label: 'OK', run: () => {} }],
+        message: t('File not found: {path}', { path: destination.path }),
+        actions: [{ label: t('OK'), run: () => {} }],
       });
     }
   };
@@ -160,14 +160,14 @@ export default defineExtension({
       ctrlClick: {
         type: 'boolean',
         default: true,
-        description:
-          'Ctrl+clic ouvre un lien : une adresse web dans le navigateur, un fichier dans un onglet.',
+        description: t('Ctrl+click opens a link: a web address in the browser, a file in a tab.'),
       },
       pasteAsMarkdown: {
         type: 'boolean',
         default: true,
-        description:
-          'En Markdown, coller une adresse web sur du texte sélectionné en fait un lien [texte](adresse).',
+        description: t(
+          'In Markdown, pasting a web address over selected text makes it a link [text](address).',
+        ),
       },
     });
 

@@ -1,5 +1,5 @@
 import { EditorSelection, type EditorState, type TransactionSpec } from '@codemirror/state';
-import { defineExtension, type KeybindingSpec } from '../../api';
+import { defineExtension, t, type KeybindingSpec } from '../../api';
 import {
   joinLines,
   lowerCase,
@@ -71,74 +71,74 @@ interface Tool {
   run(state: EditorState): TransactionSpec;
 }
 
-const TOOLS: Tool[] = [
+const tools = (): Tool[] => [
   {
     id: 'text.upperCase',
-    title: 'MAJUSCULES',
+    title: t('UPPERCASE'),
     group: '1_case',
     keys: ['Ctrl+Shift+U'],
     run: (s) => changeCase(s, upperCase),
   },
   {
     id: 'text.lowerCase',
-    title: 'minuscules',
+    title: t('lowercase'),
     group: '1_case',
     keys: ['Ctrl+U'],
     run: (s) => changeCase(s, lowerCase),
   },
   {
     id: 'text.titleCase',
-    title: 'Majuscule À Chaque Mot',
+    title: t('Title Case'),
     group: '1_case',
     keys: ['Leader U'],
     run: (s) => changeCase(s, titleCase),
   },
   {
     id: 'text.sentenceCase',
-    title: 'Majuscule en début de phrase',
+    title: t('Sentence case'),
     group: '1_case',
     keys: ['Leader Shift+U'],
     run: (s) => changeCase(s, sentenceCase),
   },
   {
     id: 'text.sortLines',
-    title: 'Trier les lignes (A à Z)',
+    title: t('Sort lines (A to Z)'),
     group: '2_lines',
     run: (s) => changeLines(s, (l) => sortLines(l), 'document'),
   },
   {
     id: 'text.sortLinesDescending',
-    title: 'Trier les lignes (Z à A)',
+    title: t('Sort lines (Z to A)'),
     group: '2_lines',
     run: (s) => changeLines(s, (l) => sortLines(l, true), 'document'),
   },
   {
     id: 'text.removeDuplicateLines',
-    title: 'Supprimer les lignes en double',
+    title: t('Remove duplicate lines'),
     group: '2_lines',
     run: (s) => changeLines(s, removeDuplicateLines, 'document'),
   },
   {
     id: 'text.trimTrailingWhitespace',
-    title: 'Supprimer les espaces en fin de ligne',
+    title: t('Trim trailing spaces'),
     group: '2_lines',
     run: (s) => changeLines(s, trimTrailingWhitespace, 'document'),
   },
   {
     id: 'text.joinLines',
-    title: 'Joindre les lignes',
+    title: t('Join lines'),
     group: '2_lines',
     run: (s) => changeLines(s, joinLines, 'nextLine'),
   },
 ];
 
-/** Case and line tools, in a Texte menu. Without a selection, case applies to the word at the cursor. */
+/** Case and line tools, in a Text menu. Without a selection, case applies to the word at the cursor. */
 export default defineExtension({
   id: 'cascades.text-tools',
   activate(ctx) {
-    ctx.menus.registerMenu({ id: 'text', title: 'Texte', order: 25 });
+    ctx.menus.registerMenu({ id: 'text', title: t('Text'), order: 25 });
     const keys: KeybindingSpec[] = [];
-    for (const [order, tool] of TOOLS.entries()) {
+    for (const [order, tool] of tools().entries()) {
       ctx.commands.register(
         tool.id,
         () => {
@@ -147,7 +147,7 @@ export default defineExtension({
           view.dispatch(tool.run(view.state), { userEvent: 'input', scrollIntoView: true });
           view.focus();
         },
-        { title: tool.title, category: 'Texte' },
+        { title: tool.title, category: t('Text') },
       );
       ctx.menus.registerItem('text', { command: tool.id, group: tool.group, order });
       for (const key of tool.keys ?? []) keys.push({ key, command: tool.id, when: 'editorFocus' });

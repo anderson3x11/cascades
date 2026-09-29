@@ -26,10 +26,11 @@ describe('countChars', () => {
 
 describe('formatSize', () => {
   it('uses the largest fitting unit', () => {
-    expect(formatSize(12)).toBe('12 octets');
-    expect(formatSize(1)).toBe('1 octet');
-    expect(formatSize(2048)).toBe('2 Ko');
-    expect(formatSize(2.5 * 1024 * 1024)).toBe('2,5 Mo');
-    expect(formatSize(830 * 1024)).toBe('830 Ko');
+    expect(formatSize(12)).toBe('12 bytes');
+    expect(formatSize(1)).toBe('1 byte');
+    expect(formatSize(2048)).toBe('2 KB');
+    expect(formatSize(2.5 * 1024 * 1024)).toBe('2.5 MB');
+    expect(formatSize(2.5 * 1024 * 1024, 'fr')).toBe('2,5 MB');
+    expect(formatSize(830 * 1024)).toBe('830 KB');
   });
 });

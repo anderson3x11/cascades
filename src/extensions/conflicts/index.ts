@@ -1,12 +1,12 @@
 import { RangeSetBuilder, StateField, type EditorState } from '@codemirror/state';
 import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemirror/view';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { findConflicts, resolve, type Choice, type ConflictBlock } from './blocks';
 
-const CHOICES: [Choice, string][] = [
-  ['mine', 'Garder la mienne'],
-  ['theirs', 'Garder celle du disque'],
-  ['both', 'Garder les deux'],
+const choices = (): [Choice, string][] => [
+  ['mine', t('Keep mine')],
+  ['theirs', t('Keep the one on disk')],
+  ['both', t('Keep both')],
 ];
 
 function docLines(state: EditorState): string[] {
@@ -46,7 +46,7 @@ class ChoiceButtons extends WidgetType {
   toDOM(view: EditorView): HTMLElement {
     const box = document.createElement('span');
     box.className = 'cm-conflict-actions';
-    for (const [choice, label] of CHOICES) {
+    for (const [choice, label] of choices()) {
       const button = document.createElement('button');
       button.textContent = label;
       // Keep the editor selection where it is until the click is handled.

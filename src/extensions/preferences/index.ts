@@ -1,9 +1,9 @@
 import { mount, unmount } from 'svelte';
-import { defineExtension, type Disposable, type ExtensionContext } from '../../api';
+import { defineExtension, t, type Disposable, type ExtensionContext } from '../../api';
 import type { ConfigFileName } from './assist';
 import { configFileAssist } from './editor-assist';
 import PreferencesView, { type PreferencesPage } from './PreferencesView.svelte';
-import { isEmpty, KEYBINDINGS_TEMPLATE, SETTINGS_TEMPLATE } from './templates';
+import { isEmpty, keybindingsTemplate, settingsTemplate } from './templates';
 
 /** Path form for comparisons: Windows paths ignore case and separator style. */
 const samePath = (path: string) => path.replace(/\\/g, '/').toLowerCase();
@@ -23,7 +23,7 @@ export default defineExtension({
     let modal: Disposable | null = null;
     const open = (page: PreferencesPage) => {
       modal = ctx.modals.show({
-        title: 'Préférences',
+        title: t('Preferences'),
         render(host) {
           const view = mount(PreferencesView, {
             target: host,
@@ -41,12 +41,12 @@ export default defineExtension({
       });
     };
     ctx.commands.register('preferences.open', () => open('settings'), {
-      title: 'Préférences…',
-      category: 'Préférences',
+      title: t('Preferences…'),
+      category: t('Preferences'),
     });
     ctx.commands.register('preferences.openShortcuts', () => open('shortcuts'), {
-      title: 'Raccourcis clavier…',
-      category: 'Préférences',
+      title: t('Keyboard shortcuts…'),
+      category: t('Preferences'),
     });
     ctx.keybindings.register({ key: 'Ctrl+,', command: 'preferences.open' });
     ctx.menus.registerItem('file', {
@@ -57,13 +57,13 @@ export default defineExtension({
 
     ctx.commands.register(
       'preferences.openSettingsFile',
-      () => openConfigFile(ctx, 'settings.json', SETTINGS_TEMPLATE),
-      { title: 'Ouvrir settings.json', category: 'Préférences' },
+      () => openConfigFile(ctx, 'settings.json', settingsTemplate()),
+      { title: t('Open {file}', { file: 'settings.json' }), category: t('Preferences') },
     );
     ctx.commands.register(
       'preferences.openKeybindingsFile',
-      () => openConfigFile(ctx, 'keybindings.json', KEYBINDINGS_TEMPLATE),
-      { title: 'Ouvrir keybindings.json', category: 'Préférences' },
+      () => openConfigFile(ctx, 'keybindings.json', keybindingsTemplate()),
+      { title: t('Open {file}', { file: 'keybindings.json' }), category: t('Preferences') },
     );
     ctx.menus.registerItem('file', {
       command: 'preferences.openShortcuts',

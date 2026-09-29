@@ -1,5 +1,5 @@
 import { mount, tick, unmount } from 'svelte';
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { SearchModel } from './model.svelte';
 import SearchView from './SearchView.svelte';
 
@@ -13,16 +13,16 @@ export default defineExtension({
 
     ctx.panels.register({
       id: PANEL,
-      title: 'Rechercher',
+      title: t('Search'),
       side: 'left',
       actions: () => [
         {
-          label: 'Relancer la recherche',
+          label: t('Search again'),
           icon: 'M13 8a5 5 0 1 1-1.5-3.6M13 2.5V5h-2.5',
           run: () => void model.search(),
         },
         {
-          label: 'Tout replier',
+          label: t('Collapse all'),
           icon: 'M4 10l4-4 4 4',
           run: () => model.results.forEach((f) => model.collapsed.add(f.path)),
         },
@@ -48,13 +48,11 @@ export default defineExtension({
         }
         ctx.panels.show(PANEL);
         await tick();
-        const input = document.querySelector<HTMLInputElement>(
-          'input[aria-label="Rechercher dans les fichiers"]',
-        );
+        const input = document.querySelector<HTMLInputElement>('.search input.query');
         input?.focus();
         input?.select();
       },
-      { title: 'Rechercher dans les fichiers…', category: 'Édition' },
+      { title: t('Search in files…'), category: t('Edit') },
     );
     ctx.keybindings.register({ key: 'Ctrl+Shift+F', command: 'search.inFiles' });
     ctx.menus.registerItem('edit', { command: 'search.inFiles', group: '2_find', order: 10 });

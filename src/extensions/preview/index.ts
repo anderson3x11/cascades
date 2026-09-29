@@ -1,4 +1,4 @@
-import { defineExtension, type PreviewMode } from '../../api';
+import { defineExtension, t, type PreviewMode } from '../../api';
 
 /** Commands to show the preview of the active file beside the editor or alone. */
 export default defineExtension({
@@ -16,8 +16,8 @@ export default defineExtension({
       if (!ctx.viewers.previewFor(tab)) {
         ctx.banners.show({
           tabId: tab.id,
-          message: `Pas d’aperçu pour « ${tab.title} ».`,
-          actions: [{ label: 'OK', run: () => {} }],
+          message: t('No preview for "{file}".', { file: tab.title }),
+          actions: [{ label: t('OK'), run: () => {} }],
         });
         return;
       }
@@ -27,12 +27,12 @@ export default defineExtension({
     };
 
     ctx.commands.register('view.togglePreview', () => toggle('side'), {
-      title: 'Aperçu à côté',
-      category: 'Affichage',
+      title: t('Preview to the side'),
+      category: t('View'),
     });
     ctx.commands.register('view.togglePreviewFull', () => toggle('full'), {
-      title: 'Aperçu seul',
-      category: 'Affichage',
+      title: t('Preview alone'),
+      category: t('View'),
     });
     ctx.keybindings.register([
       { key: 'Ctrl+Shift+V', command: 'view.togglePreview' },

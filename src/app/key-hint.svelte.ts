@@ -1,6 +1,6 @@
 /** Keys typed so far in an unfinished sequence, and what can follow (the hint bar). */
 export class KeyHintModel {
-  /** Formatted keys typed so far, e.g. "Ctrl+Espace". Empty when no sequence is pending. */
+  /** Formatted keys typed so far, e.g. "Ctrl+Space". Empty when no sequence is pending. */
   typed = $state('');
   items = $state<{ key: string; title: string; prefix: boolean }[]>([]);
 

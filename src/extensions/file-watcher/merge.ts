@@ -3,6 +3,7 @@
  * are taken, and places where both sides changed the same lines differently
  * become conflicts.
  */
+import { t } from '../../api';
 
 export type MergeChunk =
   { kind: 'ok'; lines: string[] } | { kind: 'conflict'; mine: string[]; theirs: string[] };
@@ -102,9 +103,9 @@ export function merge3(base: string, mine: string, theirs: string): MergeChunk[]
   return chunks;
 }
 
-export const MARKER_MINE = '<<<<<<< ma version';
+export const markerMine = () => `<<<<<<< ${t('my version')}`;
 export const MARKER_SEPARATOR = '=======';
-export const MARKER_THEIRS = '>>>>>>> version du disque';
+export const markerTheirs = () => `>>>>>>> ${t('version on disk')}`;
 
 /** Merged text, with conflicts written between git-style markers. */
 export function renderMerge(chunks: readonly MergeChunk[]): { text: string; conflicts: number } {
@@ -115,7 +116,7 @@ export function renderMerge(chunks: readonly MergeChunk[]): { text: string; conf
       lines.push(...chunk.lines);
     } else {
       conflicts++;
-      lines.push(MARKER_MINE, ...chunk.mine, MARKER_SEPARATOR, ...chunk.theirs, MARKER_THEIRS);
+      lines.push(markerMine(), ...chunk.mine, MARKER_SEPARATOR, ...chunk.theirs, markerTheirs());
     }
   }
   return { text: lines.join('\n'), conflicts };

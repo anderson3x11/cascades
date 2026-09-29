@@ -26,6 +26,7 @@ import type { EventBus } from '../core/events/emitter';
 import { baseExtensions } from './editor-base';
 import { languageId, languageNames, loadLanguage, resolveLanguage } from './languages';
 import { Doc, Group, Tab } from './tab.svelte';
+import { t } from '../core/i18n/i18n';
 
 /** Most groups side by side; beyond that panes get too narrow to write in. */
 export const MAX_GROUPS = 4;
@@ -144,7 +145,9 @@ export class Workspace {
   open(options: OpenOptions, target?: GroupTarget): TabInfo {
     const active = this.activeGroupObject();
     const group = (target ? this.resolveTarget(active, target) : null) ?? active;
-    const untitled = options.path ? '' : (options.title ?? `Sans titre ${this.nextUntitled++}`);
+    const untitled = options.path
+      ? ''
+      : (options.title ?? t('Untitled {number}', { number: this.nextUntitled++ }));
     const doc = new Doc(`doc-${this.nextDoc++}`, Text.empty, untitled);
     doc.path = options.path;
     doc.encoding = options.encoding ?? 'utf-8';

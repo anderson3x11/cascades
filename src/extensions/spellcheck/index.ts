@@ -1,4 +1,4 @@
-import { defineExtension } from '../../api';
+import { defineExtension, t } from '../../api';
 import { spellChecker, SpellState } from './checker';
 import { languageChoices } from './languages';
 
@@ -14,13 +14,14 @@ export default defineExtension({
       enabled: {
         type: 'boolean',
         default: false,
-        description: 'Souligner les fautes d’orthographe (F7 pour activer ou désactiver).',
+        description: t('Underline spelling mistakes (F7 to turn on or off).'),
       },
       language: {
         type: 'string',
         default: 'fr',
-        description:
-          'Langue du correcteur : "fr", "en", "es"… (dictionnaires installés dans Windows).',
+        description: t(
+          'Language of the spell checker: "fr", "en", "es"… (dictionaries installed in Windows).',
+        ),
       },
     });
 
@@ -35,8 +36,8 @@ export default defineExtension({
             (message) =>
               ctx.banners.show({
                 kind: 'warning',
-                message: `Correcteur orthographique indisponible : ${message}.`,
-                actions: [{ label: 'OK', run: () => {} }],
+                message: t('Spell checker unavailable: {problem}.', { problem: message }),
+                actions: [{ label: t('OK'), run: () => {} }],
               }),
           )
         : [],
@@ -48,8 +49,8 @@ export default defineExtension({
       priority: 40,
       command: 'editor.chooseSpellLanguage',
     });
-    status.text = 'Orthographe';
-    status.tooltip = 'Correcteur orthographique actif : changer de langue ou le désactiver';
+    status.text = t('Spelling');
+    status.tooltip = t('Spell checker on: change its language or turn it off');
     const show = () => (status.visible = enabled());
     show();
 
@@ -66,7 +67,7 @@ export default defineExtension({
     ctx.commands.register(
       'editor.toggleSpellcheck',
       () => ctx.settings.update('spellcheck.enabled', enabled() ? undefined : true),
-      { title: 'Activer ou désactiver le correcteur orthographique', category: 'Texte' },
+      { title: t('Turn the spell checker on or off'), category: t('Text') },
     );
     ctx.keybindings.register({ key: 'F7', command: 'editor.toggleSpellcheck' });
 
@@ -80,14 +81,14 @@ export default defineExtension({
           ?.toLowerCase();
         const choice = await ctx.quickPick.show<string | null>(
           [
-            { label: 'Désactiver le correcteur', description: 'F7', value: null },
-            ...languageChoices(installed).map(({ tag, label }) => ({
+            { label: t('Turn off the spell checker'), description: 'F7', value: null },
+            ...languageChoices(installed, ctx.i18n.language()).map(({ tag, label }) => ({
               label,
-              description: tag === current ? 'actuelle' : '',
+              description: tag === current ? t('current') : '',
               value: tag,
             })),
           ],
-          { placeholder: 'Langue du correcteur orthographique' },
+          { placeholder: t('Language of the spell checker') },
         );
         if (choice === undefined) return;
         if (choice === null) await ctx.settings.update('spellcheck.enabled', undefined);
@@ -96,7 +97,7 @@ export default defineExtension({
           if (!enabled()) await ctx.settings.update('spellcheck.enabled', true);
         }
       },
-      { title: 'Langue du correcteur orthographique…', category: 'Texte' },
+      { title: t('Language of the spell checker…'), category: t('Text') },
     );
     ctx.menus.registerItem('text', {
       command: 'editor.chooseSpellLanguage',

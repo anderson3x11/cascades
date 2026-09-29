@@ -49,7 +49,7 @@ pub fn rename(from: &Path, to: &Path) -> io::Result<()> {
     if to.exists() && !same {
         return Err(io::Error::new(
             io::ErrorKind::AlreadyExists,
-            "un fichier ou dossier porte déjà ce nom",
+            "a file or folder already has this name",
         ));
     }
     fs::rename(from, to)

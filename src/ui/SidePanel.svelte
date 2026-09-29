@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PanelSide, PanelSpec } from '../api';
   import type { Workbench } from '../app/workbench';
+  import { t } from '../core/i18n/i18n';
 
   let { workbench, panel, side }: { workbench: Workbench; panel: PanelSpec; side: PanelSide } =
     $props();
@@ -42,8 +43,8 @@
     </span>
     <button
       class="close"
-      aria-label="Fermer le panneau"
-      title="Fermer"
+      aria-label={t('Close the panel')}
+      title={t('Close')}
       onclick={() => workbench.panels.hide(panel.id)}>×</button
     >
   </header>
