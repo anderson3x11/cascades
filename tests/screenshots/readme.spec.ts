@@ -40,7 +40,7 @@ const REVIEW = [
   '- [ ] All the endings',
 ].join('\n');
 
-async function setUp(page: Page, scheme: 'dark' | 'light') {
+async function setUp(page: Page, scheme: 'dark') {
   await page.emulateMedia({ colorScheme: scheme });
   await page.goto('/');
   await page.evaluate(
@@ -69,8 +69,8 @@ test('main window, dark', async ({ page }) => {
   await page.screenshot({ path: `${OUT}/cascades.png` });
 });
 
-test('Markdown preview, light', async ({ page }) => {
-  await setUp(page, 'light');
+test('Markdown preview, dark', async ({ page }) => {
+  await setUp(page, 'dark');
   await page.keyboard.press('Control+B');
   await page.evaluate(() =>
     (window as unknown as DevWindow).__cascades.commands.execute(
