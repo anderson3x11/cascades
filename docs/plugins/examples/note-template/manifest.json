@@ -1,0 +1,7 @@
+{
+  "id": "note-template",
+  "name": "Note templates",
+  "version": "1.0.0",
+  "author": "Cascades",
+  "description": "Inserts a ready-made note (day, meeting, idea) at the cursor. Leader N."
+}

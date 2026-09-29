@@ -302,6 +302,25 @@ pub async fn list_config_folder(app: AppHandle, folder: String) -> Result<Vec<St
 }
 
 #[tauri::command]
+pub async fn list_config_subfolders(app: AppHandle, folder: String) -> Result<Vec<String>, String> {
+    config::list_subfolders(&config::config_dir(&app)?, &folder)
+}
+
+/// Opens a subfolder of the config folder in the file manager, creating it if needed.
+#[tauri::command]
+pub async fn open_config_folder(app: AppHandle, folder: String) -> Result<(), String> {
+    use tauri_plugin_opener::OpenerExt;
+    if !config::valid_segment(&folder) {
+        return Err(format!("Invalid config folder name: {folder}"));
+    }
+    let path = config::config_dir(&app)?.join(&folder);
+    std::fs::create_dir_all(&path).map_err(|e| format!("{}: {e}", path.display()))?;
+    app.opener()
+        .open_path(path.to_string_lossy(), None::<&str>)
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub async fn write_config_file(
     app: AppHandle,
     name: String,

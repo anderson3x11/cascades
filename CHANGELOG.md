@@ -6,6 +6,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ### Ajouté
 
+- Plugins : un dossier `plugins/NOM` dans la config, avec un `manifest.json` (id, nom, version, auteur, permissions) et un module JS qui reçoit la même API `ctx` que les fonctionnalités internes. Page Extensions dans les Préférences pour les activer ou les désactiver sans redémarrer, avec avertissement de confiance et confirmation des permissions (`files` pour `ctx.fs`). Documentation dans `docs/plugins.md`, deux exemples : temps d'écriture et modèles de note.
 - Interface en anglais et en français : la langue du système par défaut, ou le réglage `workbench.language` (appliqué après un redémarrage de la fenêtre, session conservée). Les textes sont écrits en anglais dans le code, les traductions sont dans `src/locales` ; les plugins traduisent les leurs avec `ctx.i18n`. Un test vérifie que chaque texte a sa traduction française.
 - Logo : une chute d'eau stylisée (`docs/logo/cascades.svg`), décliné en icônes de l'application.
 - README en anglais (`README.md`) et en français (`README.fr.md`), avec des captures prises par `npm run screenshots`.

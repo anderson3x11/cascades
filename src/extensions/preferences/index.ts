@@ -48,6 +48,10 @@ export default defineExtension({
       title: t('Keyboard shortcuts…'),
       category: t('Preferences'),
     });
+    ctx.commands.register('preferences.openExtensions', () => open('extensions'), {
+      title: t('Extensions…'),
+      category: t('Preferences'),
+    });
     ctx.keybindings.register({ key: 'Ctrl+,', command: 'preferences.open' });
     ctx.menus.registerItem('file', {
       command: 'preferences.open',

@@ -1,9 +1,10 @@
 <script lang="ts" module>
-  export type PreferencesPage = 'settings' | 'shortcuts';
+  export type PreferencesPage = 'settings' | 'shortcuts' | 'extensions';
 </script>
 
 <script lang="ts">
   import type { ExtensionContext } from '../../api';
+  import ExtensionsPage from './ExtensionsPage.svelte';
   import SettingsPage from './SettingsPage.svelte';
   import ShortcutsPage from './ShortcutsPage.svelte';
   import { t } from '../../api';
@@ -22,6 +23,7 @@
   const pages: { id: PreferencesPage; label: string }[] = [
     { id: 'settings', label: t('Settings') },
     { id: 'shortcuts', label: t('Shortcuts') },
+    { id: 'extensions', label: t('Extensions') },
   ];
 </script>
 
@@ -34,8 +36,10 @@
 </nav>
 {#if page === 'settings'}
   <SettingsPage {ctx} openFile={() => runAndClose('preferences.openSettingsFile')} />
-{:else}
+{:else if page === 'shortcuts'}
   <ShortcutsPage {ctx} openFile={() => runAndClose('preferences.openKeybindingsFile')} />
+{:else}
+  <ExtensionsPage {ctx} />
 {/if}
 
 <style>

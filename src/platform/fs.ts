@@ -155,6 +155,24 @@ export async function listConfigFolder(folder: string): Promise<string[]> {
   return await invoke<string[]>('list_config_folder', { folder });
 }
 
+/** Folder names in a subfolder of the config folder ("plugins"). */
+export async function listConfigSubfolders(folder: string): Promise<string[]> {
+  if (!isTauri()) {
+    const prefix = `${STORAGE_PREFIX}${folder}/`;
+    const names = Object.keys(localStorage)
+      .filter((key) => key.startsWith(prefix) && key.slice(prefix.length).includes('/'))
+      .map((key) => key.slice(prefix.length).split('/')[0] ?? '');
+    return [...new Set(names)].sort();
+  }
+  return await invoke<string[]>('list_config_subfolders', { folder });
+}
+
+/** Opens a subfolder of the config folder in the file manager (desktop app only). */
+export async function openConfigFolder(folder: string): Promise<void> {
+  if (!isTauri()) return;
+  await invoke('open_config_folder', { folder });
+}
+
 /** Absolute path of a config file ("themes/nord.json"), with the OS separator. */
 export async function configFilePath(name: string): Promise<string> {
   // In the browser the files are in localStorage: a stand-in path identifies them.

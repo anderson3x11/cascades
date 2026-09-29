@@ -60,6 +60,7 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 - Masquer la barre de menus, les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
 - Une touche leader (Ctrl+Espace) pour plus de raccourcis, avec une barre qui montre la suite possible.
 - Tout est une commande, dans la palette de commandes (Ctrl+Shift+P). Un script `init.js` peut ajouter les vôtres.
+- Des plugins, activés et désactivés dans Préférences > Extensions. Voir [Écrire un plugin](docs/plugins.md) (en anglais).
 
 ![Le mode zen : seulement le texte, centré](docs/images/zen.png)
 
@@ -167,6 +168,10 @@ Un thème est un fichier JSON placé dans le sous-dossier `themes` du dossier de
 ```
 
 `themes/sepia.json` donne le thème `user.sepia` (Leader T pour le choisir), rechargé à chaque enregistrement. La liste des couleurs est dans [src/themes/default.css](src/themes/default.css).
+
+### Plugins
+
+Un plugin est un dossier dans le sous-dossier `plugins` du dossier de config, avec un `manifest.json` et un module JavaScript. On l'active dans Préférences > Extensions. Pour en écrire un : [docs/plugins.md](docs/plugins.md) (en anglais).
 
 ### init.js
 

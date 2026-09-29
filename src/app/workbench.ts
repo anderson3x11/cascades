@@ -31,6 +31,7 @@ import * as spell from '../platform/spell';
 import { watchDir, watchFile } from '../platform/watch';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
+import { PLUGINS_SETTING, PluginService } from './plugins';
 import { StatusBarModel } from './status-bar.svelte';
 import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
@@ -71,6 +72,9 @@ export class Workbench {
   readonly extensions = new ExtensionHost<ExtensionContext>((id, subs) =>
     this.createContext(id, subs),
   );
+  readonly plugins = new PluginService(this.extensions, this.settings, (key, value) =>
+    this.updateSetting(key, value),
+  );
   private readonly willQuit = new Set<() => void | Promise<void>>();
 
   /**
@@ -109,6 +113,13 @@ export class Workbench {
     });
 
     this.registerLanguageSetting();
+    this.settings.registerSchema('plugins', {
+      enabled: {
+        type: 'array',
+        default: [],
+        description: i18n.t('Plugins turned on, by id (Preferences > Extensions).'),
+      },
+    });
     // Hand edits of settings.json apply right away (our own writes change nothing).
     this.watchConfigFile(SETTINGS_FILE, () => void this.loadUserSettings());
 
@@ -122,6 +133,12 @@ export class Workbench {
     // After the defaults, so that user shortcuts take precedence.
     await this.loadUserKeybindings();
     this.watchConfigFile(KEYBINDINGS_FILE, () => void this.loadUserKeybindings());
+
+    // After the built-in extensions, which plugins may build on.
+    await this.plugins.reload();
+    this.settings.onDidChange.on(({ keys }) => {
+      if (keys.includes(PLUGINS_SETTING)) void this.plugins.sync();
+    });
 
     this.runWillQuitOnClose();
     if (isTauri()) {
@@ -411,6 +428,32 @@ export class Workbench {
     }
   }
 
+  /**
+   * The file functions for an extension: a plugin without the "files"
+   * permission gets functions that refuse. Plugins run inside the app, so this
+   * holds a plugin to what it declared; it is not a sandbox.
+   */
+  private guardFiles(extensionId: string, api: ExtensionContext['fs']): ExtensionContext['fs'] {
+    const permissions = this.plugins.permissionsOf(extensionId);
+    if (!permissions || permissions.includes('files')) return api;
+    const denied = () =>
+      new Error(
+        i18n.t('The plugin did not ask for the "{permission}" permission.', {
+          permission: 'files',
+        }),
+      );
+    // Asynchronous functions reject, as they would on any other failure.
+    const refuse = (name: string) =>
+      name === 'watch' || name === 'watchDir'
+        ? () => {
+            throw denied();
+          }
+        : () => Promise.reject(denied());
+    return Object.fromEntries(
+      Object.keys(api).map((name) => [name, refuse(name)]),
+    ) as unknown as ExtensionContext['fs'];
+  }
+
   private createContext(extensionId: string, subs: DisposableStore): ExtensionContext {
     const track = <T extends Disposable>(d: T): T => subs.add(d);
     const ws = this.workspace;
@@ -529,7 +572,7 @@ export class Workbench {
         parse: parseTheme,
       },
       events: { on: (name, listener) => track(this.events.on(name, listener)) },
-      fs: {
+      fs: this.guardFiles(extensionId, {
         readTextFile: fs.readTextFile,
         writeTextFile: fs.writeTextFile,
         watch: (path, listener) => track(watchFile(path, listener)),
@@ -545,7 +588,7 @@ export class Workbench {
         rename: fs.renamePath,
         trash: fs.trashPath,
         watchDir: (path, listener) => track(watchDir(path, listener)),
-      },
+      }),
       dialogs: {
         pickFilesToOpen: dialogs.pickFilesToOpen,
         pickFolder: dialogs.pickFolder,
@@ -594,6 +637,13 @@ export class Workbench {
       },
       contextMenu: {
         show: (position, items) => this.contextMenu.show(position, items),
+      },
+      plugins: {
+        list: () => this.plugins.list(),
+        setEnabled: (id, enabled) => this.plugins.setEnabled(id, enabled),
+        reload: () => this.plugins.reload(),
+        openFolder: () => fs.openConfigFolder('plugins'),
+        onDidChange: (listener) => track(this.plugins.onDidChange.on(listener)),
       },
       i18n: {
         t: i18n.t,

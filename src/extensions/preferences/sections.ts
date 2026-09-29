@@ -18,6 +18,7 @@ const sectionTitles = (): Record<string, string> => ({
   zen: t('Zen mode'),
   preview: t('Previews'),
   keyboard: t('Keyboard'),
+  plugins: t('Plugins'),
 });
 
 export type Setting = SettingSchema & { key: string };

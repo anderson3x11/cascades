@@ -481,6 +481,43 @@ export interface BannersApi {
   show(options: BannerOptions): Disposable;
 }
 
+// Plugins -------------------------------------------------------------------
+
+/**
+ * "files": the ctx.fs functions, which reach any file of the computer.
+ * Without it, they throw.
+ */
+export type PluginPermission = 'files';
+
+/** A plugin of the config folder, as read from its manifest.json. */
+export interface PluginInfo {
+  id: string;
+  name: string;
+  version: string;
+  author?: string;
+  description?: string;
+  permissions: PluginPermission[];
+  /** Folder name under plugins/. */
+  folder: string;
+  /** Listed in the plugins.enabled setting. */
+  enabled: boolean;
+  /** Running now. */
+  active: boolean;
+  /** Why the plugin could not be read or started. */
+  error: string | null;
+}
+
+export interface PluginsApi {
+  list(): PluginInfo[];
+  /** Turns a plugin on or off, right away, and remembers it in settings.json. */
+  setEnabled(id: string, enabled: boolean): Promise<void>;
+  /** Reads the plugin folders again (after adding or changing a plugin). */
+  reload(): Promise<void>;
+  /** Opens the plugins folder in the file manager. */
+  openFolder(): Promise<void>;
+  onDidChange(listener: () => void): Disposable;
+}
+
 // Translation ---------------------------------------------------------------
 
 export interface I18nApi {
@@ -733,6 +770,7 @@ export interface ExtensionContext {
   readonly configFiles: ConfigFilesApi;
   readonly app: AppApi;
   readonly i18n: I18nApi;
+  readonly plugins: PluginsApi;
 }
 
 export interface CascadesExtension {

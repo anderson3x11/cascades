@@ -60,6 +60,7 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 - Hide the menu bar, tabs or status bar; zen mode for writing full screen.
 - A leader key (Ctrl+Space) for more shortcuts, with a hint bar that shows what comes next.
 - Everything is a command, in the command palette (Ctrl+Shift+P). An `init.js` script can add your own.
+- Plugins, turned on and off in Preferences > Extensions. See [Writing a plugin](docs/plugins.md).
 
 ![Zen mode: only the text, centered](docs/images/zen.png)
 
@@ -167,6 +168,10 @@ A theme is a JSON file in the `themes` subfolder of the config folder. It sets t
 ```
 
 `themes/sepia.json` becomes the theme `user.sepia` (Leader T to pick it), reloaded as you save. The list of colors is in [src/themes/default.css](src/themes/default.css).
+
+### Plugins
+
+A plugin is a folder in the `plugins` subfolder of the config folder, with a `manifest.json` and a JavaScript module. Turn it on in Preferences > Extensions. How to write one: [docs/plugins.md](docs/plugins.md).
 
 ### init.js
 

@@ -1,0 +1,7 @@
+{
+  "id": "writing-time",
+  "name": "Writing time",
+  "version": "1.0.0",
+  "author": "Cascades",
+  "description": "Shows in the status bar how long you have been writing today."
+}

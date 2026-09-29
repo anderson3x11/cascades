@@ -23,6 +23,8 @@ pub fn run() {
             commands::read_config_file,
             commands::write_config_file,
             commands::list_config_folder,
+            commands::list_config_subfolders,
+            commands::open_config_folder,
             commands::cursor_unhide,
             commands::cursor_restore,
             commands::allow_asset_dir,

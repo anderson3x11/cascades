@@ -21,15 +21,15 @@ fn portable_dir() -> Option<PathBuf> {
         .then(|| exe_dir.join("config"))
 }
 
-fn valid_segment(segment: &str) -> bool {
+pub fn valid_segment(segment: &str) -> bool {
     !segment.is_empty() && !segment.contains(['/', '\\', ':']) && segment != "." && segment != ".."
 }
 
-/// A file of the config folder: "settings.json" or one level down, "themes/nord.json".
-/// Nothing outside the config folder can be named.
+/// A file of the config folder: "settings.json", "themes/nord.json" or two levels
+/// down, "plugins/word-count/main.js". Nothing outside the config folder can be named.
 pub fn config_file(dir: &Path, name: &str) -> Result<PathBuf, String> {
     let segments: Vec<&str> = name.split('/').collect();
-    if segments.len() > 2 || !segments.iter().all(|s| valid_segment(s)) {
+    if segments.len() > 3 || !segments.iter().all(|s| valid_segment(s)) {
         return Err(format!("Invalid config file name: {name}"));
     }
     Ok(segments
@@ -40,6 +40,15 @@ pub fn config_file(dir: &Path, name: &str) -> Result<PathBuf, String> {
 /// Names of the files in a subfolder of the config folder ("themes"), sorted.
 /// An absent folder is empty.
 pub fn list_folder(dir: &Path, folder: &str) -> Result<Vec<String>, String> {
+    list_entries(dir, folder, false)
+}
+
+/// Names of the folders in a subfolder of the config folder ("plugins"), sorted.
+pub fn list_subfolders(dir: &Path, folder: &str) -> Result<Vec<String>, String> {
+    list_entries(dir, folder, true)
+}
+
+fn list_entries(dir: &Path, folder: &str, folders: bool) -> Result<Vec<String>, String> {
     if !valid_segment(folder) {
         return Err(format!("Invalid config folder name: {folder}"));
     }
@@ -50,7 +59,10 @@ pub fn list_folder(dir: &Path, folder: &str) -> Result<Vec<String>, String> {
     };
     let mut names: Vec<String> = entries
         .filter_map(Result::ok)
-        .filter(|e| e.file_type().is_ok_and(|t| t.is_file()))
+        .filter(|e| {
+            e.file_type()
+                .is_ok_and(|t| if folders { t.is_dir() } else { t.is_file() })
+        })
         .filter_map(|e| e.file_name().into_string().ok())
         .collect();
     names.sort();
@@ -93,6 +105,15 @@ mod tests {
     }
 
     #[test]
+    fn accepts_two_subfolders() {
+        let dir = Path::new("cfg");
+        assert_eq!(
+            config_file(dir, "plugins/clock/main.js").unwrap(),
+            dir.join("plugins").join("clock").join("main.js")
+        );
+    }
+
+    #[test]
     fn accepts_one_subfolder() {
         let dir = Path::new("cfg");
         assert_eq!(
@@ -109,7 +130,7 @@ mod tests {
             "..",
             "../secret",
             "a/../b",
-            "a/b/c",
+            "a/b/c/d",
             "a\\b",
             "C:x",
             "/abs",
@@ -127,6 +148,7 @@ mod tests {
         write_atomic(&dir.join("themes").join("a.json"), b"{}").unwrap();
         std::fs::create_dir_all(dir.join("themes").join("sub")).unwrap();
         assert_eq!(list_folder(&dir, "themes").unwrap(), ["a.json", "b.json"]);
+        assert_eq!(list_subfolders(&dir, "themes").unwrap(), ["sub"]);
         assert!(list_folder(&dir, "..").is_err());
         std::fs::remove_dir_all(&dir).unwrap();
     }
