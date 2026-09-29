@@ -54,6 +54,10 @@ Un éditeur de texte léger pensé pour la prise de notes, qui reste capable d'o
 | Insérer la date                                 | Ctrl+;                                    |
 | MAJUSCULES / minuscules                         | Ctrl+Shift+U / Ctrl+U                     |
 | Majuscule À Chaque Mot / en début de phrase     | Leader U / Leader Shift+U                 |
+| Sélectionner la ligne / retirer la dernière     | Ctrl+L / Ctrl+Shift+L                     |
+| Sélectionner la cascade ou le paragraphe        | Leader L                                  |
+| Aller à la ligne                                | Ctrl+G                                    |
+| Signet : poser / suivant / précédent            | Ctrl+F2 / F2 / Shift+F2                   |
 | Ajouter un dossier / Panneau de gauche          | Ctrl+Shift+O / Ctrl+B                     |
 | Rechercher dans les fichiers                    | Ctrl+Shift+F                              |
 | Ouverture rapide (onglets, fichiers récents)    | Ctrl+P / Leader O                         |

@@ -7,7 +7,13 @@ test.beforeEach(async ({ page }) => {
 
 test('the menu bar lists menus contributed by extensions', async ({ page }) => {
   const bar = page.getByRole('menubar');
-  await expect(bar.getByRole('menuitem')).toHaveText(['Fichier', 'Édition', 'Texte', 'Affichage']);
+  await expect(bar.getByRole('menuitem')).toHaveText([
+    'Fichier',
+    'Édition',
+    'Texte',
+    'Aller',
+    'Affichage',
+  ]);
 });
 
 test('a menu shows items with their shortcut and runs the command', async ({ page }) => {
