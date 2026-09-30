@@ -1,4 +1,7 @@
-<img src="docs/logo/cascades.svg" alt="" width="96">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo/cascades-mark-white.svg">
+  <img src="docs/logo/cascades-mark.svg" alt="" width="80">
+</picture>
 
 # Cascades
 

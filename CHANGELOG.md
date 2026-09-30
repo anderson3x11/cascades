@@ -4,6 +4,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+### Modifié
+
+- Nouveau logo : un seul trait qui descend deux marches, en blanc sur fond presque noir (`docs/logo/cascades.svg`), décliné en icônes de l'application.
+
 ## [1.0.0] - 2026-09-29
 
 Première version stable.
