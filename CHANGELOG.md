@@ -4,9 +4,15 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-05
+
 ### Modifié
 
 - Nouveau logo : un seul trait qui descend deux marches, en blanc sur fond presque noir (`docs/logo/cascades.svg`), décliné en icônes de l'application.
+
+### Corrigé
+
+- Ctrl+A sélectionnait toute l'interface quand l'éditeur n'avait pas le focus (au démarrage, après un clic sur un onglet…). Il sélectionne maintenant le texte de l'éditeur, et garde son rôle dans les champs de saisie.
 
 ## [1.0.0] - 2026-09-29
 
