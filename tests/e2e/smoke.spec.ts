@@ -92,3 +92,26 @@ test('editor commands run through the command registry', async ({ page }) => {
   await page.keyboard.press('Shift+Alt+ArrowDown');
   expect(await lines(page)).toEqual(['ligne', 'ligne']);
 });
+
+test('Ctrl+A selects the text, not the interface, when the editor lost the focus', async ({
+  page,
+}) => {
+  await page.locator('.cm-content').click();
+  await page.keyboard.type('un\ndeux');
+  await page.locator('footer').click();
+  await expect(page.locator('.cm-content')).not.toBeFocused();
+
+  await page.keyboard.press('Control+A');
+  await expect(page.locator('.cm-content')).toBeFocused();
+  await page.keyboard.type('remplacé');
+  expect(await lines(page)).toEqual(['remplacé']);
+
+  // A text field keeps Ctrl+A for its own text.
+  await page.keyboard.press('Control+F');
+  const field = page.locator('.cm-search').getByPlaceholder('Rechercher');
+  await field.fill('abc');
+  await page.keyboard.press('Control+A');
+  await page.keyboard.type('x');
+  await expect(field).toHaveValue('x');
+  expect(await lines(page)).toEqual(['remplacé']);
+});

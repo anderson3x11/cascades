@@ -108,6 +108,16 @@ export class Workbench {
       const target = event.target as Element | null;
       if (!target?.closest('input, textarea, [contenteditable="true"]')) event.preventDefault();
     });
+    // A text field outside the editor keeps keys like Ctrl+A for itself.
+    window.addEventListener('focusin', (event) => {
+      const target = event.target as Element;
+      this.contextKeys.set(
+        'inputFocus',
+        target.matches('input, textarea, [contenteditable="true"]') &&
+          !target.closest('.cm-content'),
+      );
+    });
+    window.addEventListener('focusout', () => this.contextKeys.set('inputFocus', false));
     this.events.on('workspace.didChangeActive', (tab) =>
       this.contextKeys.set('editorLangId', tab?.language),
     );

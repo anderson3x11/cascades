@@ -26,7 +26,8 @@ export const DEFAULT_KEYBINDINGS: KeybindingSpec[] = [
   { key: 'Mod+Shift+Z', command: 'editor.redo', when: EDITOR },
   // Registered last so menus show it as the main shortcut.
   { key: 'Mod+Y', command: 'editor.redo', when: EDITOR },
-  { key: 'Mod+A', command: 'editor.selectAll', when: EDITOR },
+  // Anywhere but a text field: the focus goes back to the editor (on start, after a click on a tab…).
+  { key: 'Mod+A', command: 'editor.selectAll', when: '!inputFocus' },
   { key: 'Shift+Alt+Down', command: 'editor.duplicateLine', when: EDITOR },
   { key: 'Alt+Up', command: 'editor.moveLineUp', when: EDITOR },
   { key: 'Alt+Down', command: 'editor.moveLineDown', when: EDITOR },
