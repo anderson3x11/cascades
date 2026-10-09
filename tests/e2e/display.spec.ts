@@ -67,3 +67,23 @@ test('the Font menu lists the default font and closes on a second click', async 
   await button.click();
   await expect(page.getByRole('menu')).toBeHidden();
 });
+
+test('the Display panel unfolds the menus in place and switches light and dark', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await page.getByRole('tab', { name: 'Affichage', exact: true }).click();
+  const panel = page.getByRole('complementary', { name: 'Affichage' });
+
+  await panel.getByRole('button', { name: /Options/ }).click();
+  await panel.getByRole('menuitemcheckbox', { name: 'Afficher les fins de ligne' }).click();
+  await expect(page.locator('.cm-marker-eol')).toHaveCount(1);
+  await expect(
+    panel.getByRole('menuitemcheckbox', { name: 'Afficher les fins de ligne' }),
+  ).toHaveAttribute('aria-checked', 'true');
+
+  await panel.getByRole('button', { name: 'Clair', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme-type', 'dark');
+  await expect(panel.getByRole('button', { name: 'Sombre', exact: true })).toBeVisible();
+});

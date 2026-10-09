@@ -1,13 +1,16 @@
 import { Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { mount, unmount } from 'svelte';
 import { defineExtension, t, type ContextMenuItem } from '../../api';
+import DisplayView from './DisplayView.svelte';
 import { firstFamily, installedFonts } from './fonts';
 import { markers } from './markers';
 
+// Lucide icons (lucide.dev, ISC license), on their 24×24 grid.
 const EYE_ICON =
-  'M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8s-2.4 4.5-6.5 4.5S1.5 8 1.5 8zM8 6.2a1.8 1.8 0 1 0 0 3.6 1.8 1.8 0 0 0 0-3.6z';
-const FONT_ICON =
-  'M1.5 12.5l3.2-9 3.2 9M2.6 9.5h4.2M13.8 7.8v4.7M13.8 10.2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z';
+  'M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z';
+const OPTIONS_ICON = 'M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4';
+const FONT_ICON = 'M4 7V4h16v3M9 20h6M12 4v16';
 
 /** Toggles of the Display menu that are plain editor settings. */
 const toggles = (): [command: string, setting: string, title: string][] => [
@@ -89,7 +92,8 @@ export default defineExtension({
       id: 'display',
       alignment: 'center',
       priority: 30,
-      icon: EYE_ICON,
+      icon: OPTIONS_ICON,
+      label: t('Options'),
       menu: () => {
         const check = (command: string, label: string, checked: boolean): ContextMenuItem => ({
           label,
@@ -123,6 +127,7 @@ export default defineExtension({
       alignment: 'center',
       priority: 20,
       icon: FONT_ICON,
+      label: t('Font'),
       menu: () => {
         const current = ctx.settings.get<string>('editor.fontFamily');
         const preview = (css: string | null) => () => {
@@ -161,6 +166,20 @@ export default defineExtension({
       },
     });
     font.tooltip = t('Font of the editor');
+
+    // The Display family of the side panel: these menus unfold in place, then the View commands.
+    ctx.panels.register({
+      id: 'display',
+      title: t('Display'),
+      side: 'left',
+      icon: EYE_ICON,
+      order: 50,
+      menus: ['view'],
+      render(host) {
+        const view = mount(DisplayView, { target: host, props: { ctx } });
+        return { dispose: () => void unmount(view) };
+      },
+    });
     const updateFont = () => {
       font.text = firstFamily(ctx.settings.get<string>('editor.fontFamily'));
     };

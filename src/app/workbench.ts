@@ -1,7 +1,13 @@
 import { isTauri } from '@tauri-apps/api/core';
 import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { getCurrentWindow } from '@tauri-apps/api/window';
-import type { AppEvents, CascadesExtension, ExtensionContext, UpdateInfo } from '../api';
+import type {
+  AppEvents,
+  CascadesExtension,
+  ExtensionContext,
+  StatusMenu,
+  UpdateInfo,
+} from '../api';
 import { CommandRegistry } from '../core/commands/registry';
 import { ContextKeys } from '../core/context/context-keys';
 import { DisposableStore, type Disposable } from '../core/disposable';
@@ -35,7 +41,7 @@ import * as updater from '../platform/updater';
 import { BannerModel } from './banners.svelte';
 import { loadUserScript } from './user-script';
 import { PLUGINS_SETTING, PluginService } from './plugins';
-import { StatusBarModel } from './status-bar.svelte';
+import { StatusBarModel, type StatusBarItem } from './status-bar.svelte';
 import { highlightCode } from './highlight-code';
 import { KeyHintModel } from './key-hint.svelte';
 import { LayoutModel } from './layout.svelte';
@@ -592,7 +598,13 @@ export class Workbench {
         },
         highlightCode,
       },
-      statusBar: { addItem: (options) => track(this.statusBar.addItem(options)) },
+      statusBar: {
+        addItem: (options) => track(this.statusBar.addItem(options)),
+        menus: () =>
+          this.statusBar.items.filter(
+            (item): item is StatusBarItem & { menu: () => StatusMenu } => item.menu !== undefined,
+          ),
+      },
       banners: { show: (options) => track(this.banners.show(options)) },
       quickPick: { show: (items, options) => this.quickPick.show(items, options) },
       layout: {

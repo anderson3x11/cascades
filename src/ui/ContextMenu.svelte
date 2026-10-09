@@ -81,8 +81,8 @@
           }}
         >
           {#if checks}
-            <svg class="check" class:on={item.checked} viewBox="0 0 16 16" aria-hidden="true"
-              ><path d="M3.5 8.5l3 3 6-7" /></svg
+            <svg class="check" class:on={item.checked} viewBox="0 0 24 24" aria-hidden="true"
+              ><path d="M20 6L9 17l-5-5" /></svg
             >
           {/if}
           <span class="label" style:font-family={item.font}>{item.label}</span>
@@ -158,7 +158,7 @@
     stroke: var(--accent);
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 1.8;
+    stroke-width: 2.5;
     visibility: hidden;
   }
 

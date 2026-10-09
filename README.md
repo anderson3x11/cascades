@@ -69,7 +69,7 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 
 ![The Preferences window](docs/images/preferences.png)
 
-- A quiet interface: the tabs share the title bar, the menus open from one button (or Alt), and the status bar has Display, Font and Theme menus that preview as you hover.
+- A quiet interface: only the tabs and the text. The menu button (or Alt) opens a side panel with one icon per family: Folders, File, Edit, Search, Display, Settings. The Display family unfolds its options in place, and the status bar has Display, Font and Theme menus that preview as you hover.
 - Fourteen themes (Light, Dark, High contrast, Solarized light and dark, Nord, Gruvbox, Catppuccin Latte and Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) and your own; the system's light or dark mode is followed by default.
 - Show spaces, tabs and line ends; pick the editor font among the ones installed.
 - A Preferences window (Ctrl+,) for every setting and every shortcut: type the new keys to change one.
@@ -254,4 +254,4 @@ cd src-tauri && cargo test && cargo clippy && cargo fmt --check
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Icons from [Lucide](https://lucide.dev) (ISC license).

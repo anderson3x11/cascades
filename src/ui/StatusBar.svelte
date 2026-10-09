@@ -45,7 +45,7 @@
       aria-haspopup={item.menu ? 'menu' : undefined}
       onclick={(e) => activate(item, e.currentTarget)}
     >
-      {#if item.icon}<svg viewBox="0 0 16 16" aria-hidden="true"><path d={item.icon} /></svg>{/if}
+      {#if item.icon}<svg viewBox="0 0 24 24" aria-hidden="true"><path d={item.icon} /></svg>{/if}
       {item.text}
     </button>
   {:else}
@@ -129,6 +129,6 @@
     stroke: currentColor;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 1.3;
+    stroke-width: 2;
   }
 </style>

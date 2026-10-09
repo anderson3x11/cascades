@@ -94,7 +94,7 @@ export default defineExtension({
       title: t('Check for updates…'),
       category: t('File'),
     });
-    ctx.menus.registerItem('file', {
+    ctx.menus.registerItem('settings', {
       command: 'app.checkForUpdates',
       group: '8_preferences',
       order: 5,

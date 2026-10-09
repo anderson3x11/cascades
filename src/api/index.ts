@@ -292,8 +292,20 @@ export interface StatusItemOptions {
   command?: string;
   /** Menu opened above the item on click, built when it opens. */
   menu?: () => StatusMenu;
-  /** Stroke icon drawn before the text: the "d" of an SVG path in a 16×16 box. */
+  /** Stroke icon drawn before the text: the "d" of an SVG path on a 24×24 grid, 2 px stroke (Lucide icons fit). */
   icon?: string;
+  /** Name of the menu where it is listed outside the status bar (the Display panel). */
+  label?: string;
+}
+
+/** A status bar item that opens a menu, as listed by `ctx.statusBar.menus()`. */
+export interface StatusMenuItem {
+  readonly id: string;
+  readonly label: string;
+  readonly icon: string | undefined;
+  /** What the status bar shows: the current value (font, theme…). */
+  readonly text: string;
+  menu(): StatusMenu;
 }
 
 export interface StatusMenu {
@@ -310,6 +322,8 @@ export interface StatusItem extends Disposable {
 
 export interface StatusBarApi {
   addItem(options: StatusItemOptions): StatusItem;
+  /** Items with a menu, in status bar order. */
+  menus(): StatusMenuItem[];
 }
 
 // Layout --------------------------------------------------------------------
@@ -386,10 +400,20 @@ export interface PanelSpec {
   title: string;
   /** Right by default. The panels of one side are shown one at a time, as tabs on the left. */
   side?: PanelSide;
+  /**
+   * Icon of the panel in the row at the top of the side, the "d" of an SVG
+   * path on a 24×24 grid, 2 px stroke (Lucide icons fit). Panels without one
+   * are listed by their title.
+   */
+  icon?: string;
+  /** Position among the panels of its side, lower first (Folders 10, File 20, Edit 30…). */
+  order?: number;
   /** Buttons in the panel header. Called again when the state it reads changes. */
   actions?: () => PanelAction[];
   /** Builds the panel content in `host` when it is shown; disposed when hidden. */
-  render(host: HTMLElement): Disposable;
+  render?(host: HTMLElement): Disposable;
+  /** Menus (by id) listed under the content, as commands with their shortcut. */
+  menus?: string[];
 }
 
 export interface PanelAction {

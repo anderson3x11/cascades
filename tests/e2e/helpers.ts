@@ -9,8 +9,14 @@ import type { fakeFs } from '../../src/platform/fake-fs';
  */
 export type DevWindow = Window & { __cascades: Workbench; __cascadesFs: typeof fakeFs };
 
-/** Opens a menu from the menu button: by default the menus have no bar. */
+/** Family of the side panel holding each menu's commands. */
+const FAMILIES: Record<string, string> = { Texte: 'Édition', Aller: 'Rechercher' };
+
+/** Shows a menu's commands: the menu button opens the side panel, then its family. */
 export async function openMenu(page: Page, name: string): Promise<void> {
-  await page.getByRole('button', { name: 'Menu', exact: true }).click();
-  await page.getByRole('menuitem', { name, exact: true }).click();
+  const families = page.getByRole('tablist', { name: 'Panneaux' });
+  if (!(await families.isVisible())) {
+    await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  }
+  await families.getByRole('tab', { name: FAMILIES[name] ?? name, exact: true }).click();
 }

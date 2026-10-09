@@ -15,6 +15,9 @@ export default defineExtension({
       id: PANEL,
       title: t('Search'),
       side: 'left',
+      icon: 'M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM21 21l-4.3-4.3',
+      order: 40,
+      menus: ['go'],
       actions: () => [
         {
           label: t('Search again'),

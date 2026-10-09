@@ -36,6 +36,14 @@ export default defineExtension({
   id: 'cascades.editor-commands',
   activate(ctx) {
     ctx.menus.registerMenu({ id: 'edit', title: t('Edit'), order: 20 });
+    ctx.panels.register({
+      id: 'edit',
+      title: t('Edit'),
+      side: 'left',
+      icon: 'M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497zM15 5l4 4',
+      order: 30,
+      menus: ['edit', 'text'],
+    });
     ctx.editor.addExtension(() => findCount);
     for (const [order, [id, title, run, group]] of commands().entries()) {
       ctx.menus.registerItem('edit', { command: id, group, order });

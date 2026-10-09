@@ -52,7 +52,21 @@ export default defineExtension({
       category: t('Preferences'),
     });
     ctx.keybindings.register({ key: 'Mod+,', command: 'preferences.open' });
-    ctx.menus.registerItem('file', {
+    ctx.menus.registerMenu({ id: 'settings', title: t('Settings'), order: 40 });
+    ctx.panels.register({
+      id: 'settings',
+      title: t('Settings'),
+      side: 'left',
+      icon: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+      order: 60,
+      menus: ['settings'],
+    });
+    ctx.menus.registerItem('settings', {
+      command: 'preferences.openExtensions',
+      group: '8_preferences',
+      order: 0.7,
+    });
+    ctx.menus.registerItem('settings', {
       command: 'preferences.open',
       group: '8_preferences',
       order: 0,
@@ -68,17 +82,17 @@ export default defineExtension({
       () => openConfigFile(ctx, 'keybindings.json', keybindingsTemplate()),
       { title: t('Open {file}', { file: 'keybindings.json' }), category: t('Preferences') },
     );
-    ctx.menus.registerItem('file', {
+    ctx.menus.registerItem('settings', {
       command: 'preferences.openShortcuts',
       group: '8_preferences',
       order: 0.5,
     });
-    ctx.menus.registerItem('file', {
+    ctx.menus.registerItem('settings', {
       command: 'preferences.openSettingsFile',
       group: '8_preferences',
       order: 1,
     });
-    ctx.menus.registerItem('file', {
+    ctx.menus.registerItem('settings', {
       command: 'preferences.openKeybindingsFile',
       group: '8_preferences',
       order: 2,

@@ -18,9 +18,11 @@ export class PanelModel {
     });
   }
 
-  /** Panels of one side, in registration order. */
+  /** Panels of one side, by order then registration order. */
   of(side: PanelSide): PanelSpec[] {
-    return this.specs.filter((p) => sideOf(p) === side);
+    return this.specs
+      .filter((p) => sideOf(p) === side)
+      .sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   }
 
   current(side: PanelSide): PanelSpec | null {

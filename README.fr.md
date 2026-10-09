@@ -69,7 +69,7 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 ![La fenêtre Préférences](docs/images/preferences.png)
 
-- Une interface discrète : les onglets partagent la barre de titre, les menus s'ouvrent d'un bouton (ou Alt), et la barre d'état propose les menus Affichage, Police et Thème, avec aperçu au survol.
+- Une interface épurée : juste les onglets et le texte. Le bouton menu (ou Alt) ouvre un panneau latéral avec une icône par famille : Dossiers, Fichier, Édition, Rechercher, Affichage, Réglages. La famille Affichage déplie ses options sur place, et la barre d'état propose les menus Affichage, Police et Thème, avec aperçu au survol.
 - Quatorze thèmes (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox, Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) et les vôtres ; le mode clair ou sombre du système est suivi par défaut.
 - Afficher les espaces, tabulations et fins de ligne ; choisir la police de l'éditeur parmi celles installées.
 - Une fenêtre Préférences (Ctrl+,) pour chaque réglage et chaque raccourci : taper la nouvelle combinaison pour en changer un.
@@ -254,4 +254,4 @@ cd src-tauri && cargo test && cargo clippy && cargo fmt --check
 
 ## Licence
 
-[MIT](LICENSE)
+[MIT](LICENSE). Icônes de [Lucide](https://lucide.dev) (licence ISC).

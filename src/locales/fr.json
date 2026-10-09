@@ -533,5 +533,9 @@
   "Menu (Alt)": "Menu (Alt)",
   "Minimize": "Réduire",
   "Restore": "Restaurer",
-  "Maximize": "Agrandir"
+  "Maximize": "Agrandir",
+  "Options": "Options",
+  "Font": "Police",
+  "Switch between light and dark": "Basculer entre clair et sombre",
+  "Panels": "Panneaux"
 }

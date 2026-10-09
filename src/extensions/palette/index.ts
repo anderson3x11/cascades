@@ -25,7 +25,7 @@ export default defineExtension({
       { key: 'Mod+Shift+P', command: 'workbench.commandPalette' },
       { key: 'Leader P', command: 'workbench.commandPalette' },
     ]);
-    ctx.menus.registerItem('view', {
+    ctx.menus.registerItem('settings', {
       command: 'workbench.commandPalette',
       group: '0_palette',
       order: 0,

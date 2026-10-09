@@ -8,7 +8,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 - Refonte du design, inspirée de Word-Smith : l'interface prend le fond de l'éditeur, sans bandeaux ni bordures, avec un seul accent violet, un curseur coloré et des menus aux coins arrondis. Palette claire légèrement chaude, palette sombre adoucie.
 - Les onglets montent dans la barre de titre, avec les boutons réduire, agrandir et fermer (macOS garde ses boutons). En vues scindées, chaque vue garde ses onglets.
-- Plus de barre de menus par défaut : un bouton à gauche des onglets ouvre les menus, Alt aussi. Le réglage `workbench.showMenuBar` (Leader M) remet la barre classique.
+- Plus de barre de menus par défaut : le bouton à gauche des onglets (ou Alt) ouvre le panneau latéral, avec une icône par famille (Dossiers, Fichier, Édition, Rechercher, Affichage, Réglages). Chaque famille liste ses commandes avec leur raccourci ; Affichage déplie ses options sur place (options, police, thème, clair ou sombre). Le réglage `workbench.showMenuBar` (Leader M) remet la barre classique, avec un nouveau menu Réglages.
+- Petite séparation entre les onglets. Icônes [Lucide](https://lucide.dev) (licence ISC).
 - Barre d'état : boutons Affichage, Police et Thème au centre, qui ouvrent un menu au-dessus. Le thème et la police s'essaient au survol, Échap annule.
 
 ### Ajouté
@@ -17,7 +18,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Choix de la police de l'éditeur parmi les polices installées, depuis la barre d'état.
 - Commandes pour le retour à la ligne (Alt+Z) et les numéros de ligne.
 - Sept thèmes : Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light.
-- Pour les plugins : `ctx.statusBar.addItem` accepte `alignment: 'center'`, une icône et un menu ; les menus contextuels ont des coches, des titres et un aperçu ; `ctx.panels.isSideVisible`.
+- Commande « Basculer entre clair et sombre ».
+- Pour les plugins : `ctx.statusBar.addItem` accepte `alignment: 'center'`, une icône, un nom et un menu, listés par `ctx.statusBar.menus()` ; les panneaux ont une icône, un ordre et des menus listés comme commandes (`render` devient facultatif) ; les menus contextuels ont des coches, des titres et un aperçu ; `ctx.panels.isSideVisible`.
 
 ## [1.0.1] - 2026-10-05
 

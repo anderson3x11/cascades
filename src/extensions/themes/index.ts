@@ -45,7 +45,8 @@ export default defineExtension({
       id: 'theme',
       alignment: 'center',
       priority: 10,
-      icon: 'M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM8 1.5v13M8 4.5h4.6M8 8h6.5M8 11.5h4.6',
+      label: t('Theme'),
+      icon: 'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8zM13.5 6.5h.01M17.5 10.5h.01M8.5 7.5h.01M6.5 12.5h.01',
       menu: () => {
         const current = ctx.settings.get<string>('workbench.theme');
         const items = choices();
@@ -188,6 +189,17 @@ export default defineExtension({
       order: 1,
     });
     ctx.keybindings.register({ key: 'Leader T', command: 'view.selectTheme' });
+
+    ctx.commands.register(
+      'view.toggleLightDark',
+      () => {
+        const dark = ctx.themes.current()?.type === 'dark';
+        return choose(
+          ctx.settings.get<string>(dark ? 'workbench.themeLight' : 'workbench.themeDark'),
+        );
+      },
+      { title: t('Switch between light and dark'), category: t('View') },
+    );
 
     await scan();
   },

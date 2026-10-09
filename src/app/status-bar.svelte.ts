@@ -7,6 +7,7 @@ export class StatusBarItem implements StatusItem {
   readonly command: string | undefined;
   readonly menu: (() => StatusMenu) | undefined;
   readonly icon: string | undefined;
+  readonly label: string;
   text = $state('');
   tooltip = $state('');
   visible = $state(true);
@@ -21,6 +22,7 @@ export class StatusBarItem implements StatusItem {
     this.command = options.command;
     this.menu = options.menu;
     this.icon = options.icon;
+    this.label = options.label ?? options.id;
   }
 
   dispose(): void {

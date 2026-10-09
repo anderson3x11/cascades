@@ -605,6 +605,13 @@
         "keysMac": []
       },
       {
+        "id": "view.toggleLightDark",
+        "title": "Switch between light and dark",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "view.selectTheme",
         "title": "Theme…",
         "category": "View",
@@ -1096,6 +1103,13 @@
         "category": "Affichage",
         "keys": ["Leader Shift+V"],
         "keysMac": ["Leader ⇧V"]
+      },
+      {
+        "id": "view.toggleLightDark",
+        "title": "Basculer entre clair et sombre",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
       },
       {
         "id": "editor.changeLanguage",

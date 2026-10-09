@@ -353,6 +353,26 @@
     white-space: nowrap;
   }
 
+  /* A thin line between tabs, hidden next to the active or hovered one. */
+  .tab + .tab::before {
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: -2px;
+    width: 1px;
+    background: var(--ui-fg);
+    content: '';
+    opacity: 0.35;
+  }
+
+  .tab.active::before,
+  .tab:hover::before,
+  .tab.dragging::before,
+  .tab.active + .tab::before,
+  .tab:hover + .tab::before {
+    opacity: 0;
+  }
+
   .title {
     overflow: hidden;
     text-overflow: ellipsis;
