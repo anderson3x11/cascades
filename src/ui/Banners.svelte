@@ -38,9 +38,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 6px 12px;
+    margin: 4px 8px;
+    padding: 6px 8px 6px 14px;
+    border-radius: 10px;
     background: var(--banner-bg);
-    border-bottom: 1px solid var(--ui-border);
     color: var(--fg);
   }
 
@@ -55,9 +56,9 @@
   }
 
   button {
-    padding: 3px 10px;
+    padding: 4px 12px;
     border: 1px solid var(--ui-border);
-    border-radius: 4px;
+    border-radius: 6px;
     background: var(--bg);
     color: var(--fg);
     font: inherit;
@@ -65,9 +66,9 @@
   }
 
   button:first-child {
-    background: var(--menu-active-bg);
-    border-color: var(--menu-active-bg);
-    color: var(--menu-active-fg);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
   }
 
   button:hover {

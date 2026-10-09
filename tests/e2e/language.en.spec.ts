@@ -6,6 +6,7 @@ test.use({ locale: 'en-US' });
 test('an English system gets the English interface', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('tab', { selected: true })).toHaveText('Untitled 1');
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await expect(page.getByRole('menubar')).toContainText('File');
   await expect(page.getByRole('menubar')).toContainText('Edit');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');

@@ -486,6 +486,13 @@
         "keysMac": ["Leader J"]
       },
       {
+        "id": "view.toggleLineNumbers",
+        "title": "Line numbers",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "view.moveToNextGroup",
         "title": "Move to the next view",
         "category": "View",
@@ -535,6 +542,13 @@
         "keysMac": ["⌘0"]
       },
       {
+        "id": "view.toggleLineEnds",
+        "title": "Show line ends",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "cascades.toggle",
         "title": "Show or hide cascades",
         "category": "View",
@@ -577,6 +591,20 @@
         "keysMac": ["Leader Tab"]
       },
       {
+        "id": "view.toggleSpaces",
+        "title": "Show spaces",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.toggleTabCharacters",
+        "title": "Show tabs",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "view.selectTheme",
         "title": "Theme…",
         "category": "View",
@@ -589,6 +617,13 @@
         "category": "View",
         "keys": ["Leader Shift+S", "Leader \\"],
         "keysMac": ["Leader ⇧S", "Leader \\"]
+      },
+      {
+        "id": "view.toggleWordWrap",
+        "title": "Word wrap",
+        "category": "View",
+        "keys": ["Alt+Z"],
+        "keysMac": ["⌥Z"]
       },
       {
         "id": "view.toggleZen",
@@ -715,6 +750,24 @@
         "type": "boolean",
         "default": true,
         "description": "Show line numbers."
+      },
+      {
+        "key": "editor.showLineEnds",
+        "type": "boolean",
+        "default": false,
+        "description": "Show the end of each line with a ¬ mark."
+      },
+      {
+        "key": "editor.showSpaces",
+        "type": "boolean",
+        "default": false,
+        "description": "Show spaces as dots."
+      },
+      {
+        "key": "editor.showTabs",
+        "type": "boolean",
+        "default": false,
+        "description": "Show tabs as arrows."
       },
       {
         "key": "editor.tabSize",
@@ -889,8 +942,8 @@
       {
         "key": "workbench.showMenuBar",
         "type": "boolean",
-        "default": true,
-        "description": "Show the menu bar."
+        "default": false,
+        "description": "Show the menus as a bar instead of a menu button."
       },
       {
         "key": "workbench.showStatusBar",
@@ -932,6 +985,27 @@
   },
   "fr": {
     "commands": [
+      {
+        "id": "view.toggleSpaces",
+        "title": "Afficher les espaces",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.toggleLineEnds",
+        "title": "Afficher les fins de ligne",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
+        "id": "view.toggleTabCharacters",
+        "title": "Afficher les tabulations",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
       {
         "id": "view.toggleStatusBar",
         "title": "Afficher ou masquer la barre d’état",
@@ -1059,6 +1133,13 @@
         "keysMac": ["Leader Z"]
       },
       {
+        "id": "view.toggleLineNumbers",
+        "title": "Numéros de ligne",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "workbench.commandPalette",
         "title": "Palette de commandes…",
         "category": "Affichage",
@@ -1085,6 +1166,13 @@
         "category": "Affichage",
         "keys": ["Ctrl+-"],
         "keysMac": ["⌘-"]
+      },
+      {
+        "id": "view.toggleWordWrap",
+        "title": "Retour à la ligne",
+        "category": "Affichage",
+        "keys": ["Alt+Z"],
+        "keysMac": ["⌥Z"]
       },
       {
         "id": "view.joinGroups",
@@ -1647,6 +1735,24 @@
         "description": "Afficher les numéros de ligne."
       },
       {
+        "key": "editor.showLineEnds",
+        "type": "boolean",
+        "default": false,
+        "description": "Marquer la fin de chaque ligne d’un signe ¬."
+      },
+      {
+        "key": "editor.showSpaces",
+        "type": "boolean",
+        "default": false,
+        "description": "Afficher les espaces par des points."
+      },
+      {
+        "key": "editor.showTabs",
+        "type": "boolean",
+        "default": false,
+        "description": "Afficher les tabulations par des flèches."
+      },
+      {
         "key": "editor.tabSize",
         "type": "number",
         "default": 4,
@@ -1819,8 +1925,8 @@
       {
         "key": "workbench.showMenuBar",
         "type": "boolean",
-        "default": true,
-        "description": "Afficher la barre de menus."
+        "default": false,
+        "description": "Afficher les menus dans une barre plutôt que derrière un bouton."
       },
       {
         "key": "workbench.showStatusBar",

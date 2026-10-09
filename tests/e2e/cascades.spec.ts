@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { DevWindow } from './helpers';
+import { openMenu } from './helpers';
 
 const NOTES = ['Elden Ring', '\tCombat', '\t\tBoss', '\tArt', 'Hollow Knight', '\tAmbiance'].join(
   '\n',
@@ -75,7 +76,7 @@ test('Leader C hides and shows the cascades, and the choice is saved', async ({ 
 
 test('the style picker previews and saves a style', async ({ page }) => {
   await open(page, 'C:/n/notes.txt', NOTES);
-  await page.getByRole('menuitem', { name: 'Affichage' }).click();
+  await openMenu(page, 'Affichage');
   await page.getByRole('menuitem', { name: /Style des cascades/ }).click();
   await page.keyboard.type('points');
   // Previewed right away: bullets instead of arrowheads.

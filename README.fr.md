@@ -69,10 +69,12 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 ![La fenêtre Préférences](docs/images/preferences.png)
 
-- Sept thèmes (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox) et les vôtres ; le mode clair ou sombre du système est suivi par défaut.
+- Une interface discrète : les onglets partagent la barre de titre, les menus s'ouvrent d'un bouton (ou Alt), et la barre d'état propose les menus Affichage, Police et Thème, avec aperçu au survol.
+- Quatorze thèmes (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox, Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) et les vôtres ; le mode clair ou sombre du système est suivi par défaut.
+- Afficher les espaces, tabulations et fins de ligne ; choisir la police de l'éditeur parmi celles installées.
 - Une fenêtre Préférences (Ctrl+,) pour chaque réglage et chaque raccourci : taper la nouvelle combinaison pour en changer un.
 - `settings.json` et `keybindings.json` (format VS Code) avec complétion et vérification des erreurs, rechargés à l'enregistrement.
-- Masquer la barre de menus, les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
+- Afficher une barre de menus classique, masquer les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
 - Une touche leader (Ctrl+Espace) pour plus de raccourcis, avec une barre qui montre la suite possible.
 - Tout est une commande, dans la palette de commandes (Ctrl+Shift+P). Un script `init.js` peut ajouter les vôtres.
 - Des plugins, activés et désactivés dans Préférences > Extensions. Voir [Écrire un plugin](docs/plugins.md) (en anglais).
@@ -81,41 +83,42 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 ## Raccourcis
 
-| Action                                          | Raccourci                                 |
-| ----------------------------------------------- | ----------------------------------------- |
-| Nouveau / Ouvrir / Enregistrer                  | Ctrl+N / Ctrl+O / Ctrl+S                  |
-| Enregistrer sous                                | Ctrl+Shift+S                              |
-| Fermer l'onglet / Rouvrir le dernier fermé      | Ctrl+W / Ctrl+Shift+T                     |
-| Onglet suivant / précédent                      | Ctrl+Tab / Ctrl+Shift+Tab                 |
-| Ouverture rapide                                | Ctrl+P / Leader O                         |
-| Palette de commandes                            | Ctrl+Shift+P / Leader P                   |
-| Préférences                                     | Ctrl+,                                    |
-| Rechercher / Remplacer                          | Ctrl+F / Ctrl+H                           |
-| Rechercher dans les fichiers                    | Ctrl+Shift+F                              |
-| Ajouter un dossier / Panneau de gauche          | Ctrl+Shift+O / Ctrl+B                     |
-| Aller à la ligne                                | Ctrl+G                                    |
-| Signet : poser / suivant / précédent            | Ctrl+F2 / F2 / Shift+F2                   |
-| Sélectionner la ligne / retirer la dernière     | Ctrl+L / Ctrl+Shift+L                     |
-| Sélectionner la cascade ou le paragraphe        | Leader L                                  |
-| MAJUSCULES / minuscules                         | Ctrl+Shift+U / Ctrl+U                     |
-| Majuscule À Chaque Mot / en début de phrase     | Leader U / Leader Shift+U                 |
-| Dupliquer / Déplacer la ligne                   | Shift+Alt+Bas / Alt+Haut, Alt+Bas         |
-| Supprimer la ligne                              | Ctrl+Shift+K                              |
-| Commenter                                       | Ctrl+/ (Ctrl+: en AZERTY)                 |
-| Ajouter l'occurrence suivante                   | Ctrl+D                                    |
-| Cocher / décocher une tâche                     | Ctrl+Entrée                               |
-| Insérer la date                                 | Ctrl+;                                    |
-| Correcteur orthographique (marche / arrêt)      | F7                                        |
-| Aperçu à côté / seul                            | Ctrl+Shift+V ou Leader V / Leader Shift+V |
-| Cloner dans la vue suivante                     | Ctrl+\ ou Leader S                        |
-| Déplacer vers la vue suivante / précédente      | Ctrl+Alt+→ / Ctrl+Alt+←                   |
-| Aller à la vue 1 à 4 / réunir toutes les vues   | Ctrl+1 … Ctrl+4 / Leader J                |
-| Afficher / masquer les cascades, celle du bloc  | Leader C / Leader Shift+C                 |
-| Mettre en quarantaine / panneau de quarantaine  | Leader Q / Leader Shift+Q                 |
-| Thème                                           | Leader T                                  |
-| Zoom                                            | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
-| Mode zen (Échap pour sortir)                    | Leader Z                                  |
-| Afficher / masquer menus, onglets, barre d'état | Leader M / Leader Tab / Leader B          |
+| Action                                         | Raccourci                                 |
+| ---------------------------------------------- | ----------------------------------------- |
+| Nouveau / Ouvrir / Enregistrer                 | Ctrl+N / Ctrl+O / Ctrl+S                  |
+| Enregistrer sous                               | Ctrl+Shift+S                              |
+| Fermer l'onglet / Rouvrir le dernier fermé     | Ctrl+W / Ctrl+Shift+T                     |
+| Onglet suivant / précédent                     | Ctrl+Tab / Ctrl+Shift+Tab                 |
+| Ouverture rapide                               | Ctrl+P / Leader O                         |
+| Palette de commandes                           | Ctrl+Shift+P / Leader P                   |
+| Préférences                                    | Ctrl+,                                    |
+| Rechercher / Remplacer                         | Ctrl+F / Ctrl+H                           |
+| Rechercher dans les fichiers                   | Ctrl+Shift+F                              |
+| Ajouter un dossier / Panneau de gauche         | Ctrl+Shift+O / Ctrl+B                     |
+| Aller à la ligne                               | Ctrl+G                                    |
+| Signet : poser / suivant / précédent           | Ctrl+F2 / F2 / Shift+F2                   |
+| Sélectionner la ligne / retirer la dernière    | Ctrl+L / Ctrl+Shift+L                     |
+| Sélectionner la cascade ou le paragraphe       | Leader L                                  |
+| MAJUSCULES / minuscules                        | Ctrl+Shift+U / Ctrl+U                     |
+| Majuscule À Chaque Mot / en début de phrase    | Leader U / Leader Shift+U                 |
+| Dupliquer / Déplacer la ligne                  | Shift+Alt+Bas / Alt+Haut, Alt+Bas         |
+| Supprimer la ligne                             | Ctrl+Shift+K                              |
+| Commenter                                      | Ctrl+/ (Ctrl+: en AZERTY)                 |
+| Ajouter l'occurrence suivante                  | Ctrl+D                                    |
+| Cocher / décocher une tâche                    | Ctrl+Entrée                               |
+| Insérer la date                                | Ctrl+;                                    |
+| Correcteur orthographique (marche / arrêt)     | F7                                        |
+| Aperçu à côté / seul                           | Ctrl+Shift+V ou Leader V / Leader Shift+V |
+| Cloner dans la vue suivante                    | Ctrl+\ ou Leader S                        |
+| Déplacer vers la vue suivante / précédente     | Ctrl+Alt+→ / Ctrl+Alt+←                   |
+| Aller à la vue 1 à 4 / réunir toutes les vues  | Ctrl+1 … Ctrl+4 / Leader J                |
+| Afficher / masquer les cascades, celle du bloc | Leader C / Leader Shift+C                 |
+| Mettre en quarantaine / panneau de quarantaine | Leader Q / Leader Shift+Q                 |
+| Thème                                          | Leader T                                  |
+| Zoom                                           | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
+| Mode zen (Échap pour sortir)                   | Leader Z                                  |
+| Retour à la ligne                              | Alt+Z                                     |
+| Menus / barre de menus, onglets, barre d'état  | Alt / Leader M / Leader Tab / Leader B    |
 
 **Leader** est la touche leader, **Ctrl+Espace** par défaut (réglage `keyboard.leader`) : on l'appuie, puis la touche suivante. Une barre en bas de la fenêtre affiche alors les touches possibles.
 

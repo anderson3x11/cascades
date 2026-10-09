@@ -1,10 +1,12 @@
-import type { StatusItem, StatusItemOptions } from '../api';
+import type { StatusItem, StatusItemOptions, StatusMenu } from '../api';
 
 export class StatusBarItem implements StatusItem {
   readonly id: string;
-  readonly alignment: 'left' | 'right';
+  readonly alignment: 'left' | 'center' | 'right';
   readonly priority: number;
   readonly command: string | undefined;
+  readonly menu: (() => StatusMenu) | undefined;
+  readonly icon: string | undefined;
   text = $state('');
   tooltip = $state('');
   visible = $state(true);
@@ -17,6 +19,8 @@ export class StatusBarItem implements StatusItem {
     this.alignment = options.alignment;
     this.priority = options.priority ?? 0;
     this.command = options.command;
+    this.menu = options.menu;
+    this.icon = options.icon;
   }
 
   dispose(): void {

@@ -26,7 +26,7 @@
     display: flex;
     align-items: baseline;
     gap: 16px;
-    padding: 6px 12px;
+    padding: 8px 14px;
     background: var(--ui-bg);
     border-top: 1px solid var(--ui-border);
     color: var(--ui-fg);

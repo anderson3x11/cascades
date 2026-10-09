@@ -31,7 +31,7 @@ test('a forced theme applies its colors and wins over the system mode', async ({
   // Back to auto: the Nord colors are removed.
   await setSettings(page, {});
   await expect(page.locator('html')).toHaveAttribute('data-theme-type', 'light');
-  expect(await cssVar(page, '--bg')).toBe('#ffffff');
+  expect(await cssVar(page, '--bg')).toBe('#fcfbf8');
 });
 
 test('user themes from the config folder can be selected', async ({ page }) => {

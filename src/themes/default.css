@@ -8,31 +8,35 @@
 :root {
   color-scheme: light;
 
-  /* Surfaces and text */
-  --bg: #ffffff;
-  --fg: #1f2328;
-  --ui-bg: #f6f8fa;
-  --ui-fg: #59636e;
-  --ui-border: #d1d9e0;
-  --ui-hover: #e6eaef;
-  --accent: #0969da;
-  --menu-bg: #ffffff;
-  --menu-shadow: 0 8px 24px rgb(140 149 159 / 0.3);
-  --menu-active-bg: #0969da;
-  --menu-active-fg: #ffffff;
-  --banner-bg: #ddf4ff;
-  --banner-warning-bg: #fff8c5;
+  /* Surfaces and text. The interface sits on the editor's background, so
+     a theme that only sets --bg gets a matching chrome. */
+  --bg: #fcfbf8;
+  --fg: #2b2a27;
+  --ui-bg: var(--bg);
+  --ui-fg: #8c8981;
+  --ui-border: #ebe8e1;
+  --ui-hover: #f1eee8;
+  --accent: #7c5cf5;
+  /* Text on the accent color (primary buttons). */
+  --accent-fg: #ffffff;
+  --caret: #e5484d;
+  --menu-bg: var(--bg);
+  --menu-shadow: 0 1px 2px rgb(40 35 25 / 0.06), 0 8px 28px rgb(40 35 25 / 0.12);
+  --menu-active-bg: var(--ui-hover);
+  --menu-active-fg: var(--fg);
+  --banner-bg: #f1edfe;
+  --banner-warning-bg: #fdf3d7;
 
   /* Editor */
-  --active-line: rgb(0 0 0 / 0.035);
-  --selection: rgb(9 105 218 / 0.2);
+  --active-line: rgb(60 50 30 / 0.035);
+  --selection: rgb(124 92 245 / 0.18);
   --match: rgb(255 223 93 / 0.5);
   --match-selected: rgb(255 170 50 / 0.6);
   /* Lines changed since the last save, in the margin. */
   --change-added: #2da44e;
   --change-modified: #d4a72c;
   --change-deleted: #cf222e;
-  --bracket-match: rgb(9 105 218 / 0.15);
+  --bracket-match: rgb(124 92 245 / 0.15);
   --conflict-marker-bg: rgb(140 149 159 / 0.15);
   --conflict-mine-bg: rgb(26 127 55 / 0.12);
   --conflict-theirs-bg: rgb(9 105 218 / 0.12);
@@ -45,8 +49,8 @@
   --cascade-4: #d0955a;
   --cascade-5: #4fa7a7;
   --cascade-6: #cc7aa1;
-  --cascade-active: #0969da;
-  --cascade-parent-bg: rgb(9 105 218 / 0.07);
+  --cascade-active: #7c5cf5;
+  --cascade-parent-bg: rgb(124 92 245 / 0.07);
 
   /* Syntax */
   --syn-keyword: #cf222e;
@@ -75,28 +79,27 @@
 :root[data-theme-type='dark'] {
   color-scheme: dark;
 
-  --bg: #1e1f22;
-  --fg: #d4d4d4;
-  --ui-bg: #2b2d30;
-  --ui-fg: #a1a1aa;
-  --ui-border: #3f3f46;
-  --ui-hover: #3a3d42;
-  --accent: #60a5fa;
-  --menu-bg: #2b2d30;
-  --menu-shadow: 0 8px 24px rgb(0 0 0 / 0.5);
-  --menu-active-bg: #2f5fb3;
-  --menu-active-fg: #ffffff;
-  --banner-bg: #1c2b3d;
-  --banner-warning-bg: #3a3220;
+  --bg: #1c1c1f;
+  --fg: #d9d8d4;
+  --ui-fg: #85848c;
+  --ui-border: #2e2e33;
+  --ui-hover: #28282d;
+  --accent: #a48bfa;
+  --accent-fg: #17151f;
+  --caret: #ff6b81;
+  --menu-bg: #222226;
+  --menu-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 32px rgb(0 0 0 / 0.45);
+  --banner-bg: #26223a;
+  --banner-warning-bg: #352e1c;
 
-  --active-line: rgb(255 255 255 / 0.04);
-  --selection: rgb(96 165 250 / 0.3);
+  --active-line: rgb(255 255 255 / 0.035);
+  --selection: rgb(164 139 250 / 0.28);
   --match: rgb(187 128 9 / 0.4);
   --match-selected: rgb(255 170 50 / 0.45);
   --change-added: #3fb950;
   --change-modified: #d29922;
   --change-deleted: #f85149;
-  --bracket-match: rgb(96 165 250 / 0.25);
+  --bracket-match: rgb(164 139 250 / 0.25);
   --conflict-marker-bg: rgb(139 148 158 / 0.15);
   --conflict-mine-bg: rgb(63 185 80 / 0.15);
   --conflict-theirs-bg: rgb(88 166 255 / 0.15);
@@ -108,8 +111,8 @@
   --cascade-4: #a87a4a;
   --cascade-5: #438888;
   --cascade-6: #a5647f;
-  --cascade-active: #79b8ff;
-  --cascade-parent-bg: rgb(121 184 255 / 0.08);
+  --cascade-active: #b9a4ff;
+  --cascade-parent-bg: rgb(164 139 250 / 0.08);
 
   --syn-keyword: #ff7b72;
   --syn-operator: #ff7b72;

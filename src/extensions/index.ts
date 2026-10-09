@@ -4,6 +4,7 @@ import cascades from './cascades';
 import changeMarkers from './change-markers';
 import conflicts from './conflicts';
 import defaultKeybindings from './default-keybindings';
+import display from './display';
 import editorCommands from './editor-commands';
 import editorSettings from './editor-settings';
 import encoding from './encoding';
@@ -40,6 +41,7 @@ export const builtinExtensions: CascadesExtension[] = [
   themes,
   layout,
   editorSettings,
+  display,
   indentKeep,
   autoPairs,
   links,

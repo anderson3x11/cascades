@@ -15,7 +15,8 @@
         "title": "Cascades",
         "width": 1100,
         "height": 750,
-        "resizable": true
+        "resizable": true,
+        "decorations": false
       }
     ],
     "security": {

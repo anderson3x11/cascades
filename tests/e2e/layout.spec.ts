@@ -9,30 +9,30 @@ test.beforeEach(async ({ page }) => {
 test('zen mode hides every bar and Escape brings them back', async ({ page }) => {
   await page.keyboard.press('Control+Space');
   await page.keyboard.press('Z');
-  await expect(page.getByRole('menubar')).toBeHidden();
+  await expect(page.locator('.titlebar')).toBeHidden();
   await expect(page.getByRole('tablist')).toBeHidden();
   await expect(page.locator('footer')).toBeHidden();
   await expect(page.locator('main.zen')).toBeVisible();
 
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('menubar')).toBeVisible();
+  await expect(page.locator('.titlebar')).toBeVisible();
   await expect(page.getByRole('tablist')).toBeVisible();
   await expect(page.locator('footer')).toBeVisible();
 });
 
-test('a hidden menu bar comes back with its shortcut, and the choice is saved', async ({
-  page,
-}) => {
-  await page.getByRole('menuitem', { name: 'Affichage' }).click();
-  await page.getByRole('menuitem', { name: /masquer la barre de menus/ }).click();
+test('the menu bar can replace the menu button, and the choice is saved', async ({ page }) => {
   await expect(page.getByRole('menubar')).toBeHidden();
-  const saved = await page.evaluate(() => localStorage.getItem('cascades-config:settings.json'));
-  expect(JSON.parse(saved ?? '{}')).toEqual({ 'workbench.showMenuBar': false });
-
-  await page.locator('.cm-content').click();
   await page.keyboard.press('Control+Space');
   await page.keyboard.press('M');
   await expect(page.getByRole('menubar')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Menu', exact: true })).toBeHidden();
+  const saved = await page.evaluate(() => localStorage.getItem('cascades-config:settings.json'));
+  expect(JSON.parse(saved ?? '{}')).toEqual({ 'workbench.showMenuBar': true });
+
+  await page.getByRole('menuitem', { name: 'Affichage', exact: true }).click();
+  await page.getByRole('menuitem', { name: /masquer la barre de menus/ }).click();
+  await expect(page.getByRole('menubar')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Menu', exact: true })).toBeVisible();
 });
 
 test('the interface font size setting applies', async ({ page }) => {

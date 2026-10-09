@@ -93,8 +93,8 @@
   max-width: 260px;
   padding: 4px 8px;
   border-radius: 4px;
-  background: var(--menu-active-bg);
-  color: var(--menu-active-fg);
+  background: var(--accent);
+  color: var(--accent-fg);
   font-family: var(--font-editor);
   font-size: 12px;
   white-space: nowrap;

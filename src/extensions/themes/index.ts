@@ -39,7 +39,33 @@ export default defineExtension({
       const id = pickTheme(get('theme'), osDark.matches, get('themeLight'), get('themeDark'));
       // An unknown id (deleted user theme, typo) falls back to the base palette.
       if (!ctx.themes.apply(id)) ctx.themes.apply(osDark.matches ? 'dark' : 'light');
+      status.text = ctx.themes.current()?.name ?? '';
     };
+    const status = ctx.statusBar.addItem({
+      id: 'theme',
+      alignment: 'center',
+      priority: 10,
+      icon: 'M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM8 1.5v13M8 4.5h4.6M8 8h6.5M8 11.5h4.6',
+      menu: () => {
+        const current = ctx.settings.get<string>('workbench.theme');
+        const items = choices();
+        const auto = items[0];
+        return {
+          items: [...(auto ? [auto, 'separator' as const] : []), ...items.slice(1)].map((item) =>
+            item === 'separator'
+              ? item
+              : {
+                  label: item.label,
+                  checked: item.value === current,
+                  preview: () => preview(item.value),
+                  run: () => void choose(item.value),
+                },
+          ),
+          onCancel: select,
+        };
+      },
+    });
+    status.tooltip = t('Theme');
     osDark.addEventListener('change', select);
     ctx.subscriptions.add({ dispose: () => osDark.removeEventListener('change', select) });
     ctx.settings.onDidChange(({ keys }) => {
@@ -104,50 +130,55 @@ export default defineExtension({
       category: t('View'),
     });
 
+    /** "Automatic" then every theme, for the picker and the status bar menu. */
+    const choices = () => {
+      const types = { light: t('light'), dark: t('dark') };
+      return [
+        {
+          label: t('Automatic'),
+          description: t('follows the mode of the system'),
+          value: 'auto',
+        },
+        ...ctx.themes.list().map((theme) => {
+          const type = theme.name.toLowerCase() === types[theme.type] ? '' : types[theme.type];
+          const user = theme.id.startsWith('user.') ? t('custom') : '';
+          return {
+            label: theme.name,
+            description: [type, user].filter(Boolean).join(', '),
+            value: theme.id,
+          };
+        }),
+      ];
+    };
+    const preview = (id: string) => {
+      if (id === 'auto') select();
+      else ctx.themes.apply(id);
+    };
+    const choose = async (id: string) => {
+      try {
+        await ctx.settings.update('workbench.theme', id === 'auto' ? undefined : id);
+      } catch (err) {
+        select();
+        ctx.banners.show({
+          kind: 'warning',
+          message: err instanceof Error ? err.message : String(err),
+          actions: [{ label: 'OK', run: () => {} }],
+        });
+      }
+    };
+
     // Picker with live preview: highlighting a theme applies it, cancelling restores.
     ctx.commands.register(
       'view.selectTheme',
       async () => {
         await scan();
-        const types = { light: t('light'), dark: t('dark') };
-        const items = [
-          {
-            label: t('Automatic'),
-            description: t('follows the mode of the system'),
-            value: 'auto',
-          },
-          ...ctx.themes.list().map((theme) => {
-            const type = theme.name.toLowerCase() === types[theme.type] ? '' : types[theme.type];
-            const user = theme.id.startsWith('user.') ? t('custom') : '';
-            return {
-              label: theme.name,
-              description: [type, user].filter(Boolean).join(', '),
-              value: theme.id,
-            };
-          }),
-        ];
-        const chosen = await ctx.quickPick.show(items, {
+        const chosen = await ctx.quickPick.show(choices(), {
           placeholder: t('Choose a theme'),
           activeValue: ctx.settings.get<string>('workbench.theme'),
-          onHighlight: (item) => {
-            if (item.value === 'auto') select();
-            else ctx.themes.apply(item.value);
-          },
+          onHighlight: (item) => preview(item.value),
         });
-        if (chosen === undefined) {
-          select();
-          return;
-        }
-        try {
-          await ctx.settings.update('workbench.theme', chosen === 'auto' ? undefined : chosen);
-        } catch (err) {
-          select();
-          ctx.banners.show({
-            kind: 'warning',
-            message: err instanceof Error ? err.message : String(err),
-            actions: [{ label: 'OK', run: () => {} }],
-          });
-        }
+        if (chosen === undefined) select();
+        else await choose(chosen);
       },
       { title: t('Theme…'), category: t('View') },
     );

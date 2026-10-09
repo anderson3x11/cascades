@@ -13,7 +13,11 @@ export default defineExtension({
   id: 'cascades.layout',
   activate(ctx) {
     ctx.settings.register('workbench', {
-      showMenuBar: { type: 'boolean', default: true, description: t('Show the menu bar.') },
+      showMenuBar: {
+        type: 'boolean',
+        default: false,
+        description: t('Show the menus as a bar instead of a menu button.'),
+      },
       showTabs: { type: 'boolean', default: true, description: t('Show the tabs.') },
       showStatusBar: { type: 'boolean', default: true, description: t('Show the status bar.') },
       fontFamily: {
@@ -74,11 +78,15 @@ export default defineExtension({
       const id = `view.toggle${part[0]?.toUpperCase()}${part.slice(1)}`;
       ctx.commands.register(
         id,
-        () =>
-          ctx.settings.update(
-            `workbench.${setting}`,
-            ctx.layout.isVisible(part) ? false : undefined,
-          ),
+        () => {
+          // Written only when it differs from the default, which keeps settings.json short.
+          const key = `workbench.${setting}`;
+          const next = !ctx.layout.isVisible(part);
+          return ctx.settings.update(
+            key,
+            next === ctx.settings.inspect(key).defaultValue ? undefined : next,
+          );
+        },
         { title, category: t('View') },
       );
       ctx.menus.registerItem('view', { command: id, group: '4_layout', order: 1 });

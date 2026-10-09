@@ -284,11 +284,22 @@ export interface EditorApi {
 
 export interface StatusItemOptions {
   id: string;
-  alignment: 'left' | 'right';
+  /** The middle holds the buttons that open a menu (Display, Font, Theme). */
+  alignment: 'left' | 'center' | 'right';
   /** Higher comes first. */
   priority?: number;
   /** Command run on click. */
   command?: string;
+  /** Menu opened above the item on click, built when it opens. */
+  menu?: () => StatusMenu;
+  /** Stroke icon drawn before the text: the "d" of an SVG path in a 16×16 box. */
+  icon?: string;
+}
+
+export interface StatusMenu {
+  items: ContextMenuItem[];
+  /** Called when the menu closes without a choice, to undo the previews. */
+  onCancel?: () => void;
 }
 
 export interface StatusItem extends Disposable {
@@ -397,6 +408,8 @@ export interface PanelsApi {
   isVisible(id: string): boolean;
   /** Hides a side, or shows the panel it showed last. */
   toggleSide(side: PanelSide): void;
+  /** A panel is shown on that side. */
+  isSideVisible(side: PanelSide): boolean;
 }
 
 // Spelling --------------------------------------------------------------------
@@ -417,11 +430,38 @@ export interface SpellingApi {
 // Context menu ----------------------------------------------------------------
 
 export type ContextMenuItem =
-  { label: string; run: () => void; disabled?: boolean; shortcut?: string } | 'separator';
+  | {
+      label: string;
+      run: () => void;
+      disabled?: boolean;
+      shortcut?: string;
+      /** Draws a check mark; items of a menu with checks keep a column for them. */
+      checked?: boolean;
+      /** Called when the item is highlighted, to show the choice before it is made. */
+      preview?: () => void;
+      /** CSS font the label is drawn in (font menus). */
+      font?: string;
+    }
+  | 'separator'
+  /** A small title over the items that follow. */
+  | { heading: string };
+
+export interface ContextMenuOptions {
+  /** Called when the menu closes without a choice. */
+  onCancel?: () => void;
+  /** The menu opens above the point instead of below it. */
+  above?: boolean;
+  /** The button that opened the menu: pressing it is not a click outside, it can close the menu itself. */
+  anchor?: Element;
+}
 
 export interface ContextMenuApi {
   /** Shows a right-click menu at a point of the window (usually the mouse event's clientX/Y). */
-  show(position: { x: number; y: number }, items: ContextMenuItem[]): void;
+  show(
+    position: { x: number; y: number },
+    items: ContextMenuItem[],
+    options?: ContextMenuOptions,
+  ): void;
 }
 
 // Modals ----------------------------------------------------------------------

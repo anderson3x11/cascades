@@ -3,6 +3,9 @@ import type { DevWindow } from './helpers';
 
 const groups = (page: Page) => page.locator('section.group');
 const group = (page: Page, n: number) => groups(page).nth(n);
+/** Tab bar of a view: in the title bar while there is a single view. */
+const tabBar = (page: Page, n: number) =>
+  page.locator('.titlebar .tabbar, section.group .tabbar').nth(n);
 const linesOf = (page: Page, n: number) => group(page, n).locator('.cm-line').allTextContents();
 
 async function open(page: Page, path: string, text: string) {
@@ -27,7 +30,7 @@ test.beforeEach(async ({ page }) => {
 test('Ctrl+\\ shows the same document in a second view, kept in sync', async ({ page }) => {
   await page.keyboard.press('Control+\\');
   await expect(groups(page)).toHaveCount(2);
-  await expect(group(page, 1).getByRole('tab', { selected: true })).toContainText('review.txt');
+  await expect(tabBar(page, 1).getByRole('tab', { selected: true })).toContainText('review.txt');
 
   // Typing in the clone shows up in the first view, and both are unsaved.
   await group(page, 1).locator('.cm-line').last().click();
@@ -63,37 +66,37 @@ test('tabs move between views, and an emptied view goes away', async ({ page }) 
   await open(page, 'C:/notes/courses.txt', 'lait');
   await page.keyboard.press('Control+Alt+ArrowRight');
   await expect(groups(page)).toHaveCount(2);
-  await expect(group(page, 0).getByRole('tab')).toHaveText(['review.txt']);
-  await expect(group(page, 1).getByRole('tab')).toHaveText(['courses.txt']);
+  await expect(tabBar(page, 0).getByRole('tab')).toHaveText(['review.txt']);
+  await expect(tabBar(page, 1).getByRole('tab')).toHaveText(['courses.txt']);
 
   // Ctrl+1 / Ctrl+2 switch views.
   await page.keyboard.press('Control+1');
-  await expect(group(page, 0).locator('.tabbar')).toHaveClass(/focused/);
+  await expect(tabBar(page, 0)).toHaveClass(/focused/);
   await page.keyboard.press('Control+2');
-  await expect(group(page, 1).locator('.tabbar')).toHaveClass(/focused/);
+  await expect(tabBar(page, 1)).toHaveClass(/focused/);
 
   await page.keyboard.press('Control+Alt+ArrowLeft');
   await expect(groups(page)).toHaveCount(1);
-  await expect(group(page, 0).getByRole('tab')).toHaveCount(2);
+  await expect(tabBar(page, 0).getByRole('tab')).toHaveCount(2);
 });
 
 test('a tab dropped on another view’s tab bar moves there', async ({ page }) => {
   await open(page, 'C:/notes/courses.txt', 'lait');
   await open(page, 'C:/notes/jeux.txt', 'Celeste');
   await page.keyboard.press('Control+Alt+ArrowRight');
-  const tab = group(page, 0).getByRole('tab', { name: /courses\.txt/ });
+  const tab = tabBar(page, 0).getByRole('tab', { name: /courses\.txt/ });
   const from = await tab.boundingBox();
-  const to = await group(page, 1).locator('.tabbar').boundingBox();
+  const to = await tabBar(page, 1).boundingBox();
   if (!from || !to) throw new Error('not laid out');
   await page.mouse.move(from.x + 20, from.y + 10);
   await page.mouse.down();
   await page.mouse.move(to.x + to.width - 40, to.y + 10, { steps: 15 });
   await page.mouse.up();
-  await expect(group(page, 1).getByRole('tab')).toHaveText(['jeux.txt', 'courses.txt']);
+  await expect(tabBar(page, 1).getByRole('tab')).toHaveText(['jeux.txt', 'courses.txt']);
 });
 
 test('the tab menu clones and moves; views can be stacked', async ({ page }) => {
-  await group(page, 0)
+  await tabBar(page, 0)
     .getByRole('tab', { name: /review\.txt/ })
     .click({ button: 'right' });
   await page.getByRole('menuitem', { name: 'Cloner dans la vue suivante' }).click();
@@ -113,8 +116,8 @@ test('Leader J joins every view into one', async ({ page }) => {
   await page.keyboard.press('J');
   await expect(groups(page)).toHaveCount(1);
   // One tab per file: the clone was not duplicated.
-  await expect(group(page, 0).getByRole('tab')).toHaveText(['review.txt', 'courses.txt']);
-  await expect(group(page, 0).getByRole('tab', { selected: true })).toContainText('courses.txt');
+  await expect(tabBar(page, 0).getByRole('tab')).toHaveText(['review.txt', 'courses.txt']);
+  await expect(tabBar(page, 0).getByRole('tab', { selected: true })).toContainText('courses.txt');
 });
 
 test('at most four views', async ({ page }) => {

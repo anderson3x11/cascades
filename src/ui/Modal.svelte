@@ -56,7 +56,7 @@
     position: fixed;
     inset: 0;
     z-index: 300;
-    background: rgb(0 0 0 / 0.35);
+    background: rgb(20 18 14 / 0.28);
     animation: fade 120ms ease-out;
   }
 
@@ -70,10 +70,10 @@
     width: min(820px, calc(100vw - 32px));
     height: min(600px, calc(100vh - 48px));
     transform: translate(-50%, -50%);
-    background: var(--ui-bg);
+    background: var(--bg);
     color: var(--fg);
     border: 1px solid var(--ui-border);
-    border-radius: 10px;
+    border-radius: 14px;
     box-shadow: var(--menu-shadow);
     outline: none;
     animation: rise 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -84,7 +84,7 @@
     flex: none;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 10px 10px 18px;
+    padding: 12px 12px 12px 20px;
     border-bottom: 1px solid var(--ui-border);
   }
 
@@ -98,7 +98,7 @@
     width: 28px;
     height: 28px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     background: none;
     color: var(--ui-fg);
     font-size: 18px;

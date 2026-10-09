@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { DevWindow } from './helpers';
+import { openMenu } from './helpers';
 
 const tabs = (page: Page) => page.locator('.tabbar').getByRole('tab');
 const welcome = (page: Page) => page.locator('.welcome');
@@ -32,7 +33,7 @@ test('the page lists recent files and opens them', async ({ page }) => {
     w.__cascadesFs.addFile('C:/notes/jeux.txt', 'Elden Ring');
     return w.__cascades.commands.execute('file.openPath', 'C:/notes/jeux.txt');
   });
-  await page.getByRole('menuitem', { name: 'Fichier' }).click();
+  await openMenu(page, 'Fichier');
   await page.getByRole('menuitem', { name: 'Accueil' }).click();
   await expect(welcome(page)).toBeVisible();
 

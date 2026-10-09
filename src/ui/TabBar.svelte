@@ -277,11 +277,13 @@
 <style>
   .tabbar {
     display: flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 40px;
+    padding: 0 4px;
     overflow-x: auto;
     background: var(--ui-bg);
-    border-bottom: 1px solid var(--ui-border);
-    min-height: 34px;
-    scrollbar-width: thin;
+    scrollbar-width: none;
   }
 
   /* Another group's bar while a tab is dragged over it. */
@@ -292,7 +294,8 @@
 
   /* In a group that is not the one being typed in, the active tab is muted. */
   .tabbar:not(.focused) .tab.active {
-    box-shadow: inset 0 -2px 0 var(--ui-border);
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--ui-border);
     color: var(--ui-fg);
   }
 
@@ -302,17 +305,17 @@
     display: flex;
     flex-direction: column;
     min-width: 230px;
-    padding: 4px;
+    padding: 5px;
     background: var(--menu-bg);
     border: 1px solid var(--ui-border);
-    border-radius: 6px;
+    border-radius: 10px;
     box-shadow: var(--menu-shadow);
   }
 
   .tab-menu button {
-    padding: 5px 10px;
+    padding: 6px 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background: none;
     color: var(--fg);
     font: inherit;
@@ -333,24 +336,42 @@
 
   .tab {
     position: relative;
-    transition: transform 150ms ease;
+    transition:
+      transform 150ms ease,
+      background-color 120ms;
     display: flex;
+    flex: none;
     align-items: center;
     gap: 6px;
-    padding: 0 6px 0 12px;
+    height: 28px;
+    max-width: 220px;
+    padding: 0 5px 0 12px;
+    border-radius: 7px;
     color: var(--ui-fg);
-    border-right: 1px solid var(--ui-border);
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
   }
 
+  .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tab:hover {
+    background: var(--ui-hover);
+    color: var(--fg);
+  }
+
+  .tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
   .tab.dragging {
     z-index: 2;
-    background: var(--bg);
+    background: var(--menu-bg);
     box-shadow: var(--menu-shadow);
-    outline: 1px solid var(--ui-border);
-    border-radius: 6px 6px 0 0;
     cursor: grabbing;
     transition: none;
   }
@@ -371,9 +392,8 @@
   }
 
   .tab.active {
-    background: var(--bg);
+    background: var(--ui-hover);
     color: var(--fg);
-    box-shadow: inset 0 -2px 0 var(--accent);
   }
 
   .close {
@@ -383,8 +403,9 @@
     width: 18px;
     height: 18px;
     padding: 0;
+    flex: none;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     background: transparent;
     color: inherit;
     font: inherit;
@@ -417,9 +438,9 @@
     align-self: center;
     width: 26px;
     height: 26px;
-    margin: 0 4px;
+    margin: 0 2px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background: transparent;
     color: var(--ui-fg);
     font: inherit;
@@ -429,7 +450,7 @@
   }
 
   .new:hover {
-    background: var(--ui-border);
+    background: var(--ui-hover);
     color: var(--fg);
   }
 

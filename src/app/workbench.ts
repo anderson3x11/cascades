@@ -675,6 +675,7 @@ export class Workbench {
         toggle: (id) => this.panels.toggle(id),
         isVisible: (id) => this.panels.isVisible(id),
         toggleSide: (side) => this.panels.toggleSide(side),
+        isSideVisible: (side) => this.panels.current(side) !== null,
       },
       spelling: {
         check: spell.checkSpelling,
@@ -683,7 +684,7 @@ export class Workbench {
         languages: spell.spellingLanguages,
       },
       contextMenu: {
-        show: (position, items) => this.contextMenu.show(position, items),
+        show: (position, items, options) => this.contextMenu.show(position, items, options),
       },
       plugins: {
         list: () => this.plugins.list(),

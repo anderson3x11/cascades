@@ -111,9 +111,9 @@ const theme = EditorView.theme({
     cursor: 'pointer',
   },
   '.cm-conflict-actions button:hover': {
-    backgroundColor: 'var(--menu-active-bg)',
-    borderColor: 'var(--menu-active-bg)',
-    color: 'var(--menu-active-fg)',
+    backgroundColor: 'var(--accent)',
+    borderColor: 'var(--accent)',
+    color: 'var(--accent-fg)',
   },
 });
 

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { openMenu } from './helpers';
 
 const cssVar = (page: Page, name: string) =>
   page.evaluate(
@@ -30,14 +31,14 @@ test('the theme picker filters, previews and saves the choice', async ({ page })
 });
 
 test('Escape cancels and restores the previous theme', async ({ page }) => {
-  await page.getByRole('menuitem', { name: 'Affichage' }).click();
+  await openMenu(page, 'Affichage');
   await page.getByRole('menuitem', { name: /Thème/ }).click();
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
-  expect(await cssVar(page, '--bg')).not.toBe('#ffffff');
+  expect(await cssVar(page, '--bg')).not.toBe('#fcfbf8');
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toBeHidden();
-  expect(await cssVar(page, '--bg')).toBe('#ffffff');
+  expect(await cssVar(page, '--bg')).toBe('#fcfbf8');
 });
 
 test('clicking an option picks it', async ({ page }) => {

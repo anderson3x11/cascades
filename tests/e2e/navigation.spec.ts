@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { DevWindow } from './helpers';
+import { openMenu } from './helpers';
 
 const DOC = ['Elden Ring', '\tCombat', '\t\tBoss', 'Hollow Knight', '\tAmbiance', '', 'Fin.'].join(
   '\n',
@@ -72,7 +73,7 @@ test('bookmarks: set, go to the next, list them', async ({ page }) => {
   await page.keyboard.press('F2');
   expect(await cursorLine(page)).toBe(6);
 
-  await page.getByRole('menuitem', { name: 'Aller' }).click();
+  await openMenu(page, 'Aller');
   await page.getByRole('menuitem', { name: 'Signets…' }).click();
   await expect(page.getByRole('option')).toHaveCount(2);
   await page.getByRole('option', { name: /ligne 6/ }).click();

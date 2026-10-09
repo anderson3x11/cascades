@@ -47,7 +47,7 @@ const chrome = EditorView.theme({
   '.cm-gutters': { backgroundColor: 'var(--bg)', color: 'var(--ui-fg)', border: 'none' },
   '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--active-line)' },
   '.cm-activeLineGutter': { color: 'var(--fg)' },
-  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--fg)' },
+  '.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--caret)', borderLeftWidth: '2px' },
   '& > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground':
     { backgroundColor: 'var(--selection)' },
   '.cm-searchMatch, .cm-selectionMatch': { backgroundColor: 'var(--match)' },

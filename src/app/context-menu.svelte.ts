@@ -1,14 +1,27 @@
-import type { ContextMenuItem } from '../api';
+import type { ContextMenuItem, ContextMenuOptions } from '../api';
 
 /** The right-click menu shown, at most one. */
 export class ContextMenuModel {
-  current = $state<{ x: number; y: number; items: ContextMenuItem[] } | null>(null);
+  current = $state<{
+    x: number;
+    y: number;
+    items: ContextMenuItem[];
+    options: ContextMenuOptions;
+  } | null>(null);
 
-  show(position: { x: number; y: number }, items: ContextMenuItem[]): void {
-    this.current = { ...position, items };
+  show(
+    position: { x: number; y: number },
+    items: ContextMenuItem[],
+    options: ContextMenuOptions = {},
+  ): void {
+    this.close();
+    this.current = { ...position, items, options };
   }
 
-  close(): void {
+  /** `chosen` is false when the menu is dismissed (Escape, click outside). */
+  close(chosen = false): void {
+    const closing = this.current;
     this.current = null;
+    if (closing && !chosen) closing.options.onCancel?.();
   }
 }

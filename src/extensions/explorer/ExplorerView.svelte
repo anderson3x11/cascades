@@ -313,7 +313,7 @@
     border: none;
     border-radius: 5px;
     background: var(--accent);
-    color: var(--menu-active-fg);
+    color: var(--accent-fg);
     font: inherit;
     cursor: pointer;
   }

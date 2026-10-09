@@ -92,3 +92,35 @@ Les outils du quotidien d'un bloc-notes, dans l'esprit de Notepad++. Tout passe 
 3. Objectif de mots et comparaison de fichiers : abandonnés.
 4. Ordre : 0.4a puis 0.4b.
 5. Logo : à voir en 0.5.
+
+## 1.1 : refonte du design (inspirée de Word-Smith)
+
+Décidé le 09/10/2026 après la vidéo de Word-Smith : refonte complète, l'interface s'efface derrière le texte. Fonctionnalités retenues : marqueurs invisibles et choix de police. Le thème suit toujours le système.
+
+**1.1a Fondations visuelles**
+
+- L'interface prend le fond de l'éditeur : plus de bandeaux gris ni de bordures, texte de l'interface en gris discret, un seul accent (violet), curseur coloré, popovers arrondis avec une ombre douce.
+- Palette claire légèrement chaude, palette sombre adoucie.
+- Nouveaux thèmes : Catppuccin (Latte et Mocha), Rosé Pine, Dracula, Tokyo Night, Everforest, One Light.
+
+**1.1b Barre de titre unique**
+
+- Les onglets montent dans la barre de titre : bouton menu à gauche, onglets, zone de déplacement, boutons réduire / agrandir / fermer à droite. Double-clic pour agrandir.
+- Windows d'abord ; macOS garde ses feux tricolores (barre en overlay), Linux sans décorations. À vérifier par la CI et par toi sur Windows (menu Snap au survol de « agrandir »).
+
+**1.1c Menus**
+
+- Plus de barre de menu par défaut. Le bouton menu ouvre un popover avec Fichier, Édition, Texte, Aller, Affichage en sous-menus, au clavier aussi.
+- Alt affiche la barre classique le temps d'un choix. Le réglage `workbench.showMenuBar` la remet en permanence.
+
+**1.1d Barre d'état à popovers**
+
+- À gauche le nom du fichier, au centre des boutons icône + mot qui ouvrent un popover au-dessus : **Affichage** (zen, retour à la ligne, numéros de ligne, cascades, marqueurs), **Police**, **Thème** (aperçu au survol). À droite, en discret : mots, position, langage, encodage, fin de ligne.
+- Les extensions et plugins peuvent ajouter leurs propres popovers (`ctx.statusBar`).
+
+**1.1e Marqueurs et polices**
+
+- Marqueurs : espaces, tabulations, fins de ligne, chacun activable (popover Affichage et réglages).
+- Polices : les polices déjà installées parmi une liste connue (Cascadia, Consolas, JetBrains Mono, Georgia…). Aperçu au survol, clic pour choisir. Embarquer des polices libres (OFL) reste possible plus tard : il faut les télécharger, donc ton accord.
+
+État (09/10/2026) : 1.1a à 1.1e faits, à tester dans l'app (surtout la barre de titre et les boutons de fenêtre sur Windows).

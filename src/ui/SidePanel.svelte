@@ -74,8 +74,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 8px 6px 12px;
-    border-bottom: 1px solid var(--ui-border);
+    padding: 8px 8px 6px 12px;
   }
 
   h2,
@@ -95,9 +94,9 @@
   }
 
   .tab {
-    padding: 3px 6px;
+    padding: 4px 8px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background: none;
     font-family: inherit;
     cursor: pointer;
@@ -108,9 +107,8 @@
   }
 
   .tab[aria-selected='true'] {
+    background: var(--ui-hover);
     color: var(--fg);
-    box-shadow: inset 0 -2px 0 var(--accent);
-    border-radius: 0;
   }
 
   .actions {

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import type { DevWindow } from './helpers';
+import { openMenu } from './helpers';
 
 const text = (page: Page) =>
   page.evaluate(() =>
@@ -38,17 +39,17 @@ test('case shortcuts work on the selection or the word at the cursor', async ({ 
 
 test('the Texte menu sorts, removes duplicates and joins lines', async ({ page }) => {
   await open(page, 'pain\nlait\nœufs\nlait');
-  await page.getByRole('menuitem', { name: 'Texte' }).click();
+  await openMenu(page, 'Texte');
   await page.getByRole('menuitem', { name: 'Supprimer les lignes en double' }).click();
   expect(await text(page)).toBe('pain\nlait\nœufs');
 
-  await page.getByRole('menuitem', { name: 'Texte' }).click();
+  await openMenu(page, 'Texte');
   await page.getByRole('menuitem', { name: 'Trier les lignes (A à Z)' }).click();
   expect(await text(page)).toBe('lait\nœufs\npain');
 
   // Join: the line and the next one, without a selection.
   await page.keyboard.press('Control+Home');
-  await page.getByRole('menuitem', { name: 'Texte' }).click();
+  await openMenu(page, 'Texte');
   await page.getByRole('menuitem', { name: 'Joindre les lignes' }).click();
   expect(await text(page)).toBe('lait œufs\npain');
 });
