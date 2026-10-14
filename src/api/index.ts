@@ -77,7 +77,7 @@ export interface KeybindingInfo {
 export interface MenuSpec {
   id: string;
   title: string;
-  /** Position in the menu bar, lower first (Fichier 10, Édition 20, Affichage 30). */
+  /** Position among the menus, lower first (Fichier 10, Édition 20, Affichage 30). */
   order?: number;
 }
 
@@ -85,16 +85,27 @@ export interface MenuItemSpec {
   command: string;
   /** Defaults to the command title. */
   title?: string;
-  /** Items are grouped by this key (sorted as strings, e.g. "1_new"), separated by a line. */
+  /** Items are grouped by this key (sorted as strings, e.g. "1_new"); see `registerGroup`. */
   group?: string;
   /** Position inside the group, lower first. */
   order?: number;
 }
 
+export interface MenuGroupSpec {
+  /** The `group` key of its items ("2_save"). */
+  id: string;
+  title: string;
+  /** The "d" of an SVG path on a 24×24 grid, 2 px stroke (Lucide icons fit). */
+  icon?: string;
+}
+
 export interface MenusApi {
+  /** A menu is a family of the side panel; its items are listed there with their shortcut. */
   registerMenu(menu: MenuSpec): Disposable;
   /** Adds an item to a menu, which may be registered by another extension. */
   registerItem(menuId: string, item: MenuItemSpec): Disposable;
+  /** Names a group of items: the side panel shows it as a sub-menu that unfolds. */
+  registerGroup(menuId: string, group: MenuGroupSpec): Disposable;
 }
 
 // Settings ------------------------------------------------------------------
@@ -290,7 +301,7 @@ export interface StatusItemOptions {
   priority?: number;
   /** Command run on click. */
   command?: string;
-  /** Menu opened above the item on click, built when it opens. */
+  /** Items of the menu it stands for, listed in the side panel (Display family); built when shown. */
   menu?: () => StatusMenu;
   /** Stroke icon drawn before the text: the "d" of an SVG path on a 24×24 grid, 2 px stroke (Lucide icons fit). */
   icon?: string;
@@ -324,11 +335,13 @@ export interface StatusBarApi {
   addItem(options: StatusItemOptions): StatusItem;
   /** Items with a menu, in status bar order. */
   menus(): StatusMenuItem[];
+  /** Called with the item's id when an item with a menu is clicked, to show that menu. */
+  onDidRequestMenu(listener: (id: string) => void): Disposable;
 }
 
 // Layout --------------------------------------------------------------------
 
-export type LayoutPart = 'menuBar' | 'tabs' | 'statusBar';
+export type LayoutPart = 'tabs' | 'statusBar';
 
 export interface LayoutApi {
   setVisible(part: LayoutPart, visible: boolean): void;
@@ -401,12 +414,18 @@ export interface PanelSpec {
   /** Right by default. The panels of one side are shown one at a time, as tabs on the left. */
   side?: PanelSide;
   /**
-   * Icon of the panel in the row at the top of the side, the "d" of an SVG
-   * path on a 24×24 grid, 2 px stroke (Lucide icons fit). Panels without one
-   * are listed by their title.
+   * Icon of the panel, the "d" of an SVG path on a 24×24 grid, 2 px stroke
+   * (Lucide icons fit). Panels without one are listed by their title.
    */
   icon?: string;
-  /** Position among the panels of its side, lower first (Folders 10, File 20, Edit 30…). */
+  /**
+   * Left side only: where its icon goes. "top", level with the tabs, holds the
+   * menus of the app (File, Edit…); "rail", the column on the left, holds the
+   * tools (Folders, Search…). By default a panel with content is a tool and a
+   * list of commands is a menu.
+   */
+  place?: 'top' | 'rail';
+  /** Position among the panels of its row, lower first (File 20, Edit 30…). */
   order?: number;
   /** Buttons in the panel header. Called again when the state it reads changes. */
   actions?: () => PanelAction[];
@@ -473,10 +492,6 @@ export type ContextMenuItem =
 export interface ContextMenuOptions {
   /** Called when the menu closes without a choice. */
   onCancel?: () => void;
-  /** The menu opens above the point instead of below it. */
-  above?: boolean;
-  /** The button that opened the menu: pressing it is not a click outside, it can close the menu itself. */
-  anchor?: Element;
 }
 
 export interface ContextMenuApi {

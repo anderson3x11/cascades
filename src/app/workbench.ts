@@ -551,6 +551,7 @@ export class Workbench {
       menus: {
         registerMenu: (menu) => track(this.menus.registerMenu(menu)),
         registerItem: (menuId, item) => track(this.menus.registerItem(menuId, item)),
+        registerGroup: (menuId, group) => track(this.menus.registerGroup(menuId, group)),
       },
       settings: {
         register: (ns, props) => track(this.settings.registerSchema(ns, props)),
@@ -604,6 +605,7 @@ export class Workbench {
           this.statusBar.items.filter(
             (item): item is StatusBarItem & { menu: () => StatusMenu } => item.menu !== undefined,
           ),
+        onDidRequestMenu: (listener) => track(this.statusBar.onDidRequestMenu.on(listener)),
       },
       banners: { show: (options) => track(this.banners.show(options)) },
       quickPick: { show: (items, options) => this.quickPick.show(items, options) },

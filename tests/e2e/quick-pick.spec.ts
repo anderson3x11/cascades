@@ -1,5 +1,4 @@
 import { expect, test, type Page } from '@playwright/test';
-import { openMenu } from './helpers';
 
 const cssVar = (page: Page, name: string) =>
   page.evaluate(
@@ -31,8 +30,9 @@ test('the theme picker filters, previews and saves the choice', async ({ page })
 });
 
 test('Escape cancels and restores the previous theme', async ({ page }) => {
-  await openMenu(page, 'Affichage');
-  await page.getByRole('menuitem', { name: /Thème/ }).click();
+  await page.locator('.cm-content').click();
+  await page.keyboard.press('Control+Space');
+  await page.keyboard.press('T');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
   expect(await cssVar(page, '--bg')).not.toBe('#fcfbf8');

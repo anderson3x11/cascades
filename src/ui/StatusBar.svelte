@@ -11,40 +11,18 @@
   const center = $derived(side('center'));
   const right = $derived(side('right'));
 
-  /** Item whose menu is open, drawn as pressed. */
-  let pressed = $state<string | null>(null);
-  const openItem = $derived(workbench.contextMenu.current ? pressed : null);
-
-  function activate(item: StatusBarItem, button: HTMLElement) {
-    if (item.menu) {
-      if (openItem === item.id) {
-        workbench.contextMenu.close();
-        return;
-      }
-      const menu = item.menu();
-      const rect = button.getBoundingClientRect();
-      pressed = item.id;
-      workbench.contextMenu.show({ x: rect.left, y: rect.top - 6 }, menu.items, {
-        above: true,
-        anchor: button,
-        onCancel: menu.onCancel,
-      });
-      return;
+  /** An item with a menu shows it in the side panel; the others run their command. */
+  function activate(item: StatusBarItem) {
+    if (item.menu) model.onDidRequestMenu.fire(item.id);
+    else if (item.command) {
+      workbench.commands.execute(item.command).catch((err: unknown) => console.error(err));
     }
-    if (!item.command) return;
-    workbench.commands.execute(item.command).catch((err: unknown) => console.error(err));
   }
 </script>
 
 {#snippet entry(item: StatusBarItem)}
   {#if item.command || item.menu}
-    <button
-      class="item"
-      class:open={openItem === item.id}
-      title={item.tooltip}
-      aria-haspopup={item.menu ? 'menu' : undefined}
-      onclick={(e) => activate(item, e.currentTarget)}
-    >
+    <button class="item" title={item.tooltip} onclick={() => activate(item)}>
       {#if item.icon}<svg viewBox="0 0 24 24" aria-hidden="true"><path d={item.icon} /></svg>{/if}
       {item.text}
     </button>
@@ -111,8 +89,7 @@
     transition: background-color 120ms;
   }
 
-  button.item:hover,
-  button.item.open {
+  button.item:hover {
     background: var(--ui-hover);
     color: var(--fg);
   }

@@ -137,6 +137,29 @@ export default defineExtension({
   id: 'cascades.text-tools',
   activate(ctx) {
     ctx.menus.registerMenu({ id: 'text', title: t('Text'), order: 25 });
+    ctx.panels.register({
+      id: 'text',
+      title: t('Text'),
+      side: 'left',
+      icon: 'M15 12h6M15 6h6M3 13l3.553-7.724a.5.5 0 0 1 .894 0L11 13M3 18h18M3.92 11h6.16',
+      order: 30,
+      menus: ['text'],
+    });
+    ctx.menus.registerGroup('text', {
+      id: '1_case',
+      title: t('Case'),
+      icon: 'M3 15l4-8 4 8M4 13h6M18 11v6M15 11a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+    });
+    ctx.menus.registerGroup('text', {
+      id: '2_lines',
+      title: t('Sort and clean up'),
+      icon: 'M3 16l4 4 4-4M7 20V4M20 8h-5M15 10V6.5a2.5 2.5 0 0 1 5 0V10M15 14h5l-5 6h5',
+    });
+    ctx.menus.registerGroup('text', {
+      id: '3_spelling',
+      title: t('Spelling'),
+      icon: 'M6 16l6-12 6 12M8 12h8M16 20l2 2 4-4',
+    });
     const keys: KeybindingSpec[] = [];
     for (const [order, tool] of tools().entries()) {
       ctx.commands.register(

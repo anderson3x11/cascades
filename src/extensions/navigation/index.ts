@@ -30,6 +30,24 @@ export default defineExtension({
   activate(ctx) {
     ctx.editor.addExtension(() => bookmarkExtension);
     ctx.menus.registerMenu({ id: 'go', title: t('Go'), order: 27 });
+    ctx.panels.register({
+      id: 'go',
+      title: t('Go'),
+      side: 'left',
+      icon: 'M3 11l19-9-9 19-2-8-8-2z',
+      order: 40,
+      menus: ['go'],
+    });
+    ctx.menus.registerGroup('go', {
+      id: '1_place',
+      title: t('Go to'),
+      icon: 'M15 10l5 5-5 5M4 4v7a4 4 0 0 0 4 4h12',
+    });
+    ctx.menus.registerGroup('go', {
+      id: '2_bookmarks',
+      title: t('Bookmarks'),
+      icon: 'M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z',
+    });
 
     const listBookmarks = async (view: EditorView) => {
       const lines = bookmarkedLines(view.state);

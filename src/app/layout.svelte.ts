@@ -2,7 +2,6 @@ import type { LayoutPart } from '../api';
 
 /** Which parts of the window are shown, and zen mode. The UI reads this. */
 export class LayoutModel {
-  menuBar = $state(false);
   tabs = $state(true);
   statusBar = $state(true);
   zen = $state(false);

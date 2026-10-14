@@ -14,10 +14,9 @@
   $effect(() => {
     if (!menu || !box) return;
     const { width, height } = box.getBoundingClientRect();
-    const y = menu.options.above ? menu.y - height : menu.y;
     position = {
       x: Math.max(4, Math.min(menu.x, window.innerWidth - width - 4)),
-      y: Math.max(4, Math.min(y, window.innerHeight - height - 4)),
+      y: Math.max(4, Math.min(menu.y, window.innerHeight - height - 4)),
     };
     const buttons = box.querySelectorAll<HTMLElement>('button:not(:disabled)');
     const first = box.querySelector<HTMLElement>('button[aria-checked="true"]') ?? buttons[0];
@@ -29,7 +28,7 @@
     if (!menu) return;
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as Node;
-      if (!box?.contains(target) && !menu.options.anchor?.contains(target)) {
+      if (!box?.contains(target)) {
         workbench.contextMenu.close();
       }
     };

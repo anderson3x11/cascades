@@ -111,7 +111,7 @@ Décidé le 09/10/2026 après la vidéo de Word-Smith : refonte complète, l'int
 **1.1c Menus**
 
 - Plus de barre de menu par défaut. Le bouton menu ouvre un popover avec Fichier, Édition, Texte, Aller, Affichage en sous-menus, au clavier aussi.
-- Alt affiche la barre classique le temps d'un choix. Le réglage `workbench.showMenuBar` la remet en permanence.
+- Alt ouvre aussi le panneau. (14/10/2026 : la barre de menus classique est retirée, plus aucun menu flottant : tout passe par le panneau latéral, menus en haut et outils dans la colonne de gauche, commandes en sous-menus avec icônes, champ de recherche, limite de 6 onglets par vue.)
 
 **1.1d Barre d'état à popovers**
 

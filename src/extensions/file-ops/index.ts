@@ -198,12 +198,27 @@ export default defineExtension({
     );
 
     ctx.menus.registerMenu({ id: 'file', title: t('File'), order: 10 });
+    ctx.menus.registerGroup('file', {
+      id: '1_new',
+      title: t('New and open'),
+      icon: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zM14 2v4a2 2 0 0 0 2 2h4M9 15h6M12 18v-6',
+    });
+    ctx.menus.registerGroup('file', {
+      id: '2_save',
+      title: t('Save'),
+      icon: 'M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7',
+    });
+    ctx.menus.registerGroup('file', {
+      id: '3_close',
+      title: t('Close'),
+      icon: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM15 9l-6 6M9 9l6 6',
+    });
     ctx.panels.register({
       id: 'file',
       title: t('File'),
       side: 'left',
       icon: 'M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7',
-      order: 20,
+      order: 10,
       menus: ['file'],
     });
     ctx.menus.registerItem('file', { command: 'file.new', group: '1_new', order: 1 });

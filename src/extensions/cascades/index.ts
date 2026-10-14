@@ -209,7 +209,6 @@ export default defineExtension({
     );
 
     ctx.keybindings.register({ key: 'Leader C', command: 'cascades.toggle' });
-    ctx.menus.registerItem('view', { command: 'cascades.toggle', group: '2_appearance', order: 2 });
     ctx.menus.registerItem('view', {
       command: 'cascades.selectStyle',
       group: '2_appearance',

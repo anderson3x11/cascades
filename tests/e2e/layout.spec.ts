@@ -20,17 +20,43 @@ test('zen mode hides every bar and Escape brings them back', async ({ page }) =>
   await expect(page.locator('footer')).toBeVisible();
 });
 
-test('the classic menu bar can be shown, and the choice is saved', async ({ page }) => {
-  await expect(page.getByRole('menubar')).toBeHidden();
-  await page.keyboard.press('Control+Space');
-  await page.keyboard.press('M');
-  await expect(page.getByRole('menubar')).toBeVisible();
-  const saved = await page.evaluate(() => localStorage.getItem('cascades-config:settings.json'));
-  expect(JSON.parse(saved ?? '{}')).toEqual({ 'workbench.showMenuBar': true });
+test('opening a seventh tab closes the saved one left unused the longest', async ({ page }) => {
+  await page.evaluate(() => {
+    const ws = (window as unknown as DevWindow).__cascades.workspace;
+    for (const name of ['a', 'b', 'c', 'd', 'e', 'f'])
+      ws.open({ path: `C:/notes/${name}.txt`, text: name });
+  });
+  // "Sans titre 1" was the first tab, then a to f: seven opened, the untitled one is unsaved but empty.
+  const titles = () => page.getByRole('tablist').first().getByRole('tab').allTextContents();
+  await expect.poll(async () => (await titles()).length).toBe(6);
+  expect((await titles()).map((t) => t.trim())).toEqual([
+    'a.txt',
+    'b.txt',
+    'c.txt',
+    'd.txt',
+    'e.txt',
+    'f.txt',
+  ]);
 
-  await page.getByRole('menuitem', { name: 'Affichage', exact: true }).click();
-  await page.getByRole('menuitem', { name: /masquer la barre de menus/ }).click();
-  await expect(page.getByRole('menubar')).toBeHidden();
+  // An unsaved tab stays: b.txt goes instead. The new tab opens next to the active one.
+  await page.getByRole('tab', { name: /a\.txt/ }).click();
+  await page.locator('.cm-content').click();
+  await page.keyboard.type('!');
+  await page.evaluate(() =>
+    (window as unknown as DevWindow).__cascades.workspace.open({
+      path: 'C:/notes/g.txt',
+      text: 'g',
+    }),
+  );
+  await expect.poll(async () => (await titles()).length).toBe(6);
+  expect((await titles()).map((t) => t.trim())).toEqual([
+    'a.txt',
+    'g.txt',
+    'c.txt',
+    'd.txt',
+    'e.txt',
+    'f.txt',
+  ]);
 });
 
 test('the interface font size setting applies', async ({ page }) => {

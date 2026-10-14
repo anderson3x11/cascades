@@ -3,12 +3,11 @@ import { EditorView } from '@codemirror/view';
 import { mount, unmount } from 'svelte';
 import { defineExtension, t, type ContextMenuItem } from '../../api';
 import DisplayView from './DisplayView.svelte';
+import { DisplayState } from './state.svelte';
 import { firstFamily, installedFonts } from './fonts';
 import { markers } from './markers';
 
 // Lucide icons (lucide.dev, ISC license), on their 24×24 grid.
-const EYE_ICON =
-  'M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z';
 const OPTIONS_ICON = 'M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4';
 const FONT_ICON = 'M4 7V4h16v3M9 20h6M12 4v16';
 
@@ -81,7 +80,6 @@ export default defineExtension({
         title,
         category: t('View'),
       });
-      ctx.menus.registerItem('view', { command, group: '2_appearance', order: 5 });
     }
     ctx.keybindings.register({ key: 'Alt+Z', command: 'view.toggleWordWrap' });
 
@@ -111,9 +109,6 @@ export default defineExtension({
             check('cascades.toggle', t('Cascades'), ctx.settings.get<boolean>('cascades.enabled')),
             { heading: t('Markers') },
             ...[spaces, tabs, ends].filter((i) => i !== undefined),
-            'separator',
-            check('view.toggleSidebar', t('Side panel'), ctx.panels.isSideVisible('left')),
-            check('view.toggleMenuBar', t('Menu bar'), ctx.layout.isVisible('menuBar')),
           ],
         };
       },
@@ -168,15 +163,20 @@ export default defineExtension({
     font.tooltip = t('Font of the editor');
 
     // The Display family of the side panel: these menus unfold in place, then the View commands.
+    // A status bar button opens it at its own menu.
+    const state = new DisplayState();
+    ctx.statusBar.onDidRequestMenu((id) => {
+      state.open = id;
+      ctx.panels.show('display');
+    });
     ctx.panels.register({
       id: 'display',
-      title: t('Display'),
+      title: t('Options'),
       side: 'left',
-      icon: EYE_ICON,
-      order: 50,
-      menus: ['view'],
+      icon: OPTIONS_ICON,
+      order: 30,
       render(host) {
-        const view = mount(DisplayView, { target: host, props: { ctx } });
+        const view = mount(DisplayView, { target: host, props: { ctx, display: state } });
         return { dispose: () => void unmount(view) };
       },
     });

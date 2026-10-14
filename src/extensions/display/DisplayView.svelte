@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { t, type ContextMenuItem, type ExtensionContext, type StatusMenu } from '../../api';
+  import type { DisplayState } from './state.svelte';
 
   /**
    * The Display panel: the status bar menus (Display, Font, Theme…) as
    * sections that unfold in place, and the light or dark switch.
    */
-  let { ctx }: { ctx: ExtensionContext } = $props();
+  let { ctx, display }: { ctx: ExtensionContext; display: DisplayState } = $props();
 
   // Lucide icons (lucide.dev, ISC license), on their 24×24 grid.
   const SUN =
@@ -14,7 +15,6 @@
   const MOON = 'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z';
 
   let version = $state(0);
-  let open = $state<string | null>(null);
   const sections = $derived.by(() => {
     void version;
     return ctx.statusBar.menus();
@@ -22,7 +22,7 @@
   /** Items of the open section, built again when a setting changes. */
   const opened = $derived.by((): StatusMenu | null => {
     void version;
-    return sections.find((s) => s.id === open)?.menu() ?? null;
+    return sections.find((s) => s.id === display.open)?.menu() ?? null;
   });
   const dark = $derived.by(() => {
     void version;
@@ -41,8 +41,8 @@
   });
 
   function toggle(id: string) {
-    if (open === id) opened?.onCancel?.();
-    open = open === id ? null : id;
+    if (display.open === id) opened?.onCancel?.();
+    display.open = display.open === id ? null : id;
   }
 
   function pick(item: Extract<ContextMenuItem, { run: () => void }>) {
@@ -56,7 +56,11 @@
 
 <div class="display">
   {#each sections as section (section.id)}
-    <button class="row" aria-expanded={open === section.id} onclick={() => toggle(section.id)}>
+    <button
+      class="row"
+      aria-expanded={display.open === section.id}
+      onclick={() => toggle(section.id)}
+    >
       <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
       {#if section.icon}<svg viewBox="0 0 24 24" aria-hidden="true"><path d={section.icon} /></svg
         >{/if}
@@ -64,7 +68,7 @@
       <!-- The current value (font, theme); the Display button only shows its name. -->
       {#if section.id !== 'display'}<span class="value">{section.text}</span>{/if}
     </button>
-    {#if open === section.id && opened}
+    {#if display.open === section.id && opened}
       <div
         class="items"
         role="menu"

@@ -570,13 +570,6 @@
         "keysMac": ["⌘B"]
       },
       {
-        "id": "view.toggleMenuBar",
-        "title": "Show or hide the menu bar",
-        "category": "View",
-        "keys": ["Leader M"],
-        "keysMac": ["Leader M"]
-      },
-      {
         "id": "view.toggleStatusBar",
         "title": "Show or hide the status bar",
         "category": "View",
@@ -922,6 +915,12 @@
         "description": "Language of the spell checker: \"fr\", \"en\", \"es\"… (dictionaries installed in Windows)."
       },
       {
+        "key": "tabs.limit",
+        "type": "number",
+        "default": 6,
+        "description": "Most tabs open in a view. Opening one more closes the saved tab left unused the longest; unsaved tabs stay. 0 for no limit."
+      },
+      {
         "key": "updates.check",
         "type": "boolean",
         "default": true,
@@ -945,12 +944,6 @@
         "default": "auto",
         "description": "Language of the interface: \"auto\" follows the system, \"en\" English, \"fr\" French.",
         "values": ["auto", "en", "fr"]
-      },
-      {
-        "key": "workbench.showMenuBar",
-        "type": "boolean",
-        "default": false,
-        "description": "Show the menus as a bar instead of a menu button."
       },
       {
         "key": "workbench.showStatusBar",
@@ -1019,13 +1012,6 @@
         "category": "Affichage",
         "keys": ["Leader B"],
         "keysMac": ["Leader B"]
-      },
-      {
-        "id": "view.toggleMenuBar",
-        "title": "Afficher ou masquer la barre de menus",
-        "category": "Affichage",
-        "keys": ["Leader M"],
-        "keysMac": ["Leader M"]
       },
       {
         "id": "cascades.toggleBlock",
@@ -1912,6 +1898,12 @@
         "description": "Langue du correcteur : \"fr\", \"en\", \"es\"… (dictionnaires installés dans Windows)."
       },
       {
+        "key": "tabs.limit",
+        "type": "number",
+        "default": 6,
+        "description": "Nombre maximum d’onglets ouverts dans une vue. En ouvrir un de plus ferme l’onglet enregistré inutilisé depuis le plus longtemps ; les onglets non enregistrés restent. 0 pour aucune limite."
+      },
+      {
         "key": "updates.check",
         "type": "boolean",
         "default": true,
@@ -1935,12 +1927,6 @@
         "default": "auto",
         "description": "Langue de l’interface : \"auto\" suit le système, \"en\" anglais, \"fr\" français.",
         "values": ["auto", "en", "fr"]
-      },
-      {
-        "key": "workbench.showMenuBar",
-        "type": "boolean",
-        "default": false,
-        "description": "Afficher les menus dans une barre plutôt que derrière un bouton."
       },
       {
         "key": "workbench.showStatusBar",

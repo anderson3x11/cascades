@@ -183,11 +183,6 @@ export default defineExtension({
       },
       { title: t('Theme…'), category: t('View') },
     );
-    ctx.menus.registerItem('view', {
-      command: 'view.selectTheme',
-      group: '2_appearance',
-      order: 1,
-    });
     ctx.keybindings.register({ key: 'Leader T', command: 'view.selectTheme' });
 
     ctx.commands.register(

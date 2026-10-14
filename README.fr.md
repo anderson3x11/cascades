@@ -69,12 +69,13 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 ![La fenêtre Préférences](docs/images/preferences.png)
 
-- Une interface épurée : juste les onglets et le texte. Le bouton menu (ou Alt) ouvre un panneau latéral avec une icône par famille : Dossiers, Fichier, Édition, Rechercher, Affichage, Réglages. La famille Affichage déplie ses options sur place, et la barre d'état propose les menus Affichage, Police et Thème, avec aperçu au survol.
+- Une interface épurée : juste les onglets et le texte, et aucun menu flottant. Le bouton menu (ou Alt) ouvre un panneau latéral : les menus en haut (Fichier, Édition, Texte, Aller, Affichage), leurs commandes rangées en sous-menus qui se déplient, avec un champ pour les rechercher toutes ; les outils à gauche (Dossiers, Rechercher, Options, Réglages). Les boutons Affichage, Police et Thème de la barre d'état ouvrent Options, où thèmes et polices s'essaient au survol.
+- Six onglets au plus par vue par défaut (`tabs.limit`) : en ouvrir un de plus ferme l'onglet enregistré inutilisé depuis le plus longtemps.
 - Quatorze thèmes (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox, Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) et les vôtres ; le mode clair ou sombre du système est suivi par défaut.
 - Afficher les espaces, tabulations et fins de ligne ; choisir la police de l'éditeur parmi celles installées.
 - Une fenêtre Préférences (Ctrl+,) pour chaque réglage et chaque raccourci : taper la nouvelle combinaison pour en changer un.
 - `settings.json` et `keybindings.json` (format VS Code) avec complétion et vérification des erreurs, rechargés à l'enregistrement.
-- Afficher une barre de menus classique, masquer les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
+- Masquer les onglets ou la barre d'état ; mode zen pour écrire en plein écran.
 - Une touche leader (Ctrl+Espace) pour plus de raccourcis, avec une barre qui montre la suite possible.
 - Tout est une commande, dans la palette de commandes (Ctrl+Shift+P). Un script `init.js` peut ajouter les vôtres.
 - Des plugins, activés et désactivés dans Préférences > Extensions. Voir [Écrire un plugin](docs/plugins.md) (en anglais).
@@ -118,7 +119,7 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 | Zoom                                           | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+molette    |
 | Mode zen (Échap pour sortir)                   | Leader Z                                  |
 | Retour à la ligne                              | Alt+Z                                     |
-| Menus / barre de menus, onglets, barre d'état  | Alt / Leader M / Leader Tab / Leader B    |
+| Panneau latéral, onglets, barre d'état         | Alt / Leader Tab / Leader B               |
 
 **Leader** est la touche leader, **Ctrl+Espace** par défaut (réglage `keyboard.leader`) : on l'appuie, puis la touche suivante. Une barre en bas de la fenêtre affiche alors les touches possibles.
 

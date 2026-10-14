@@ -9,14 +9,16 @@ import type { fakeFs } from '../../src/platform/fake-fs';
  */
 export type DevWindow = Window & { __cascades: Workbench; __cascadesFs: typeof fakeFs };
 
-/** Family of the side panel holding each menu's commands. */
-const FAMILIES: Record<string, string> = { Texte: 'Édition', Aller: 'Rechercher' };
-
-/** Shows a menu's commands: the menu button opens the side panel, then its family. */
+/**
+ * Shows a menu's commands: the menu button opens the side panel, the menu's
+ * icon shows it, and every sub-menu is unfolded.
+ */
 export async function openMenu(page: Page, name: string): Promise<void> {
-  const families = page.getByRole('tablist', { name: 'Panneaux' });
-  if (!(await families.isVisible())) {
+  const menus = page.getByRole('tablist', { name: 'Menus' });
+  if (!(await menus.isVisible())) {
     await page.getByRole('button', { name: 'Menu', exact: true }).click();
   }
-  await families.getByRole('tab', { name: FAMILIES[name] ?? name, exact: true }).click();
+  await menus.getByRole('tab', { name, exact: true }).click();
+  const folded = page.locator('aside.left .row[aria-expanded="false"]');
+  while ((await folded.count()) > 0) await folded.first().click();
 }

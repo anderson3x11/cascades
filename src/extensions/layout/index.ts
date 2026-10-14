@@ -1,9 +1,8 @@
 import { EditorView } from '@codemirror/view';
 import { defineExtension, t, type LayoutPart } from '../../api';
 
-/** Each part can be toggled from the keyboard too, so a hidden menu bar can come back. */
+/** Each part can be toggled from the keyboard too, so a hidden part can come back. */
 const parts = (): [LayoutPart, setting: string, title: string, key: string][] => [
-  ['menuBar', 'showMenuBar', t('Show or hide the menu bar'), 'Leader M'],
   ['tabs', 'showTabs', t('Show or hide the tabs'), 'Leader Tab'],
   ['statusBar', 'showStatusBar', t('Show or hide the status bar'), 'Leader B'],
 ];
@@ -13,11 +12,6 @@ export default defineExtension({
   id: 'cascades.layout',
   activate(ctx) {
     ctx.settings.register('workbench', {
-      showMenuBar: {
-        type: 'boolean',
-        default: false,
-        description: t('Show the menus as a bar instead of a menu button.'),
-      },
       showTabs: { type: 'boolean', default: true, description: t('Show the tabs.') },
       showStatusBar: { type: 'boolean', default: true, description: t('Show the status bar.') },
       fontFamily: {
@@ -72,7 +66,6 @@ export default defineExtension({
       { key: 'Leader Z', command: 'view.toggleZen' },
       { key: 'Escape', command: 'view.exitZen', when: 'zenMode' },
     ]);
-    ctx.menus.registerItem('view', { command: 'view.toggleZen', group: '4_layout', order: 0 });
 
     for (const [part, setting, title, key] of parts()) {
       const id = `view.toggle${part[0]?.toUpperCase()}${part.slice(1)}`;

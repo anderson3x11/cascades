@@ -1,4 +1,5 @@
 import type { StatusItem, StatusItemOptions, StatusMenu } from '../api';
+import { Emitter } from '../core/events/emitter';
 
 export class StatusBarItem implements StatusItem {
   readonly id: string;
@@ -32,6 +33,8 @@ export class StatusBarItem implements StatusItem {
 
 export class StatusBarModel {
   items = $state<StatusBarItem[]>([]);
+  /** An item with a menu was clicked: its menu shows in the side panel. */
+  readonly onDidRequestMenu = new Emitter<string>();
 
   addItem(options: StatusItemOptions): StatusBarItem {
     const item = new StatusBarItem(options, (i) => {

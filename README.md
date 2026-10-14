@@ -69,12 +69,13 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 
 ![The Preferences window](docs/images/preferences.png)
 
-- A quiet interface: only the tabs and the text. The menu button (or Alt) opens a side panel with one icon per family: Folders, File, Edit, Search, Display, Settings. The Display family unfolds its options in place, and the status bar has Display, Font and Theme menus that preview as you hover.
+- A quiet interface: only the tabs and the text, and no floating menu. The menu button (or Alt) opens a side panel: the menus on top (File, Edit, Text, Go, View), their commands in sub-menus that unfold, with a field to search them all; the tools on the left (Folders, Search, Options, Settings). The Display, Font and Theme buttons of the status bar open Options, where themes and fonts preview as you hover.
+- At most six tabs per view by default (`tabs.limit`): opening one more closes the saved tab left unused the longest.
 - Fourteen themes (Light, Dark, High contrast, Solarized light and dark, Nord, Gruvbox, Catppuccin Latte and Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) and your own; the system's light or dark mode is followed by default.
 - Show spaces, tabs and line ends; pick the editor font among the ones installed.
 - A Preferences window (Ctrl+,) for every setting and every shortcut: type the new keys to change one.
 - `settings.json` and `keybindings.json` (VS Code format) with completion and error checking, reloaded as you save.
-- Show a classic menu bar, hide the tabs or status bar; zen mode for writing full screen.
+- Hide the tabs or status bar; zen mode for writing full screen.
 - A leader key (Ctrl+Space) for more shortcuts, with a hint bar that shows what comes next.
 - Everything is a command, in the command palette (Ctrl+Shift+P). An `init.js` script can add your own.
 - Plugins, turned on and off in Preferences > Extensions. See [Writing a plugin](docs/plugins.md).
@@ -118,7 +119,7 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 | Zoom                                      | Ctrl+= / Ctrl+- / Ctrl+0, Ctrl+wheel      |
 | Zen mode (Escape to leave)                | Leader Z                                  |
 | Word wrap                                 | Alt+Z                                     |
-| Menus / menu bar, tabs, status bar        | Alt / Leader M / Leader Tab / Leader B    |
+| Side panel, tabs, status bar              | Alt / Leader Tab / Leader B               |
 
 **Leader** is the leader key, **Ctrl+Space** by default (setting `keyboard.leader`): press it, then the next key. A bar at the bottom of the window shows the keys that can follow.
 

@@ -8,9 +8,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 - Refonte du design, inspirée de Word-Smith : l'interface prend le fond de l'éditeur, sans bandeaux ni bordures, avec un seul accent violet, un curseur coloré et des menus aux coins arrondis. Palette claire légèrement chaude, palette sombre adoucie.
 - Les onglets montent dans la barre de titre, avec les boutons réduire, agrandir et fermer (macOS garde ses boutons). En vues scindées, chaque vue garde ses onglets.
-- Plus de barre de menus par défaut : le bouton à gauche des onglets (ou Alt) ouvre le panneau latéral, avec une icône par famille (Dossiers, Fichier, Édition, Rechercher, Affichage, Réglages). Chaque famille liste ses commandes avec leur raccourci ; Affichage déplie ses options sur place (options, police, thème, clair ou sombre). Le réglage `workbench.showMenuBar` (Leader M) remet la barre classique, avec un nouveau menu Réglages.
+- Plus de barre de menus ni de menu flottant : tout passe par le panneau latéral, ouvert par le bouton à gauche des onglets ou par Alt. En haut, à la hauteur des onglets, les menus (Fichier, Édition, Texte, Aller, Affichage) ; dans la colonne de gauche, les outils (Dossiers, Rechercher, Options, Réglages). Les commandes sont rangées en sous-menus avec une icône, qui se déplient, et un champ cherche dans toutes. Options déplie sur place les options d'affichage, la police, le thème et la bascule clair ou sombre.
 - Petite séparation entre les onglets. Icônes [Lucide](https://lucide.dev) (licence ISC).
-- Barre d'état : boutons Affichage, Police et Thème au centre, qui ouvrent un menu au-dessus. Le thème et la police s'essaient au survol, Échap annule.
+- Barre d'état : boutons Affichage, Police et Thème au centre, qui ouvrent leur section dans Options. Le thème et la police s'essaient au survol.
 
 ### Ajouté
 
@@ -19,7 +19,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Commandes pour le retour à la ligne (Alt+Z) et les numéros de ligne.
 - Sept thèmes : Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light.
 - Commande « Basculer entre clair et sombre ».
-- Pour les plugins : `ctx.statusBar.addItem` accepte `alignment: 'center'`, une icône, un nom et un menu, listés par `ctx.statusBar.menus()` ; les panneaux ont une icône, un ordre et des menus listés comme commandes (`render` devient facultatif) ; les menus contextuels ont des coches, des titres et un aperçu ; `ctx.panels.isSideVisible`.
+- Six onglets au plus par vue (`tabs.limit`, 0 pour aucune limite) : en ouvrir un de plus ferme l'onglet enregistré inutilisé depuis le plus longtemps. Les onglets non enregistrés ne sont jamais fermés.
+- Pour les plugins : `ctx.menus.registerGroup` nomme un groupe de commandes (sous-menu avec icône) ; `ctx.statusBar.addItem` accepte `alignment: 'center'`, une icône, un nom et un menu, listés par `ctx.statusBar.menus()` et demandés par `ctx.statusBar.onDidRequestMenu` ; les panneaux ont une icône, une place (`top` ou `rail`), un ordre et des menus listés comme commandes (`render` devient facultatif) ; les menus contextuels ont des coches, des titres et un aperçu ; `ctx.panels.isSideVisible`.
+
+### Retiré
+
+- La barre de menus classique (`workbench.showMenuBar`, Leader M).
 
 ## [1.0.1] - 2026-10-05
 

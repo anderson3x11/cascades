@@ -4,14 +4,14 @@
   import type { Workbench } from '../app/workbench';
   import { t } from '../core/i18n/i18n';
   import { platform } from '../core/platform';
-  import MenuBar from './MenuBar.svelte';
   import TabBar from './TabBar.svelte';
   import WindowControls from './WindowControls.svelte';
 
   /**
    * The top of the window, standing in for the system title bar: the menu
-   * button (it opens the side panel), the tabs when there is a single view, a
-   * strip to move the window, and the window buttons (macOS keeps its own).
+   * button while the side panel is closed (it opens it), the tabs when there
+   * is a single view, a strip to move the window, and the window buttons
+   * (macOS keeps its own).
    */
   let { workbench }: { workbench: Workbench } = $props();
 
@@ -21,14 +21,13 @@
   const sideOpen = $derived(workbench.panels.current('left') !== null);
   const desktop = isTauri();
   const mac = platform() === 'macos';
-  let menuBar = $state<MenuBar>();
 
   function toggleSide() {
     workbench.panels.toggleSide('left');
     if (!workbench.panels.current('left')) workbench.workspace.editorView()?.focus();
   }
 
-  // Alt pressed and released alone opens the menu bar when shown, else the side panel.
+  // Alt pressed and released alone opens or closes the side panel.
   // AltGr comes with Ctrl, so it does not count.
   onMount(() => {
     let altAlone = false;
@@ -39,8 +38,7 @@
       if (e.key !== 'Alt' || !altAlone) return;
       altAlone = false;
       e.preventDefault();
-      if (menuBar) menuBar.toggleFromKeyboard();
-      else toggleSide();
+      toggleSide();
     };
     window.addEventListener('keydown', onKeyDown, true);
     window.addEventListener('keyup', onKeyUp, true);
@@ -51,18 +49,12 @@
   });
 </script>
 
-<header class="titlebar" class:mac={desktop && mac} data-tauri-drag-region>
-  <button
-    class="menu-button"
-    class:open={sideOpen}
-    aria-label={t('Menu')}
-    title={t('Menu (Alt)')}
-    aria-expanded={sideOpen}
-    onclick={toggleSide}
-  >
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
-  </button>
-  {#if layout.menuBar}<MenuBar {workbench} bind:this={menuBar} />{/if}
+<header class="titlebar" class:mac={desktop && mac && !sideOpen} data-tauri-drag-region>
+  {#if !sideOpen}
+    <button class="menu-button" aria-label={t('Menu')} title={t('Menu (Alt)')} onclick={toggleSide}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+    </button>
+  {/if}
   {#if group}
     <div class="tabs"><TabBar {workbench} {group} focused /></div>
   {/if}
@@ -81,6 +73,7 @@
   }
 
   /* Room for the traffic lights the system draws over the window. */
+  /* Room for the traffic lights the system draws over the window, unless the side panel takes it. */
   .titlebar.mac {
     padding-left: 72px;
   }
@@ -99,8 +92,7 @@
     place-items: center;
   }
 
-  .menu-button:hover,
-  .menu-button.open {
+  .menu-button:hover {
     background: var(--ui-hover);
     color: var(--fg);
   }
