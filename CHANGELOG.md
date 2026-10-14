@@ -4,6 +4,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-14
+
 ### Modifié
 
 - Refonte du design, inspirée de Word-Smith : l'interface prend le fond de l'éditeur, sans bandeaux ni bordures, avec un seul accent violet, un curseur coloré et des menus aux coins arrondis. Palette claire légèrement chaude, palette sombre adoucie.

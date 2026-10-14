@@ -12,7 +12,7 @@ The simplicity of Notepad++, the customization of Vim, a modern interface.
 
 ![Cascades: notes with cascades](docs/images/editor.png)
 
-> Version 1.0, for Windows, macOS and Linux. Shortcuts and settings: [documentation](https://anderson3x11.dev/cascades-site/docs.html).
+> Version 1.1, for Windows, macOS and Linux. Shortcuts and settings: [documentation](https://anderson3x11.dev/cascades-site/docs.html).
 
 ## Download
 
