@@ -451,6 +451,13 @@
         "keysMac": ["⇧⌘P", "Leader P"]
       },
       {
+        "id": "view.toggleTabsCollapsed",
+        "title": "Fold or unfold the vertical tabs",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "view.focusGroup1",
         "title": "Go to view 1",
         "category": "View",
@@ -610,6 +617,13 @@
         "category": "View",
         "keys": ["Leader T"],
         "keysMac": ["Leader T"]
+      },
+      {
+        "id": "view.toggleVerticalTabs",
+        "title": "Vertical tabs",
+        "category": "View",
+        "keys": [],
+        "keysMac": []
       },
       {
         "id": "view.toggleSplitOrientation",
@@ -958,6 +972,25 @@
         "description": "Show the tabs."
       },
       {
+        "key": "workbench.tabsCollapsed",
+        "type": "boolean",
+        "default": false,
+        "description": "Fold the column of tabs to the start of each name."
+      },
+      {
+        "key": "workbench.tabsPosition",
+        "type": "string",
+        "default": "top",
+        "description": "Where the tabs are: \"top\" in a row, \"left\" in a column, like browsers.",
+        "values": ["top", "left"]
+      },
+      {
+        "key": "workbench.tabsWidth",
+        "type": "number",
+        "default": 220,
+        "description": "Width of the column of tabs (px)."
+      },
+      {
         "key": "workbench.theme",
         "type": "string",
         "default": "auto",
@@ -1140,6 +1173,13 @@
         "keysMac": []
       },
       {
+        "id": "view.toggleVerticalTabs",
+        "title": "Onglets verticaux",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
+      },
+      {
         "id": "workbench.commandPalette",
         "title": "Palette de commandes…",
         "category": "Affichage",
@@ -1166,6 +1206,13 @@
         "category": "Affichage",
         "keys": ["Ctrl+-"],
         "keysMac": ["⌘-"]
+      },
+      {
+        "id": "view.toggleTabsCollapsed",
+        "title": "Replier ou déplier les onglets verticaux",
+        "category": "Affichage",
+        "keys": [],
+        "keysMac": []
       },
       {
         "id": "view.toggleWordWrap",
@@ -1939,6 +1986,25 @@
         "type": "boolean",
         "default": true,
         "description": "Afficher les onglets."
+      },
+      {
+        "key": "workbench.tabsCollapsed",
+        "type": "boolean",
+        "default": false,
+        "description": "Replier la colonne d’onglets au début de chaque nom."
+      },
+      {
+        "key": "workbench.tabsPosition",
+        "type": "string",
+        "default": "top",
+        "description": "Place des onglets : \"top\" en ligne en haut, \"left\" en colonne à gauche, comme les navigateurs.",
+        "values": ["top", "left"]
+      },
+      {
+        "key": "workbench.tabsWidth",
+        "type": "number",
+        "default": 220,
+        "description": "Largeur de la colonne d’onglets (px)."
       },
       {
         "key": "workbench.theme",

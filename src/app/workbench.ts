@@ -614,6 +614,10 @@ export class Workbench {
           this.layout[part] = visible;
         },
         isVisible: (part) => this.layout[part],
+        setTabsPosition: (position, collapsed) => {
+          this.layout.tabsPosition = position;
+          this.layout.tabsCollapsed = collapsed;
+        },
         setZen: (on) => this.setZen(on),
         isZen: () => this.layout.zen,
         setStyle: (name, value) => {

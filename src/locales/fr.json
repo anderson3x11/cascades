@@ -550,5 +550,15 @@
   "Menus": "Menus",
   "Search…": "Rechercher…",
   "Search the commands": "Rechercher dans les commandes",
-  "No command found": "Aucune commande trouvée"
+  "No command found": "Aucune commande trouvée",
+  "Vertical tabs": "Onglets verticaux",
+  "Where the tabs are: \"top\" in a row, \"left\" in a column, like browsers.": "Place des onglets : \"top\" en ligne en haut, \"left\" en colonne à gauche, comme les navigateurs.",
+  "Fold the column of tabs to the start of each name.": "Replier la colonne d’onglets au début de chaque nom.",
+  "Width of the column of tabs (px).": "Largeur de la colonne d’onglets (px).",
+  "Fold or unfold the vertical tabs": "Replier ou déplier les onglets verticaux",
+  "Width of the vertical tabs": "Largeur des onglets verticaux",
+  "Unfold the tabs": "Déplier les onglets",
+  "Fold the tabs": "Replier les onglets",
+  "View {number}": "Vue {number}",
+  "Resize the tabs": "Redimensionner les onglets"
 }

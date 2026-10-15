@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { iconFor } from './icons';
+import { iconFor } from '../../api';
 import {
   baseName,
   isExcluded,

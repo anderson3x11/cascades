@@ -71,6 +71,7 @@ Le fichier ne contient que des tabulations : les traits sont dessinés, jamais �
 
 - Une interface épurée : juste les onglets et le texte, et aucun menu flottant. Le bouton menu (ou Alt) ouvre un panneau latéral : les menus en haut (Fichier, Édition, Texte, Aller, Affichage), leurs commandes rangées en sous-menus qui se déplient, avec un champ pour les rechercher toutes ; les outils à gauche (Dossiers, Rechercher, Options, Réglages). Les boutons Affichage, Police et Thème de la barre d'état ouvrent Options, où thèmes et polices s'essaient au survol.
 - Six onglets au plus par vue par défaut (`tabs.limit`) : en ouvrir un de plus ferme l'onglet enregistré inutilisé depuis le plus longtemps.
+- Onglets verticaux, comme les navigateurs (`workbench.tabsPosition: "left"`, ou Options > Onglets verticaux) : noms complets dans une colonne redimensionnable, réordonnés par glisser, repliables au début de chaque nom. Le panneau latéral prend leur place quand il est ouvert.
 - Quatorze thèmes (Clair, Sombre, Haut contraste, Solarized clair et sombre, Nord, Gruvbox, Catppuccin Latte et Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) et les vôtres ; le mode clair ou sombre du système est suivi par défaut.
 - Afficher les espaces, tabulations et fins de ligne ; choisir la police de l'éditeur parmi celles installées.
 - Une fenêtre Préférences (Ctrl+,) pour chaque réglage et chaque raccourci : taper la nouvelle combinaison pour en changer un.

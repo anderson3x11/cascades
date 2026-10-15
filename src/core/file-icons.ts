@@ -1,4 +1,4 @@
-/** Small file-type icons for the explorer: SVG path data on a 16×16 grid, drawn as strokes. */
+/** Small file-type icons (explorer, vertical tabs): SVG path data on a 16×16 grid, drawn as strokes. */
 
 export type IconKind =
   'folder' | 'folderOpen' | 'text' | 'markdown' | 'code' | 'data' | 'image' | 'pdf' | 'file';

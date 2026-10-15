@@ -107,6 +107,11 @@ export default defineExtension({
             check('view.toggleZen', t('Zen mode'), ctx.layout.isZen()),
             ...[wrap, numbers].filter((i) => i !== undefined),
             check('cascades.toggle', t('Cascades'), ctx.settings.get<boolean>('cascades.enabled')),
+            check(
+              'view.toggleVerticalTabs',
+              t('Vertical tabs'),
+              ctx.settings.get<string>('workbench.tabsPosition') === 'left',
+            ),
             { heading: t('Markers') },
             ...[spaces, tabs, ends].filter((i) => i !== undefined),
           ],

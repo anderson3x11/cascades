@@ -71,6 +71,7 @@ The file itself only holds tabs: the lines are drawn, never written, and copying
 
 - A quiet interface: only the tabs and the text, and no floating menu. The menu button (or Alt) opens a side panel: the menus on top (File, Edit, Text, Go, View), their commands in sub-menus that unfold, with a field to search them all; the tools on the left (Folders, Search, Options, Settings). The Display, Font and Theme buttons of the status bar open Options, where themes and fonts preview as you hover.
 - At most six tabs per view by default (`tabs.limit`): opening one more closes the saved tab left unused the longest.
+- Vertical tabs, like browsers (`workbench.tabsPosition: "left"`, or Options > Vertical tabs): full names in a column you can resize, reorder by dragging, or fold to the start of each name. The side panel takes their place while it is open.
 - Fourteen themes (Light, Dark, High contrast, Solarized light and dark, Nord, Gruvbox, Catppuccin Latte and Mocha, Rose Pine, Dracula, Tokyo Night, Everforest, One Light) and your own; the system's light or dark mode is followed by default.
 - Show spaces, tabs and line ends; pick the editor font among the ones installed.
 - A Preferences window (Ctrl+,) for every setting and every shortcut: type the new keys to change one.

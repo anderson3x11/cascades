@@ -9,16 +9,18 @@
 
   /**
    * The top of the window, standing in for the system title bar: the menu
-   * button while the side panel is closed (it opens it), the tabs when there
-   * is a single view, a strip to move the window, and the window buttons
-   * (macOS keeps its own).
+   * button unless a column on the left holds it (side panel, vertical tabs),
+   * the tabs when they are on top with a single view (else the name of the
+   * file), a strip to move the window, and the window buttons (macOS keeps
+   * its own).
    */
-  let { workbench }: { workbench: Workbench } = $props();
+  let { workbench, besideColumn }: { workbench: Workbench; besideColumn: boolean } = $props();
 
   const layout = $derived(workbench.layout);
   const ws = $derived(workbench.workspace);
-  const group = $derived(layout.tabs && ws.groups.length === 1 ? ws.groups[0] : undefined);
-  const sideOpen = $derived(workbench.panels.current('left') !== null);
+  const top = $derived(layout.tabsPosition === 'top');
+  const group = $derived(top && layout.tabs && ws.groups.length === 1 ? ws.groups[0] : undefined);
+  const title = $derived(top ? null : (ws.activeTab()?.title ?? null));
   const desktop = isTauri();
   const mac = platform() === 'macos';
 
@@ -49,8 +51,8 @@
   });
 </script>
 
-<header class="titlebar" class:mac={desktop && mac && !sideOpen} data-tauri-drag-region>
-  {#if !sideOpen}
+<header class="titlebar" class:mac={desktop && mac && !besideColumn} data-tauri-drag-region>
+  {#if !besideColumn}
     <button class="menu-button" aria-label={t('Menu')} title={t('Menu (Alt)')} onclick={toggleSide}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
     </button>
@@ -58,7 +60,9 @@
   {#if group}
     <div class="tabs"><TabBar {workbench} {group} focused /></div>
   {/if}
-  <div class="drag" data-tauri-drag-region></div>
+  <div class="drag" data-tauri-drag-region>
+    {#if title}<span class="name" data-tauri-drag-region>{title}</span>{/if}
+  </div>
   {#if desktop && !mac}<WindowControls />{/if}
 </header>
 
@@ -72,7 +76,6 @@
     user-select: none;
   }
 
-  /* Room for the traffic lights the system draws over the window. */
   /* Room for the traffic lights the system draws over the window, unless the side panel takes it. */
   .titlebar.mac {
     padding-left: 72px;
@@ -111,6 +114,14 @@
     stroke-width: 1.75;
   }
 
+  .name {
+    overflow: hidden;
+    color: var(--ui-fg);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .tabs {
     display: flex;
     align-self: stretch;
@@ -118,6 +129,9 @@
   }
 
   .drag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1;
     align-self: stretch;
     min-width: 40px;

@@ -2,7 +2,7 @@
   import { tick } from 'svelte';
   import type { ExtensionContext } from '../../api';
   import type { ExplorerModel, Row } from './model.svelte';
-  import { ICON_PATHS, iconFor } from './icons';
+  import { ICON_PATHS, iconFor } from '../../api';
   import { baseName, parentOf, samePath } from './paths';
   import { t } from '../../api';
 

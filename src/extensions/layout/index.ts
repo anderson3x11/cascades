@@ -14,6 +14,22 @@ export default defineExtension({
     ctx.settings.register('workbench', {
       showTabs: { type: 'boolean', default: true, description: t('Show the tabs.') },
       showStatusBar: { type: 'boolean', default: true, description: t('Show the status bar.') },
+      tabsPosition: {
+        type: 'string',
+        default: 'top',
+        enum: ['top', 'left'],
+        description: t('Where the tabs are: "top" in a row, "left" in a column, like browsers.'),
+      },
+      tabsCollapsed: {
+        type: 'boolean',
+        default: false,
+        description: t('Fold the column of tabs to the start of each name.'),
+      },
+      tabsWidth: {
+        type: 'number',
+        default: 220,
+        description: t('Width of the column of tabs (px).'),
+      },
       fontFamily: {
         type: 'string',
         default: "system-ui, 'Segoe UI', sans-serif",
@@ -37,6 +53,11 @@ export default defineExtension({
       for (const [part, setting] of parts()) {
         ctx.layout.setVisible(part, ctx.settings.get<boolean>(`workbench.${setting}`));
       }
+      ctx.layout.setTabsPosition(
+        ctx.settings.get<string>('workbench.tabsPosition') === 'left' ? 'left' : 'top',
+        ctx.settings.get<boolean>('workbench.tabsCollapsed'),
+      );
+      ctx.layout.setStyle('tabs-width', `${ctx.settings.get<number>('workbench.tabsWidth')}px`);
       ctx.layout.setStyle('font-ui', ctx.settings.get<string>('workbench.fontFamily'));
       ctx.layout.setStyle('font-ui-size', `${ctx.settings.get<number>('workbench.fontSize')}px`);
       ctx.layout.setStyle('zen-width', `${ctx.settings.get<number>('zen.width')}ch`);
@@ -66,6 +87,44 @@ export default defineExtension({
       { key: 'Leader Z', command: 'view.toggleZen' },
       { key: 'Escape', command: 'view.exitZen', when: 'zenMode' },
     ]);
+
+    // Written only when it differs from the default, which keeps settings.json short.
+    const save = (key: string, value: unknown) =>
+      ctx.settings.update(
+        key,
+        value === ctx.settings.inspect(key).defaultValue ? undefined : value,
+      );
+    ctx.commands.register(
+      'view.toggleVerticalTabs',
+      () =>
+        save(
+          'workbench.tabsPosition',
+          ctx.settings.get<string>('workbench.tabsPosition') === 'left' ? 'top' : 'left',
+        ),
+      { title: t('Vertical tabs'), category: t('View') },
+    );
+    ctx.commands.register(
+      'view.toggleTabsCollapsed',
+      () => save('workbench.tabsCollapsed', !ctx.settings.get<boolean>('workbench.tabsCollapsed')),
+      { title: t('Fold or unfold the vertical tabs'), category: t('View') },
+    );
+    ctx.commands.register(
+      'view.setTabsWidth',
+      (width) => {
+        if (typeof width === 'number') return save('workbench.tabsWidth', Math.round(width));
+      },
+      { title: t('Width of the vertical tabs'), category: t('View'), hidden: true },
+    );
+    ctx.menus.registerItem('view', {
+      command: 'view.toggleVerticalTabs',
+      group: '4_layout',
+      order: 0.5,
+    });
+    ctx.menus.registerItem('view', {
+      command: 'view.toggleTabsCollapsed',
+      group: '4_layout',
+      order: 0.6,
+    });
 
     for (const [part, setting, title, key] of parts()) {
       const id = `view.toggle${part[0]?.toUpperCase()}${part.slice(1)}`;

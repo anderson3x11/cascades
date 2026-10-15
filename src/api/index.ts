@@ -346,6 +346,8 @@ export type LayoutPart = 'tabs' | 'statusBar';
 export interface LayoutApi {
   setVisible(part: LayoutPart, visible: boolean): void;
   isVisible(part: LayoutPart): boolean;
+  /** Tabs in a row at the top, or in a column on the left (folded to icons when `collapsed`). */
+  setTabsPosition(position: 'top' | 'left', collapsed: boolean): void;
   /** Zen mode: full screen, every bar hidden, text centered. */
   setZen(on: boolean): Promise<void>;
   isZen(): boolean;
@@ -624,6 +626,7 @@ export { t } from '../core/i18n/i18n';
  * and lower case except on Linux, whose file names are case-sensitive.
  */
 export { samePath } from '../core/platform';
+export { ICON_PATHS, iconFor, type IconKind } from '../core/file-icons';
 
 // Files and dialogs ----------------------------------------------------------
 
