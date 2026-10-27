@@ -26,6 +26,17 @@ Cascades then updates itself: it offers each new version at start, or from File 
 
 The installers are not signed with a paid certificate yet. On Windows, "Windows protected your PC" may appear: click More info, then Run anyway. On macOS, allow the app in System Settings > Privacy & Security.
 
+## Code signing policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+The Windows app and its installer are signed. They are built by [GitHub Actions](.github/workflows/release.yml) from this repository, and each release is approved by hand before signing.
+
+- Committers and reviewers: [anderson3x11](https://github.com/anderson3x11)
+- Approvers: [anderson3x11](https://github.com/anderson3x11)
+
+**Privacy**: this program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. The one exception: a few seconds after start, Cascades asks GitHub whether a new version exists (turn it off with the `updates.check` setting). The [GitHub privacy statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement) applies to that request.
+
 ## The cascades
 
 You write notes line by line, and indent a line with Tab when it follows from the one above. Cascades draws the connections:
