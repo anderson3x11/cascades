@@ -26,15 +26,6 @@ Cascades se met ensuite à jour tout seul : il propose chaque nouvelle version a
 
 Les installateurs ne sont pas encore signés par un certificat payant. Sous Windows, « Windows a protégé votre ordinateur » peut s'afficher : cliquer sur Informations complémentaires, puis Exécuter quand même. Sous macOS, autoriser l'app dans Réglages Système > Confidentialité et sécurité.
 
-## Code signing policy
-
-Signature du code offerte par [SignPath.io](https://about.signpath.io), certificat de la [SignPath Foundation](https://signpath.org).
-
-L'app Windows et son installateur sont signés. Ils sont construits par [GitHub Actions](.github/workflows/release.yml) à partir de ce dépôt, et chaque version est approuvée à la main avant d'être signée.
-
-- Auteurs et relecteurs : [anderson3x11](https://github.com/anderson3x11)
-- Approbateurs : [anderson3x11](https://github.com/anderson3x11)
-
 **Vie privée** : ce programme n'envoie aucune information à d'autres systèmes en réseau, sauf à la demande expresse de l'utilisateur ou de la personne qui l'installe ou l'utilise. Seule exception : quelques secondes après le démarrage, Cascades demande à GitHub si une nouvelle version existe (le réglage `updates.check` le désactive). La [déclaration de confidentialité de GitHub](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement) s'applique à cette requête.
 
 ## Les cascades
