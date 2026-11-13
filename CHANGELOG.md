@@ -9,6 +9,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Versions : [S
 - Onglets verticaux, comme les navigateurs : `workbench.tabsPosition` à `left` (ou Options > Onglets verticaux). Une colonne à gauche avec le nom complet de chaque fichier et son icône, une section par vue, redimensionnable par son bord (`workbench.tabsWidth`), réordonnée par glisser, repliable au début de chaque nom (`workbench.tabsCollapsed`). Le panneau latéral prend sa place quand il est ouvert ; la barre du haut affiche alors le nom du fichier.
 - Pour les plugins : `ICON_PATHS` et `iconFor` (icônes de type de fichier) et `ctx.layout.setTabsPosition`.
 
+### Corrigé
+
+- Barre d'état dans une fenêtre étroite (panneau latéral ou onglets verticaux ouverts) : le texte de gauche passait sous les boutons du centre. Il est maintenant coupé avec des points de suspension.
+
 ## [1.1.0] - 2026-10-14
 
 ### Modifié

@@ -74,3 +74,14 @@ test('the Options tool switches light and dark', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme-type', 'dark');
   await expect(panel(page).getByRole('button', { name: 'Sombre', exact: true })).toBeVisible();
 });
+
+test('in a narrow window the left of the status bar gives way to the center', async ({ page }) => {
+  await page.setViewportSize({ width: 860, height: 500 });
+  await page.keyboard.press('Control+A');
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  const center = await page.locator('footer .center').boundingBox();
+  for (const item of await page.locator('footer .side').first().locator('.item').all()) {
+    const box = await item.boundingBox();
+    if (box && center) expect(box.x + box.width).toBeLessThanOrEqual(center.x);
+  }
+});

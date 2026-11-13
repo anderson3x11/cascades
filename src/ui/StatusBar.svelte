@@ -46,7 +46,8 @@
 <style>
   footer {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    /* The sides may shrink below their content: the center never covers them. */
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     height: 30px;
     padding: 0 8px;
@@ -60,6 +61,7 @@
     align-items: center;
     gap: 2px;
     min-width: 0;
+    overflow: hidden;
   }
 
   .center {
@@ -79,7 +81,17 @@
     white-space: nowrap;
   }
 
+  /* Plain text gives way first, cut with an ellipsis; buttons keep their size. */
+  span.item {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    line-height: 22px;
+    text-overflow: ellipsis;
+  }
+
   button.item {
+    flex-shrink: 0;
     border: none;
     border-radius: 6px;
     background: transparent;
